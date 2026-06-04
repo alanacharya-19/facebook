@@ -4,6 +4,7 @@ import WhatsOnYourMind from "../../components/WhatsOnYourMind";
 import StoriesBar from "../../components/StoriesBar";
 import FriendSuggestions from "../../components/FriendSuggestions";
 import BirthdaysEvents from "../../components/BirthdaysEvents";
+import Memories from "../../components/Memories";
 import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 
@@ -22,6 +23,7 @@ export default function HomeScreen() {
         <StoriesBar />
         <FriendSuggestions />
         <BirthdaysEvents />
+        <Memories />
         {POSTS.map((post) => (
           <FeedPost key={post.id} {...post} />
         ))}
