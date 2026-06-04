@@ -2,9 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 
 const ACTION_BUTTONS = [
-  { icon: "videocam" as const, label: "Live", color: "#F3425F" },
+  { icon: "videocam" as const, label: "Live", color: "#F02849" },
   { icon: "images" as const, label: "Photo", color: "#45BD62" },
-  { icon: "location-outline" as const, label: "Check in", color: "#1877F2" },
+  { icon: "happy-outline" as const, label: "Feeling", color: "#F7B928" },
 ];
 
 export default function WhatsOnYourMind() {
@@ -17,13 +17,18 @@ export default function WhatsOnYourMind() {
         <TouchableOpacity style={styles.inputButton} activeOpacity={0.7}>
           <Text style={styles.inputText}>What's on your mind?</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7}>
+          <Ionicons name="camera-outline" size={22} color="#050505" />
+        </TouchableOpacity>
       </View>
       <View style={styles.divider} />
       <View style={styles.actionsRow}>
         {ACTION_BUTTONS.map((btn) => (
           <TouchableOpacity key={btn.label} style={styles.actionButton} activeOpacity={0.6}>
-            <Ionicons name={btn.icon} size={20} color={btn.color} />
-            <Text style={[styles.actionLabel, { color: btn.color }]}>{btn.label}</Text>
+            <View style={[styles.iconBg, { backgroundColor: btn.color }]}>
+              <Ionicons name={btn.icon} size={16} color="#fff" />
+            </View>
+            <Text style={styles.actionLabel}>{btn.label}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -34,10 +39,11 @@ export default function WhatsOnYourMind() {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    marginHorizontal: 0,
     paddingHorizontal: 16,
     paddingTop: 12,
-    paddingBottom: 8,
+    paddingBottom: 6,
+    borderBottomWidth: 6,
+    borderBottomColor: "#F0F2F5",
   },
   topRow: {
     flexDirection: "row",
@@ -56,33 +62,48 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#DEDEDE",
+    backgroundColor: "#F0F2F5",
     justifyContent: "center",
     paddingHorizontal: 16,
   },
   inputText: {
     fontSize: 15,
-    color: "#8A8D91",
+    color: "#65676B",
+  },
+  cameraBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
   },
   divider: {
     height: 0.5,
-    backgroundColor: "#DEDEDE",
+    backgroundColor: "#CED0D4",
     marginVertical: 10,
   },
   actionsRow: {
     flexDirection: "row",
     justifyContent: "space-around",
+    paddingBottom: 4,
   },
   actionButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    gap: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  iconBg: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
   },
   actionLabel: {
     fontSize: 13,
     fontWeight: "600",
+    color: "#65676B",
   },
 });

@@ -22,38 +22,42 @@ export default function FeedPost({ name, time, content, avatarColor }: FeedPostP
             <Ionicons name="globe-outline" size={12} color="#8A8D91" />
           </View>
         </View>
-        <TouchableOpacity>
-          <Ionicons name="ellipsis-horizontal" size={20} color="#8A8D91" />
+        <TouchableOpacity style={styles.menuBtn}>
+          <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
         </TouchableOpacity>
       </View>
 
       {content ? <Text style={styles.content}>{content}</Text> : null}
 
-      <View style={styles.imagePlaceholder}>
-        <Ionicons name="image-outline" size={40} color="#BCC0C4" />
+      <View style={styles.imageWrap}>
+        <View style={styles.imagePlaceholder}>
+          <Ionicons name="image-outline" size={44} color="#BCC0C4" />
+        </View>
       </View>
 
       <View style={styles.stats}>
-        <View style={styles.statItem}>
-          <Ionicons name="thumbs-up-outline" size={14} color="#8A8D91" />
+        <View style={styles.statLeft}>
+          <View style={styles.likeIcon}>
+            <Ionicons name="thumbs-up" size={12} color="#fff" />
+          </View>
           <Text style={styles.statText}>42</Text>
         </View>
-        <Text style={styles.statText}>5 comments</Text>
+        <Text style={styles.statText}>5 comments · 2 shares</Text>
       </View>
 
       <View style={styles.divider} />
 
       <View style={styles.actions}>
         <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Ionicons name="thumbs-up-outline" size={20} color="#8A8D91" />
+          <Ionicons name="thumbs-up-outline" size={20} color="#65676B" />
           <Text style={styles.actionText}>Like</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Ionicons name="chatbubble-outline" size={20} color="#8A8D91" />
+          <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
           <Text style={styles.actionText}>Comment</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Ionicons name="share-outline" size={20} color="#8A8D91" />
+          <Ionicons name="share-outline" size={20} color="#65676B" />
           <Text style={styles.actionText}>Share</Text>
         </TouchableOpacity>
       </View>
@@ -64,7 +68,9 @@ export default function FeedPost({ name, time, content, avatarColor }: FeedPostP
 const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
-    marginTop: 8,
+    marginTop: 6,
+    borderBottomWidth: 6,
+    borderBottomColor: "#F0F2F5",
   },
   header: {
     flexDirection: "row",
@@ -93,22 +99,34 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    marginTop: 1,
+    marginTop: 2,
   },
   time: {
     fontSize: 12,
-    color: "#8A8D91",
+    color: "#65676B",
+  },
+  menuBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
   },
   content: {
-    fontSize: 14,
+    fontSize: 15,
     color: "#050505",
-    lineHeight: 20,
+    lineHeight: 21,
     paddingHorizontal: 16,
-    paddingBottom: 8,
+    paddingBottom: 10,
+  },
+  imageWrap: {
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderColor: "#CED0D4",
   },
   imagePlaceholder: {
     width: "100%",
-    height: 200,
+    height: 220,
     backgroundColor: "#F0F2F5",
     alignItems: "center",
     justifyContent: "center",
@@ -120,23 +138,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
   },
-  statItem: {
+  statLeft: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
+  likeIcon: {
+    width: 18,
+    height: 18,
+    borderRadius: 9,
+    backgroundColor: "#1877F2",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   statText: {
     fontSize: 13,
-    color: "#8A8D91",
+    color: "#65676B",
   },
   divider: {
     height: 0.5,
-    backgroundColor: "#DEDEDE",
+    backgroundColor: "#CED0D4",
     marginHorizontal: 16,
   },
   actions: {
     flexDirection: "row",
-    paddingVertical: 4,
+    paddingVertical: 2,
     paddingHorizontal: 8,
   },
   actionButton: {
@@ -146,10 +172,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 6,
     paddingVertical: 8,
+    borderRadius: 4,
   },
   actionText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#8A8D91",
+    color: "#65676B",
   },
 });
