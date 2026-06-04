@@ -2,6 +2,7 @@ import { ScrollView, View } from "react-native";
 import TopHeader from "../../components/TopHeader";
 import WhatsOnYourMind from "../../components/WhatsOnYourMind";
 import StoriesBar from "../../components/StoriesBar";
+import FriendSuggestions from "../../components/FriendSuggestions";
 import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 
@@ -18,6 +19,7 @@ export default function HomeScreen() {
       <ScrollView>
         <WhatsOnYourMind />
         <StoriesBar />
+        <FriendSuggestions />
         {POSTS.map((post) => (
           <FeedPost key={post.id} {...post} />
         ))}
