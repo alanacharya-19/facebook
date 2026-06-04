@@ -1,4 +1,5 @@
 import { ScrollView, View } from "react-native";
+import TopHeader from "../../components/TopHeader";
 import WhatsOnYourMind from "../../components/WhatsOnYourMind";
 import StoriesBar from "../../components/StoriesBar";
 import FeedPost from "../../components/FeedPost";
@@ -12,17 +13,20 @@ const POSTS = [
 
 export default function HomeScreen() {
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
-      <WhatsOnYourMind />
-      <StoriesBar />
-      {POSTS.map((post) => (
-        <FeedPost key={post.id} {...post} />
-      ))}
-      <ReelsSection />
-      {POSTS.slice(0, 2).map((post) => (
-        <FeedPost key={`more-${post.id}`} {...post} time={`${post.time} ago`} />
-      ))}
-      <View style={{ height: 20 }} />
-    </ScrollView>
+    <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
+      <TopHeader />
+      <ScrollView>
+        <WhatsOnYourMind />
+        <StoriesBar />
+        {POSTS.map((post) => (
+          <FeedPost key={post.id} {...post} />
+        ))}
+        <ReelsSection />
+        {POSTS.slice(0, 2).map((post) => (
+          <FeedPost key={`more-${post.id}`} {...post} time={`${post.time} ago`} />
+        ))}
+        <View style={{ height: 20 }} />
+      </ScrollView>
+    </View>
   );
 }
