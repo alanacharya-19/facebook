@@ -21,6 +21,7 @@ export default function HomeScreen() {
     <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
       <TopHeader />
       <ScrollView
+        showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
         <WhatsOnYourMind />
