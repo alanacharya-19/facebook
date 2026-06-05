@@ -31,3 +31,12 @@ export const POSTS = [
 ];
 
 export const REELS_COUNT = 6;
+
+export const REELS_DATA = [
+  { id: "1", user: "Alice", caption: "Morning vibes ☀️", likes: "12.4K", comments: "342", color: "#E44D26" },
+  { id: "2", user: "Bob", caption: "Check out this view! 🌄", likes: "8.7K", comments: "156", color: "#1DA1F2" },
+  { id: "3", user: "Charlie", caption: "New dance challenge 💃", likes: "45.2K", comments: "1.2K", color: "#E1306C" },
+  { id: "4", user: "Diana", caption: "Cooking something special 🍳", likes: "6.3K", comments: "89", color: "#FFD700" },
+  { id: "5", user: "Eve", caption: "Late night studio session 🎵", likes: "21.8K", comments: "567", color: "#00C853" },
+  { id: "6", user: "Frank", caption: "Weekend getaway 🏖️", likes: "33.1K", comments: "901", color: "#6C63FF" },
+];

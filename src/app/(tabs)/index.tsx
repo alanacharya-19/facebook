@@ -4,9 +4,6 @@ import TopHeader from "../../components/TopHeader";
 import WhatsOnYourMind from "../../components/WhatsOnYourMind";
 import StoriesBar from "../../components/StoriesBar";
 import FriendSuggestions from "../../components/FriendSuggestions";
-import BirthdaysEvents from "../../components/BirthdaysEvents";
-import Memories from "../../components/Memories";
-import RoomsGroups from "../../components/RoomsGroups";
 import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 import FeedSkeleton from "../../components/FeedSkeleton";
@@ -29,9 +26,6 @@ export default function HomeScreen() {
         <WhatsOnYourMind />
         <StoriesBar />
         <FriendSuggestions />
-        <BirthdaysEvents />
-        <Memories />
-        <RoomsGroups />
         {POSTS.map((post) => (
           <FeedPost key={post.id} {...post} />
         ))}
