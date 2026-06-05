@@ -1,7 +1,8 @@
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { REELS_COUNT } from "../data/home";
 
-const REELS = Array.from({ length: 6 }, (_, i) => ({ id: String(i + 1), color: `hsl(${i * 52}, 65%, 55%)` }));
+const REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({ id: String(i + 1), color: `hsl(${i * 52}, 65%, 55%)` }));
 
 export default function ReelsSection() {
   return (

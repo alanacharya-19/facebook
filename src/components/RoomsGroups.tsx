@@ -1,12 +1,6 @@
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const ROOM_FRIENDS = ["#1DA1F2", "#E1306C", "#00C853", "#FFD700", "#FF6B6B"];
-
-const GROUPS = [
-  { name: "React Native Devs", members: "12k members" },
-  { name: "Photography Club", members: "3.4k members" },
-];
+import { ROOM_FRIENDS_COLORS, GROUPS } from "../data/home";
 
 export default function RoomsGroups() {
   return (
@@ -20,7 +14,7 @@ export default function RoomsGroups() {
             </View>
             <Text style={styles.createText}>Create{'\n'}Room</Text>
           </TouchableOpacity>
-          {ROOM_FRIENDS.map((color, i) => (
+          {ROOM_FRIENDS_COLORS.map((color, i) => (
             <View key={i} style={styles.roomFriend}>
               <View style={[styles.roomAvatar, { backgroundColor: color }]}>
                 <Ionicons name="person" size={20} color="#fff" />

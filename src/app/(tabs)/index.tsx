@@ -10,34 +10,15 @@ import RoomsGroups from "../../components/RoomsGroups";
 import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 import FeedSkeleton from "../../components/FeedSkeleton";
-
-const POSTS = [
-  { id: "1", name: "Alice", time: "2 hrs", content: "Had an amazing day at the beach!", avatarColor: "#1DA1F2" },
-  { id: "2", name: "Bob", time: "4 hrs", content: "Just finished reading a great book. Highly recommend!", avatarColor: "#E1306C" },
-  { id: "3", name: "Charlie", time: "6 hrs", content: "New recipe attempt tonight. Wish me luck!", avatarColor: "#00C853" },
-];
+import { POSTS } from "../../data/home";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
-  const [loaded, setLoaded] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setTimeout(() => setRefreshing(false), 1500);
   }, []);
-
-  if (!loaded) {
-    return (
-      <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
-        <TopHeader />
-        <ScrollView
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-        >
-          <FeedSkeleton />
-        </ScrollView>
-      </View>
-    );
-  }
 
   return (
     <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>

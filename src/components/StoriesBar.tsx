@@ -1,17 +1,6 @@
 import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const STORIES = [
-  { id: "1", name: "Your Story", isSelf: true },
-  { id: "2", name: "Alice" },
-  { id: "3", name: "Bob" },
-  { id: "4", name: "Charlie" },
-  { id: "5", name: "Diana" },
-  { id: "6", name: "Eve" },
-  { id: "7", name: "Frank" },
-];
-
-const COLORS = ["#E44D26", "#1DA1F2", "#E1306C", "#FFD700", "#00C853", "#FF6B6B", "#6C63FF"];
+import { STORIES, STORY_COLORS } from "../data/home";
 const GRADIENT = ["#833AB4", "#FD1D1D", "#F77737", "#FCAF45"];
 
 export default function StoriesBar() {
@@ -20,7 +9,7 @@ export default function StoriesBar() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {STORIES.map((story, i) => (
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story}>
-            <View style={[styles.storyCard, { backgroundColor: COLORS[i % COLORS.length] }]}>
+            <View style={[styles.storyCard, { backgroundColor: STORY_COLORS[i % STORY_COLORS.length] }]}>          
               {story.isSelf ? (
                 <>
                   <View style={styles.selfAvatarWrap}>

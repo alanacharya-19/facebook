@@ -1,12 +1,6 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-
-const SUGGESTIONS = [
-  { id: "1", name: "Diana", mutual: 8, color: "#1DA1F2" },
-  { id: "2", name: "Eve", mutual: 3, color: "#E1306C" },
-  { id: "3", name: "Frank", mutual: 12, color: "#00C853" },
-  { id: "4", name: "Grace", mutual: 5, color: "#FFD700" },
-];
+import { FRIEND_SUGGESTIONS } from "../data/home";
 
 export default function FriendSuggestions() {
   return (
@@ -19,7 +13,7 @@ export default function FriendSuggestions() {
       </View>
 
       <View style={styles.list}>
-        {SUGGESTIONS.map((person) => (
+        {FRIEND_SUGGESTIONS.map((person) => (
           <View key={person.id} style={styles.card}>
             <View style={[styles.avatar, { backgroundColor: person.color }]}>
               <Ionicons name="person" size={28} color="#fff" />

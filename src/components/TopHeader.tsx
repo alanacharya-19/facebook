@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function TopHeader() {
   return (
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 30,
     paddingBottom: 10,
     backgroundColor: "#fff",
     borderBottomWidth: 0.5,
