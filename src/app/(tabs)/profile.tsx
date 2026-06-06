@@ -2,15 +2,17 @@ import { useState } from "react";
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { PROFILE, PROFILE_TABS, USER_POSTS } from "../../data/profile";
+import ProfileSidebar from "../../components/ProfileSidebar";
 
 export default function ProfileScreen() {
   const [activeTab, setActiveTab] = useState(0);
+  const [menuVisible, setMenuVisible] = useState(false);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.coverWrap}>
         <View style={[styles.cover, { backgroundColor: PROFILE.coverColor }]}>
-          <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
             <Ionicons name="menu" size={24} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cameraCoverBtn} activeOpacity={0.7}>
@@ -131,6 +133,7 @@ export default function ProfileScreen() {
       </View>
 
       <View style={{ height: 40 }} />
+      <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </ScrollView>
   );
 }
