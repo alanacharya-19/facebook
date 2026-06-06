@@ -11,10 +11,8 @@ export default function StoriesBar() {
         {STORIES.map((story) => (
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story}>
             {story.isSelf ? (
-              <View style={styles.storyCard}>
-                <ImageBackground source={{ uri: story.avatar }} style={styles.selfTop} imageStyle={{ borderRadius: 14 }}>
-                  <View style={styles.selfTopInner} />
-                </ImageBackground>
+              <View style={styles.selfCard}>
+                <ImageBackground source={{ uri: story.avatar }} style={styles.selfTop} />
                 <View style={styles.selfBottom}>
                   <View style={styles.createBtn}>
                     <Ionicons name="add" size={20} color="#fff" />
@@ -69,23 +67,27 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
+  selfCard: {
+    width: CARD_W,
+    height: CARD_H,
+    borderRadius: 14,
+    overflow: "hidden",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 6,
+    elevation: 3,
+  },
   selfTop: {
     width: CARD_W,
-    height: "60%",
-    borderTopLeftRadius: 14,
-    borderTopRightRadius: 14,
-    overflow: "hidden",
-  },
-  selfTopInner: {
-    flex: 1,
+    height: 126,
   },
   selfBottom: {
     width: CARD_W,
-    height: "40%",
-    backgroundColor: "#F0F2F5",
+    height: 84,
+    backgroundColor: "#E8EAED",
     alignItems: "center",
     justifyContent: "center",
-    paddingTop: 16,
   },
   createBtn: {
     position: "absolute",
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#65676B",
     textAlign: "center",
-    marginTop: 4,
+    marginTop: 22,
   },
   storyRing: {
     position: "absolute",

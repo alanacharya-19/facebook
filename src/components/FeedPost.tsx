@@ -15,7 +15,12 @@ export default function FeedPost({ name, time, content, avatar, photo }: FeedPos
       <View style={styles.header}>
         <Image source={{ uri: avatar }} style={styles.avatar} />
         <View style={styles.headerText}>
-          <Text style={styles.name}>{name}</Text>
+          <View style={styles.nameRow}>
+            <Text style={styles.name}>{name}</Text>
+            <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
+              <Text style={styles.followText}>Follow</Text>
+            </TouchableOpacity>
+          </View>
           <View style={styles.timeRow}>
             <Text style={styles.time}>{time}</Text>
             <Ionicons name="globe-outline" size={12} color="#65676B" />
@@ -23,6 +28,9 @@ export default function FeedPost({ name, time, content, avatar, photo }: FeedPos
         </View>
         <TouchableOpacity style={styles.menuBtn}>
           <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.closeBtn}>
+          <Ionicons name="close" size={20} color="#65676B" />
         </TouchableOpacity>
       </View>
 
@@ -34,31 +42,32 @@ export default function FeedPost({ name, time, content, avatar, photo }: FeedPos
         </View>
       )}
 
-      <View style={styles.stats}>
-        <View style={styles.statLeft}>
-          <View style={styles.likeIcon}>
-            <Ionicons name="thumbs-up" size={12} color="#fff" />
-          </View>
-          <Text style={styles.statText}>42</Text>
+      <View style={styles.footer}>
+        <View style={styles.footerLeft}>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
+            <Ionicons name="thumbs-up" size={20} color="#1877F2" />
+            <Text style={styles.footerText}>200K</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
+            <Ionicons name="chatbubble" size={20} color="#65676B" />
+            <Text style={styles.footerText}>12K</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
+            <Ionicons name="arrow-redo" size={20} color="#65676B" />
+            <Text style={styles.footerText}>8.5K</Text>
+          </TouchableOpacity>
         </View>
-        <Text style={styles.statText}>5 comments · 2 shares</Text>
-      </View>
-
-      <View style={styles.divider} />
-
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Ionicons name="thumbs-up-outline" size={20} color="#65676B" />
-          <Text style={styles.actionText}>Like</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
-          <Text style={styles.actionText}>Comment</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionButton} activeOpacity={0.7}>
-          <Ionicons name="share-outline" size={20} color="#65676B" />
-          <Text style={styles.actionText}>Share</Text>
-        </TouchableOpacity>
+        <View style={styles.footerRight}>
+          <View style={styles.reactionWraplg}>
+            <Text style={styles.reactionLg}>👍</Text>
+          </View>
+          <View style={styles.reactionWrapmd}>
+            <Text style={styles.reactionMd}>❤️</Text>
+          </View>
+          <View style={styles.reactionWrapsm}>
+            <Text style={styles.reactionSm}>😂</Text>
+          </View>
+        </View>
       </View>
     </View>
   );
@@ -87,10 +96,26 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
+  nameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   name: {
     fontSize: 14,
     fontWeight: "600",
     color: "#050505",
+  },
+  followBtn: {
+    backgroundColor: "#E7F3FF",
+    borderRadius: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+  },
+  followText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#1877F2",
   },
   timeRow: {
     flexDirection: "row",
@@ -103,6 +128,13 @@ const styles = StyleSheet.create({
     color: "#65676B",
   },
   menuBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -126,52 +158,52 @@ const styles = StyleSheet.create({
     height: 220,
     resizeMode: "cover",
   },
-  stats: {
+  footer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: "#CED0D4",
+    marginTop: 6,
   },
-  statLeft: {
+  footerLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 18,
+  },
+  footerItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
-  likeIcon: {
-    width: 18,
-    height: 18,
-    borderRadius: 9,
-    backgroundColor: "#1877F2",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  statText: {
+  footerText: {
     fontSize: 13,
     color: "#65676B",
   },
-  divider: {
-    height: 0.5,
-    backgroundColor: "#CED0D4",
-    marginHorizontal: 16,
-  },
-  actions: {
-    flexDirection: "row",
-    paddingVertical: 2,
-    paddingHorizontal: 8,
-  },
-  actionButton: {
-    flex: 1,
+  footerRight: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
-    gap: 6,
-    paddingVertical: 8,
-    borderRadius: 4,
   },
-  actionText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#65676B",
+  reactionWraplg: {
+    zIndex: 3,
+  },
+  reactionWrapmd: {
+    zIndex: 2,
+    marginLeft: -6,
+  },
+  reactionWrapsm: {
+    zIndex: 1,
+    marginLeft: -6,
+  },
+  reactionLg: {
+    fontSize: 20,
+  },
+  reactionMd: {
+    fontSize: 16,
+  },
+  reactionSm: {
+    fontSize: 12,
   },
 });
