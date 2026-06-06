@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { ScrollView, View, Text, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { REELS_COUNT } from "../data/home";
 
@@ -23,7 +23,7 @@ export default function ReelsSection() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {REELS.map((reel) => (
           <TouchableOpacity key={reel.id} style={styles.reel} activeOpacity={0.9}>
-            <Image source={{ uri: reel.image }} style={styles.thumb} imageStyle={{ borderRadius: 12 }}>
+            <ImageBackground source={{ uri: reel.image }} style={styles.thumb} imageStyle={{ borderRadius: 12 }}>
               <View style={styles.playOverlay}>
                 <View style={styles.playBtn}>
                   <Ionicons name="play" size={22} color="#fff" />
@@ -35,7 +35,7 @@ export default function ReelsSection() {
                 </View>
                 <Text style={styles.reelName}>User {reel.id}</Text>
               </View>
-            </Image>
+            </ImageBackground>
           </TouchableOpacity>
         ))}
       </ScrollView>
