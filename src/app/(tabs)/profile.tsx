@@ -9,7 +9,8 @@ export default function ProfileScreen() {
   const [menuVisible, setMenuVisible] = useState(false);
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <View style={{ flex: 1 }}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.coverWrap}>
         <View style={[styles.cover, { backgroundColor: PROFILE.coverColor }]}>
           <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
@@ -133,8 +134,10 @@ export default function ProfileScreen() {
       </View>
 
       <View style={{ height: 40 }} />
-      <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
+      <View style={{ height: 40 }} />
     </ScrollView>
+      <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
+    </View>
   );
 }
 
