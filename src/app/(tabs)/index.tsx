@@ -26,8 +26,11 @@ export default function HomeScreen() {
       >
         <WhatsOnYourMind />
         <StoriesBar />
+        {POSTS.slice(0, 2).map((post) => (
+          <FeedPost key={post.id} {...post} />
+        ))}
         <FriendSuggestions />
-        {POSTS.map((post) => (
+        {POSTS.slice(2).map((post) => (
           <FeedPost key={post.id} {...post} />
         ))}
         <ReelsSection />

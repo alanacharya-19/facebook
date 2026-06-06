@@ -7,6 +7,9 @@ export default function TopHeader() {
       <Text style={styles.logo}>facebook</Text>
       <View style={styles.right}>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
+          <Ionicons name="add" size={22} color="#050505" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
           <Ionicons name="search" size={20} color="#050505" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>

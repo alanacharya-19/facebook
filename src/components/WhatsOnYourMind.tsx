@@ -18,19 +18,10 @@ export default function WhatsOnYourMind() {
           <Text style={styles.inputText}>What's on your mind?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7}>
-          <Ionicons name="camera-outline" size={22} color="#050505" />
+          <View style={[styles.cameraIconBg, { backgroundColor: "#45BD62" }]}>
+            <Ionicons name="images" size={16} color="#fff" />
+          </View>
         </TouchableOpacity>
-      </View>
-      <View style={styles.divider} />
-      <View style={styles.actionsRow}>
-        {ACTION_BUTTONS.map((btn) => (
-          <TouchableOpacity key={btn.label} style={styles.actionButton} activeOpacity={0.6}>
-            <View style={[styles.iconBg, { backgroundColor: btn.color }]}>
-              <Ionicons name={btn.icon} size={16} color="#fff" />
-            </View>
-            <Text style={styles.actionLabel}>{btn.label}</Text>
-          </TouchableOpacity>
-        ))}
       </View>
     </View>
   );
@@ -74,6 +65,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  cameraIconBg: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
   },
