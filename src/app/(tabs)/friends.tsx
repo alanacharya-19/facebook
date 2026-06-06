@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
+  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -14,9 +15,7 @@ const TABS = ["Requests", "Suggestions", "All Friends"];
 function RequestCard({ item }: { item: (typeof FRIEND_REQUESTS)[0] }) {
   return (
     <View style={styles.requestCard}>
-      <View style={[styles.avatar, { backgroundColor: item.color }]}>
-        <Ionicons name="person" size={28} color="#fff" />
-      </View>
+      <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <View style={styles.reqInfo}>
         <Text style={styles.reqName}>{item.name}</Text>
         <Text style={styles.reqMutual}>{item.mutual} mutual friends</Text>
@@ -36,9 +35,7 @@ function RequestCard({ item }: { item: (typeof FRIEND_REQUESTS)[0] }) {
 function SuggestionCard({ item }: { item: (typeof PEOPLE_YOU_MAY_KNOW)[0] }) {
   return (
     <View style={styles.suggestionCard}>
-      <View style={[styles.avatar, { backgroundColor: item.color }]}>
-        <Ionicons name="person" size={28} color="#fff" />
-      </View>
+      <Image source={{ uri: item.avatar }} style={styles.avatar} />
       <Text style={styles.suggName} numberOfLines={1}>
         {item.name}
       </Text>
@@ -203,8 +200,6 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    alignItems: "center",
-    justifyContent: "center",
   },
   reqInfo: {
     flex: 1,

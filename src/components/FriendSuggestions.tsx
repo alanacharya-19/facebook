@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { FRIEND_SUGGESTIONS } from "../data/home";
 
@@ -15,9 +15,7 @@ export default function FriendSuggestions() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
         {FRIEND_SUGGESTIONS.map((person) => (
           <View key={person.id} style={styles.card}>
-            <View style={[styles.avatar, { backgroundColor: person.color }]}>
-              <Ionicons name="person" size={28} color="#fff" />
-            </View>
+            <Image source={{ uri: person.avatar }} style={styles.avatar} />
             <Text style={styles.name} numberOfLines={1}>{person.name}</Text>
             <Text style={styles.mutual}>{person.mutual} mutual friends</Text>
             <TouchableOpacity style={styles.addBtn} activeOpacity={0.7}>
@@ -60,7 +58,6 @@ const styles = StyleSheet.create({
   },
   list: {
     paddingHorizontal: 12,
-    flexDirection: "row",
     gap: 8,
   },
   card: {
@@ -75,8 +72,6 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    alignItems: "center",
-    justifyContent: "center",
     marginBottom: 8,
   },
   name: {

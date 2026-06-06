@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, ImageBackground, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { PROFILE, PROFILE_TABS, USER_POSTS } from "../../data/profile";
 import ProfileSidebar from "../../components/ProfileSidebar";
@@ -12,18 +12,16 @@ export default function ProfileScreen() {
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.coverWrap}>
-        <View style={[styles.cover, { backgroundColor: PROFILE.coverColor }]}>
+        <ImageBackground source={{ uri: PROFILE.cover }} style={styles.cover}>
           <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
             <Ionicons name="menu" size={24} color="#fff" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.cameraCoverBtn} activeOpacity={0.7}>
             <Ionicons name="camera-outline" size={20} color="#fff" />
           </TouchableOpacity>
-        </View>
+        </ImageBackground>
         <View style={styles.avatarWrap}>
-          <View style={[styles.avatar, { backgroundColor: PROFILE.avatarColor }]}>
-            <Ionicons name="person" size={44} color="#fff" />
-          </View>
+          <Image source={{ uri: PROFILE.avatar }} style={styles.avatar} />
           <TouchableOpacity style={styles.cameraAvatarBtn} activeOpacity={0.7}>
             <Ionicons name="camera" size={14} color="#fff" />
           </TouchableOpacity>
@@ -85,9 +83,7 @@ export default function ProfileScreen() {
             {USER_POSTS.map((post) => (
               <View key={post.id} style={styles.postCard}>
                 <View style={styles.postTop}>
-                  <View style={[styles.postAvatar, { backgroundColor: PROFILE.avatarColor }]}>
-                    <Ionicons name="person" size={16} color="#fff" />
-                  </View>
+                  <Image source={{ uri: PROFILE.avatar }} style={styles.postAvatar} />
                   <View style={{ flex: 1 }}>
                     <Text style={styles.postName}>{PROFILE.name}</Text>
                     <Text style={styles.postTime}>{post.time}</Text>
@@ -97,9 +93,7 @@ export default function ProfileScreen() {
                   </TouchableOpacity>
                 </View>
                 <Text style={styles.postContent}>{post.content}</Text>
-                <View style={styles.imagePlaceholder}>
-                  <Ionicons name="image-outline" size={36} color="#BCC0C4" />
-                </View>
+                <Image source={{ uri: post.image }} style={styles.postProfileImage} />
                 <View style={styles.postStats}>
                   <View style={styles.postStatLeft}>
                     <View style={styles.likeBadge}>
@@ -350,8 +344,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    alignItems: "center",
-    justifyContent: "center",
   },
   postName: {
     fontSize: 13,
@@ -370,11 +362,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingBottom: 10,
   },
-  imagePlaceholder: {
+  postProfileImage: {
+    width: "100%",
     height: 180,
-    backgroundColor: "#F0F2F5",
-    alignItems: "center",
-    justifyContent: "center",
+    resizeMode: "cover",
   },
   postStats: {
     flexDirection: "row",

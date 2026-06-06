@@ -1,25 +1,24 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 type FeedPostProps = {
   name: string;
   time: string;
   content?: string;
-  avatarColor: string;
+  avatar: string;
+  photo?: string;
 };
 
-export default function FeedPost({ name, time, content, avatarColor }: FeedPostProps) {
+export default function FeedPost({ name, time, content, avatar, photo }: FeedPostProps) {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <View style={[styles.avatar, { backgroundColor: avatarColor }]}>
-          <Ionicons name="person" size={20} color="#fff" />
-        </View>
+        <Image source={{ uri: avatar }} style={styles.avatar} />
         <View style={styles.headerText}>
           <Text style={styles.name}>{name}</Text>
           <View style={styles.timeRow}>
             <Text style={styles.time}>{time}</Text>
-            <Ionicons name="globe-outline" size={12} color="#8A8D91" />
+            <Ionicons name="globe-outline" size={12} color="#65676B" />
           </View>
         </View>
         <TouchableOpacity style={styles.menuBtn}>
@@ -29,11 +28,11 @@ export default function FeedPost({ name, time, content, avatarColor }: FeedPostP
 
       {content ? <Text style={styles.content}>{content}</Text> : null}
 
-      <View style={styles.imageWrap}>
-        <View style={styles.imagePlaceholder}>
-          <Ionicons name="image-outline" size={44} color="#BCC0C4" />
+      {photo && (
+        <View style={styles.imageWrap}>
+          <Image source={{ uri: photo }} style={styles.postImage} />
         </View>
-      </View>
+      )}
 
       <View style={styles.stats}>
         <View style={styles.statLeft}>
@@ -83,8 +82,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    alignItems: "center",
-    justifyContent: "center",
   },
   headerText: {
     flex: 1,
@@ -124,12 +121,10 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderColor: "#CED0D4",
   },
-  imagePlaceholder: {
+  postImage: {
     width: "100%",
     height: 220,
-    backgroundColor: "#F0F2F5",
-    alignItems: "center",
-    justifyContent: "center",
+    resizeMode: "cover",
   },
   stats: {
     flexDirection: "row",

@@ -1,15 +1,16 @@
-import { ScrollView, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { ScrollView, View, Text, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { STORIES, STORY_COLORS } from "../data/home";
+import { STORIES } from "../data/home";
+
 const GRADIENT = ["#833AB4", "#FD1D1D", "#F77737", "#FCAF45"];
 
 export default function StoriesBar() {
   return (
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {STORIES.map((story, i) => (
+        {STORIES.map((story) => (
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story}>
-            <View style={[styles.storyCard, { backgroundColor: STORY_COLORS[i % STORY_COLORS.length] }]}>          
+            <ImageBackground source={{ uri: story.image }} style={styles.storyCard} imageStyle={{ borderRadius: 14 }}>
               {story.isSelf ? (
                 <>
                   <View style={styles.selfAvatarWrap}>
@@ -22,18 +23,14 @@ export default function StoriesBar() {
                   </View>
                 </>
               ) : (
-                <>
-                  <View style={styles.storyRing}>
-                    <View style={styles.storyAvatar}>
-                      <Ionicons name="person" size={28} color="#fff" />
-                    </View>
-                  </View>
-                </>
+                <View style={styles.storyRing}>
+                  <ImageBackground source={{ uri: story.image }} style={styles.storyAvatar} imageStyle={{ borderRadius: 17 }} />
+                </View>
               )}
               <Text style={styles.name} numberOfLines={1}>
                 {story.name}
               </Text>
-            </View>
+            </ImageBackground>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -115,8 +112,7 @@ const styles = StyleSheet.create({
     width: 34,
     height: 34,
     borderRadius: 17,
-    alignItems: "center",
-    justifyContent: "center",
+    overflow: "hidden",
   },
   name: {
     fontSize: 12,

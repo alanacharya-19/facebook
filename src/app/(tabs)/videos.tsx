@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, Dimensions, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { REELS_DATA } from "../../data/home";
@@ -11,53 +11,55 @@ function ReelItem({ item }: { item: typeof REELS_DATA[0] }) {
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={[styles.reelContainer, { backgroundColor: item.color }]}>
-      <View style={styles.reelContent}>
-        <View style={styles.centerPlay}>
-          <View style={styles.playBtn}>
-            <Ionicons name="play" size={36} color="rgba(255,255,255,0.9)" />
+    <View style={styles.reelContainer}>
+      <ImageBackground source={{ uri: item.image }} style={styles.reelBg} imageStyle={{ resizeMode: "cover" }}>
+        <View style={styles.reelContent}>
+          <View style={styles.centerPlay}>
+            <View style={styles.playBtn}>
+              <Ionicons name="play" size={36} color="rgba(255,255,255,0.9)" />
+            </View>
           </View>
-        </View>
 
-        <View style={[styles.bottomArea, { paddingBottom: insets.bottom + 60 }]}>
-          <View style={styles.bottomLeft}>
-            <View style={styles.userRow}>
-              <View style={styles.userAvatar}>
-                <Ionicons name="person" size={18} color="#fff" />
+          <View style={[styles.bottomArea, { paddingBottom: insets.bottom + 60 }]}>
+            <View style={styles.bottomLeft}>
+              <View style={styles.userRow}>
+                <View style={styles.userAvatar}>
+                  <Ionicons name="person" size={18} color="#fff" />
+                </View>
+                <Text style={styles.userName}>{item.user}</Text>
+                <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
+                  <Text style={styles.followText}>Follow</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.userName}>{item.user}</Text>
-              <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
-                <Text style={styles.followText}>Follow</Text>
+              <Text style={styles.caption}>{item.caption}</Text>
+              <View style={styles.musicRow}>
+                <Ionicons name="musical-note" size={14} color="#fff" />
+                <Text style={styles.musicText}>Original Audio</Text>
+              </View>
+            </View>
+
+            <View style={styles.actions}>
+              <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => setLiked(!liked)}>
+                <Ionicons name={liked ? "heart" : "heart-outline"} size={30} color={liked ? "#F02849" : "#fff"} />
+                <Text style={styles.actionText}>{item.likes}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
+                <Ionicons name="chatbubble-outline" size={28} color="#fff" />
+                <Text style={styles.actionText}>{item.comments}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
+                <Ionicons name="bookmark-outline" size={26} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
+                <Ionicons name="paper-plane-outline" size={26} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
+                <Ionicons name="ellipsis-horizontal" size={26} color="#fff" />
               </TouchableOpacity>
             </View>
-            <Text style={styles.caption}>{item.caption}</Text>
-            <View style={styles.musicRow}>
-              <Ionicons name="musical-note" size={14} color="#fff" />
-              <Text style={styles.musicText}>Original Audio</Text>
-            </View>
-          </View>
-
-          <View style={styles.actions}>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => setLiked(!liked)}>
-              <Ionicons name={liked ? "heart" : "heart-outline"} size={30} color={liked ? "#F02849" : "#fff"} />
-              <Text style={styles.actionText}>{item.likes}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-              <Ionicons name="chatbubble-outline" size={28} color="#fff" />
-              <Text style={styles.actionText}>{item.comments}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-              <Ionicons name="bookmark-outline" size={26} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-              <Ionicons name="paper-plane-outline" size={26} color="#fff" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-              <Ionicons name="ellipsis-horizontal" size={26} color="#fff" />
-            </TouchableOpacity>
           </View>
         </View>
-      </View>
+      </ImageBackground>
     </View>
   );
 }
@@ -87,6 +89,9 @@ const styles = StyleSheet.create({
   reelContainer: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
+  },
+  reelBg: {
+    flex: 1,
   },
   reelContent: {
     flex: 1,
