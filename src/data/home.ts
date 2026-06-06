@@ -1,11 +1,11 @@
 export const STORIES = [
-  { id: "1", name: "Your Story", isSelf: true, image: "https://picsum.photos/seed/story1/208/336" },
-  { id: "2", name: "Alice", image: "https://picsum.photos/seed/alice/208/336" },
-  { id: "3", name: "Bob", image: "https://picsum.photos/seed/bob/208/336" },
-  { id: "4", name: "Charlie", image: "https://picsum.photos/seed/charlie/208/336" },
-  { id: "5", name: "Diana", image: "https://picsum.photos/seed/diana/208/336" },
-  { id: "6", name: "Eve", image: "https://picsum.photos/seed/eve/208/336" },
-  { id: "7", name: "Frank", image: "https://picsum.photos/seed/frank/208/336" },
+  { id: "1", name: "Your Story", isSelf: true, image: "https://picsum.photos/seed/story1/208/336", avatar: "https://i.pravatar.cc/150?u=me" },
+  { id: "2", name: "Alice", image: "https://picsum.photos/seed/alice/208/336", avatar: "https://i.pravatar.cc/150?u=alice" },
+  { id: "3", name: "Bob", image: "https://picsum.photos/seed/bob/208/336", avatar: "https://i.pravatar.cc/150?u=bob" },
+  { id: "4", name: "Charlie", image: "https://picsum.photos/seed/charlie/208/336", avatar: "https://i.pravatar.cc/150?u=charlie" },
+  { id: "5", name: "Diana", image: "https://picsum.photos/seed/diana/208/336", avatar: "https://i.pravatar.cc/150?u=diana" },
+  { id: "6", name: "Eve", image: "https://picsum.photos/seed/eve/208/336", avatar: "https://i.pravatar.cc/150?u=eve" },
+  { id: "7", name: "Frank", image: "https://picsum.photos/seed/frank/208/336", avatar: "https://i.pravatar.cc/150?u=frank" },
 ];
 
 export const FRIEND_SUGGESTIONS = [

@@ -10,27 +10,28 @@ export default function StoriesBar() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {STORIES.map((story) => (
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story}>
-            <ImageBackground source={{ uri: story.image }} style={styles.storyCard} imageStyle={{ borderRadius: 14 }}>
-              {story.isSelf ? (
-                <>
-                  <View style={styles.selfAvatarWrap}>
-                    <View style={styles.selfAvatar}>
-                      <Ionicons name="person" size={32} color="#fff" />
-                    </View>
+            {story.isSelf ? (
+              <View style={styles.storyCard}>
+                <ImageBackground source={{ uri: story.avatar }} style={styles.selfTop} imageStyle={{ borderRadius: 14 }}>
+                  <View style={styles.selfTopInner} />
+                </ImageBackground>
+                <View style={styles.selfBottom}>
+                  <View style={styles.createBtn}>
+                    <Ionicons name="add" size={20} color="#fff" />
                   </View>
-                  <View style={styles.addBadge}>
-                    <Ionicons name="add" size={16} color="#fff" />
-                  </View>
-                </>
-              ) : (
-                <View style={styles.storyRing}>
-                  <ImageBackground source={{ uri: story.image }} style={styles.storyAvatar} imageStyle={{ borderRadius: 17 }} />
+                  <Text style={styles.createText}>Create Story</Text>
                 </View>
-              )}
-              <Text style={styles.name} numberOfLines={1}>
-                {story.name}
-              </Text>
-            </ImageBackground>
+              </View>
+            ) : (
+              <ImageBackground source={{ uri: story.image }} style={styles.storyCard} imageStyle={{ borderRadius: 14 }}>
+                <View style={styles.storyRing}>
+                  <ImageBackground source={{ uri: story.avatar }} style={styles.storyAvatar} imageStyle={{ borderRadius: 21 }} />
+                </View>
+                <Text style={styles.name} numberOfLines={1}>
+                  {story.name}
+                </Text>
+              </ImageBackground>
+            )}
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -38,8 +39,8 @@ export default function StoriesBar() {
   );
 }
 
-const CARD_W = 104;
-const CARD_H = 168;
+const CARD_W = 110;
+const CARD_H = 210;
 
 const styles = StyleSheet.create({
   container: {
@@ -49,8 +50,9 @@ const styles = StyleSheet.create({
     borderBottomColor: "#F0F2F5",
   },
   scroll: {
-    paddingHorizontal: 12,
-    gap: 8,
+    paddingLeft: 4,
+    paddingRight: 12,
+    gap: 4,
   },
   story: {
     width: CARD_W,
@@ -60,7 +62,6 @@ const styles = StyleSheet.create({
     height: CARD_H,
     borderRadius: 14,
     overflow: "hidden",
-    padding: 10,
     justifyContent: "flex-end",
     shadowColor: "#000",
     shadowOpacity: 0.08,
@@ -68,50 +69,59 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
-  selfAvatarWrap: {
-    position: "absolute",
-    top: 10,
-    left: 10,
+  selfTop: {
+    width: CARD_W,
+    height: "60%",
+    borderTopLeftRadius: 14,
+    borderTopRightRadius: 14,
+    overflow: "hidden",
   },
-  selfAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    borderWidth: 3,
-    borderColor: "#1877F2",
-    backgroundColor: "#1877F2",
+  selfTopInner: {
+    flex: 1,
+  },
+  selfBottom: {
+    width: CARD_W,
+    height: "40%",
+    backgroundColor: "#F0F2F5",
     alignItems: "center",
     justifyContent: "center",
+    paddingTop: 16,
   },
-  addBadge: {
+  createBtn: {
     position: "absolute",
-    bottom: 36,
-    alignSelf: "center",
-    width: 28,
-    height: 28,
-    borderRadius: 14,
+    top: -20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: "#1877F2",
     borderWidth: 3,
     borderColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
+  createText: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#65676B",
+    textAlign: "center",
+    marginTop: 4,
+  },
   storyRing: {
     position: "absolute",
-    top: 10,
-    left: 10,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    top: 12,
+    left: 12,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     borderWidth: 3,
     borderColor: "#1877F2",
     alignItems: "center",
     justifyContent: "center",
   },
   storyAvatar: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     overflow: "hidden",
   },
   name: {
