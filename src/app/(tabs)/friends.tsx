@@ -12,48 +12,54 @@ import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW } from "../../data/friends";
 
 const TABS = ["Suggestions", "Your Friends"];
 
-function RequestCard({ item }: { item: (typeof FRIEND_REQUESTS)[0] }) {
+function MutualPhotos({ photos }: { photos: string[] }) {
+  const count = photos.length === 1 ? 1 : 2;
   return (
-    <View style={styles.requestCard}>
-      <Image source={{ uri: item.avatar }} style={styles.reqAvatar} />
-      <View style={styles.reqInfo}>
-        <Text style={styles.reqName}>{item.name}</Text>
-        <View style={styles.reqMutualRow}>
-          {item.mutualPhotos.slice(0, 2).map((url, i) => (
-            <Image
-              key={i}
-              source={{ uri: url }}
-              style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8 }]}
-            />
-          ))}
-          <Text style={styles.reqMutualText}>{item.mutual} mutual friends</Text>
-        </View>
-        <Text style={styles.reqTime}>{item.time}</Text>
-        <View style={styles.reqActions}>
-          <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7}>
-            <Text style={styles.confirmText}>Confirm</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7}>
-            <Text style={styles.deleteText}>Delete</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+    <View style={styles.mutualRow}>
+      {photos.slice(0, count).map((url, i) => (
+        <Image
+          key={i}
+          source={{ uri: url }}
+          style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8 }]}
+        />
+      ))}
+      <Text style={styles.mutualText}>{photos.length === 1 ? "1 mutual friend" : `${photos.length} mutual friends`}</Text>
     </View>
   );
 }
 
-function SuggestionCard({ item }: { item: (typeof PEOPLE_YOU_MAY_KNOW)[0] }) {
+function PersonCard({
+  item,
+  type,
+}: {
+  item: { id: string; name: string; avatar: string; mutual: number; time: string; mutualPhotos: string[] };
+  type: "request" | "suggestion";
+}) {
   return (
-    <View style={styles.suggestionCard}>
-      <Image source={{ uri: item.avatar }} style={styles.suggAvatar} />
-      <Text style={styles.suggName} numberOfLines={1}>
-        {item.name}
-      </Text>
-      <Text style={styles.suggMutual}>{item.mutual} mutual</Text>
-      <TouchableOpacity style={styles.addBtn} activeOpacity={0.7}>
-        <Ionicons name="person-add" size={16} color="#fff" />
-        <Text style={styles.addBtnText}>Add Friend</Text>
-      </TouchableOpacity>
+    <View style={styles.personCard}>
+      <Image source={{ uri: item.avatar }} style={styles.personAvatar} />
+      <View style={styles.personInfo}>
+        <Text style={styles.personName}>{item.name}</Text>
+        <View style={styles.personMeta}>
+          <MutualPhotos photos={item.mutualPhotos} />
+          <Text style={styles.personTime}>{item.time}</Text>
+        </View>
+        {type === "request" ? (
+          <View style={styles.personActions}>
+            <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7}>
+              <Text style={styles.confirmText}>Confirm</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7}>
+              <Text style={styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <TouchableOpacity style={styles.addFriendBtn} activeOpacity={0.7}>
+            <Ionicons name="person-add" size={16} color="#fff" />
+            <Text style={styles.addFriendText}>Add Friend</Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }
@@ -103,7 +109,7 @@ export default function FriendsScreen() {
               </TouchableOpacity>
             </View>
             {FRIEND_REQUESTS.map((req) => (
-              <RequestCard key={req.id} item={req} />
+              <PersonCard key={req.id} item={req} type="request" />
             ))}
           </View>
         )}
@@ -111,15 +117,9 @@ export default function FriendsScreen() {
         {activeTab === 0 && (
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Suggestions</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.suggScroll}
-            >
-              {PEOPLE_YOU_MAY_KNOW.map((p) => (
-                <SuggestionCard key={p.id} item={p} />
-              ))}
-            </ScrollView>
+            {PEOPLE_YOU_MAY_KNOW.map((p) => (
+              <PersonCard key={p.id} item={p} type="suggestion" />
+            ))}
           </View>
         )}
 
@@ -222,27 +222,32 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#1877F2",
   },
-  requestCard: {
+  personCard: {
     flexDirection: "row",
     gap: 12,
     marginBottom: 16,
   },
-  reqAvatar: {
+  personAvatar: {
     width: 72,
     height: 72,
     borderRadius: 36,
   },
-  reqInfo: {
+  personInfo: {
     flex: 1,
     justifyContent: "center",
     gap: 2,
   },
-  reqName: {
+  personName: {
     fontSize: 15,
     fontWeight: "600",
     color: "#050505",
   },
-  reqMutualRow: {
+  personMeta: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  mutualRow: {
     flexDirection: "row",
     alignItems: "center",
   },
@@ -253,16 +258,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#fff",
   },
-  reqMutualText: {
+  mutualText: {
     fontSize: 13,
     color: "#65676B",
     marginLeft: 4,
   },
-  reqTime: {
+  personTime: {
     fontSize: 12,
     color: "#65676B",
   },
-  reqActions: {
+  personActions: {
     flexDirection: "row",
     gap: 8,
     marginTop: 4,
@@ -289,50 +294,20 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#65676B",
   },
-  suggScroll: {
-    gap: 10,
-    paddingBottom: 8,
-  },
-  suggestionCard: {
-    width: 130,
-    borderWidth: 0.5,
-    borderColor: "#CED0D4",
-    borderRadius: 10,
-    padding: 12,
-    alignItems: "center",
-  },
-  suggAvatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-  },
-  suggName: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#050505",
-    marginTop: 8,
-    textAlign: "center",
-    width: "100%",
-  },
-  suggMutual: {
-    fontSize: 12,
-    color: "#65676B",
-    marginTop: 2,
-    marginBottom: 10,
-  },
-  addBtn: {
+  addFriendBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 4,
+    gap: 6,
     backgroundColor: "#1877F2",
     borderRadius: 6,
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    width: "100%",
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    alignSelf: "flex-start",
+    marginTop: 4,
   },
-  addBtnText: {
-    fontSize: 12,
+  addFriendText: {
+    fontSize: 14,
     fontWeight: "600",
     color: "#fff",
   },
