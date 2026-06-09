@@ -7,6 +7,7 @@ export const NOTIFICATIONS = [
     time: "2m",
     color: "#F02849",
     unread: true,
+    preview: "https://picsum.photos/seed/post1/200/200",
   },
   {
     id: "2",
@@ -16,6 +17,7 @@ export const NOTIFICATIONS = [
     time: "15m",
     color: "#1DA1F2",
     unread: true,
+    preview: "https://picsum.photos/seed/post2/200/200",
   },
   {
     id: "3",
@@ -37,6 +39,7 @@ export const NOTIFICATIONS = [
     time: "2h",
     color: "#F02849",
     unread: false,
+    preview: "https://picsum.photos/seed/post4/200/200",
   },
   {
     id: "5",
@@ -64,6 +67,7 @@ export const NOTIFICATIONS = [
     time: "12h",
     color: "#1DA1F2",
     unread: false,
+    preview: "https://picsum.photos/seed/post7/200/200",
   },
   {
     id: "8",

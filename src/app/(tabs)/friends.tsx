@@ -73,7 +73,6 @@ export default function FriendsScreen() {
 
   return (
     <View style={styles.container}>
-      <ProfileSidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7} onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu-outline" size={24} color="#050505" />
@@ -137,6 +136,7 @@ export default function FriendsScreen() {
 
         <View style={{ height: 40 }} />
       </ScrollView>
+      <ProfileSidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
     </View>
   );
 }

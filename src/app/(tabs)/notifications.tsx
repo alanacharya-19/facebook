@@ -82,6 +82,7 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
 
   const avatarUrl = AVATAR_URLS[item.user];
   const notifIcon = NOTIF_ICONS[item.type as keyof typeof NOTIF_ICONS] ?? "notifications";
+  const hasPreview = "preview" in item && item.type !== "friend_request" && item.type !== "birthday" && item.type !== "group";
 
   return (
     <TouchableOpacity
@@ -107,6 +108,12 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
           <Text style={styles.notifTime}>{item.time}</Text>
         </View>
       </View>
+      {hasPreview && (
+        <Image
+          source={{ uri: (item as typeof item & { preview: string }).preview }}
+          style={styles.previewImg}
+        />
+      )}
     </TouchableOpacity>
   );
 }
@@ -120,7 +127,6 @@ export default function NotificationsScreen() {
 
   return (
     <View style={styles.container}>
-      <ProfileSidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
       <View style={styles.header}>
         <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7} onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu-outline" size={24} color="#050505" />
@@ -164,6 +170,7 @@ export default function NotificationsScreen() {
         )}
         <View style={{ height: 40 }} />
       </ScrollView>
+      <ProfileSidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
     </View>
   );
 }
@@ -287,21 +294,26 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   notifAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
   },
   indicator: {
     position: "absolute",
     bottom: -2,
     right: -4,
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
     borderColor: "#fff",
+  },
+  previewImg: {
+    width: 48,
+    height: 48,
+    borderRadius: 8,
   },
   reqAvatar: {
     width: 52,
