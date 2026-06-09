@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW } from "../../data/friends";
+import ProfileSidebar from "../../components/ProfileSidebar";
 
 const TABS = ["Suggestions", "Your Friends"];
 
@@ -35,16 +36,17 @@ function PersonCard({
   item: { id: string; name: string; avatar: string; mutual: number; time: string; mutualPhotos: string[] };
   type: "request" | "suggestion";
 }) {
+  const isSuggestion = type === "suggestion";
   return (
     <View style={styles.personCard}>
-      <Image source={{ uri: item.avatar }} style={styles.personAvatar} />
+      <Image source={{ uri: item.avatar }} style={[styles.personAvatar, isSuggestion && styles.personAvatarSm]} />
       <View style={styles.personInfo}>
         <Text style={styles.personName}>{item.name}</Text>
         <View style={styles.personMeta}>
           <MutualPhotos photos={item.mutualPhotos} />
-          <Text style={styles.personTime}>{item.time}</Text>
+          {!isSuggestion && <Text style={styles.personTime}>{item.time}</Text>}
         </View>
-        {type === "request" ? (
+        {type === "request" && (
           <View style={styles.personActions}>
             <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7}>
               <Text style={styles.confirmText}>Confirm</Text>
@@ -53,24 +55,27 @@ function PersonCard({
               <Text style={styles.deleteText}>Delete</Text>
             </TouchableOpacity>
           </View>
-        ) : (
-          <TouchableOpacity style={styles.addFriendBtn} activeOpacity={0.7}>
-            <Ionicons name="person-add" size={16} color="#fff" />
-            <Text style={styles.addFriendText}>Add Friend</Text>
-          </TouchableOpacity>
         )}
       </View>
+      {isSuggestion && (
+        <TouchableOpacity style={styles.addFriendBtn} activeOpacity={0.7}>
+          <Ionicons name="person-add" size={14} color="#fff" />
+          <Text style={styles.addFriendText}>Add Friend</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
 
 export default function FriendsScreen() {
   const [activeTab, setActiveTab] = useState(0);
+  const [sidebarVisible, setSidebarVisible] = useState(false);
 
   return (
     <View style={styles.container}>
+      <ProfileSidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7} onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu-outline" size={24} color="#050505" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Friends</Text>
@@ -211,11 +216,12 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: "700",
     color: "#050505",
+    marginBottom: 14,
   },
   reqCount: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#65676B",
+    color: "#F02849",
   },
   seeAll: {
     fontSize: 14,
@@ -226,15 +232,20 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
     marginBottom: 16,
+    alignItems: "center",
   },
   personAvatar: {
     width: 72,
     height: 72,
     borderRadius: 36,
   },
+  personAvatarSm: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+  },
   personInfo: {
     flex: 1,
-    justifyContent: "center",
     gap: 2,
   },
   personName: {
@@ -247,6 +258,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 8,
   },
+
   mutualRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -298,16 +310,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
+    gap: 4,
     backgroundColor: "#1877F2",
     borderRadius: 6,
-    paddingVertical: 8,
-    paddingHorizontal: 20,
-    alignSelf: "flex-start",
-    marginTop: 4,
+    paddingVertical: 6,
+    paddingHorizontal: 16,
   },
   addFriendText: {
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: "600",
     color: "#fff",
   },

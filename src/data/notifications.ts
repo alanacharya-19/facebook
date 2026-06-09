@@ -25,6 +25,9 @@ export const NOTIFICATIONS = [
     time: "1h",
     color: "#1877F2",
     unread: true,
+    avatar: "https://i.pravatar.cc/150?u=charlie",
+    mutual: 8,
+    mutualPhotos: ["https://i.pravatar.cc/40?u=m1", "https://i.pravatar.cc/40?u=m2"],
   },
   {
     id: "4",
@@ -70,6 +73,9 @@ export const NOTIFICATIONS = [
     time: "1d",
     color: "#45BD62",
     unread: false,
+    avatar: "https://i.pravatar.cc/150?u=grace2",
+    mutual: 5,
+    mutualPhotos: ["https://i.pravatar.cc/40?u=m3"],
   },
   {
     id: "9",
@@ -79,6 +85,18 @@ export const NOTIFICATIONS = [
     time: "2d",
     color: "#1DA1F2",
     unread: false,
+  },
+  {
+    id: "10",
+    type: "friend_request",
+    user: "Ivy",
+    message: "sent you a friend request.",
+    time: "30m",
+    color: "#1877F2",
+    unread: true,
+    avatar: "https://i.pravatar.cc/150?u=ivy",
+    mutual: 3,
+    mutualPhotos: ["https://i.pravatar.cc/40?u=m4"],
   },
 ];
 
