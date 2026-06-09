@@ -10,15 +10,25 @@ import {
 } from "react-native";
 import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW } from "../../data/friends";
 
-const TABS = ["Requests", "Suggestions", "All Friends"];
+const TABS = ["Suggestions", "Your Friends"];
 
 function RequestCard({ item }: { item: (typeof FRIEND_REQUESTS)[0] }) {
   return (
     <View style={styles.requestCard}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
+      <Image source={{ uri: item.avatar }} style={styles.reqAvatar} />
       <View style={styles.reqInfo}>
         <Text style={styles.reqName}>{item.name}</Text>
-        <Text style={styles.reqMutual}>{item.mutual} mutual friends</Text>
+        <View style={styles.reqMutualRow}>
+          {item.mutualPhotos.slice(0, 2).map((url, i) => (
+            <Image
+              key={i}
+              source={{ uri: url }}
+              style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8 }]}
+            />
+          ))}
+          <Text style={styles.reqMutualText}>{item.mutual} mutual friends</Text>
+        </View>
+        <Text style={styles.reqTime}>{item.time}</Text>
         <View style={styles.reqActions}>
           <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7}>
             <Text style={styles.confirmText}>Confirm</Text>
@@ -35,7 +45,7 @@ function RequestCard({ item }: { item: (typeof FRIEND_REQUESTS)[0] }) {
 function SuggestionCard({ item }: { item: (typeof PEOPLE_YOU_MAY_KNOW)[0] }) {
   return (
     <View style={styles.suggestionCard}>
-      <Image source={{ uri: item.avatar }} style={styles.avatar} />
+      <Image source={{ uri: item.avatar }} style={styles.suggAvatar} />
       <Text style={styles.suggName} numberOfLines={1}>
         {item.name}
       </Text>
@@ -54,6 +64,9 @@ export default function FriendsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7}>
+          <Ionicons name="menu-outline" size={24} color="#050505" />
+        </TouchableOpacity>
         <Text style={styles.headerTitle}>Friends</Text>
         <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7}>
           <Ionicons name="search" size={22} color="#050505" />
@@ -78,17 +91,26 @@ export default function FriendsScreen() {
       </View>
 
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
+        {FRIEND_REQUESTS.length > 0 && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>
+                Friend Requests{" "}
+                <Text style={styles.reqCount}>({FRIEND_REQUESTS.length})</Text>
+              </Text>
+              <TouchableOpacity activeOpacity={0.7}>
+                <Text style={styles.seeAll}>See all</Text>
+              </TouchableOpacity>
+            </View>
+            {FRIEND_REQUESTS.map((req) => (
+              <RequestCard key={req.id} item={req} />
+            ))}
+          </View>
+        )}
+
         {activeTab === 0 && (
           <View style={styles.section}>
-            {FRIEND_REQUESTS.length > 0 && (
-              <>
-                <Text style={styles.sectionTitle}>Friend Requests</Text>
-                {FRIEND_REQUESTS.map((req) => (
-                  <RequestCard key={req.id} item={req} />
-                ))}
-              </>
-            )}
-            <Text style={styles.sectionTitle}>People You May Know</Text>
+            <Text style={styles.sectionTitle}>Suggestions</Text>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -103,22 +125,7 @@ export default function FriendsScreen() {
 
         {activeTab === 1 && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>People You May Know</Text>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.suggScroll}
-            >
-              {PEOPLE_YOU_MAY_KNOW.map((p) => (
-                <SuggestionCard key={p.id} item={p} />
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {activeTab === 2 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>All Friends</Text>
+            <Text style={styles.sectionTitle}>Your Friends</Text>
             <Text style={styles.emptyText}>Your friends will appear here.</Text>
           </View>
         )}
@@ -137,15 +144,24 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingTop: 30,
     paddingBottom: 12,
+    gap: 12,
+  },
+  menuBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E4E6EB",
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: "700",
     color: "#050505",
+    flex: 1,
   },
   searchBtn: {
     width: 36,
@@ -185,60 +201,91 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 12,
   },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
   sectionTitle: {
     fontSize: 17,
     fontWeight: "700",
     color: "#050505",
-    marginBottom: 12,
+  },
+  reqCount: {
+    fontSize: 15,
+    fontWeight: "500",
+    color: "#65676B",
+  },
+  seeAll: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#1877F2",
   },
   requestCard: {
     flexDirection: "row",
     gap: 12,
     marginBottom: 16,
   },
-  avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
+  reqAvatar: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
   },
   reqInfo: {
     flex: 1,
     justifyContent: "center",
+    gap: 2,
   },
   reqName: {
     fontSize: 15,
     fontWeight: "600",
     color: "#050505",
   },
-  reqMutual: {
+  reqMutualRow: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  mutualPhoto: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#fff",
+  },
+  reqMutualText: {
     fontSize: 13,
     color: "#65676B",
-    marginTop: 1,
-    marginBottom: 8,
+    marginLeft: 4,
+  },
+  reqTime: {
+    fontSize: 12,
+    color: "#65676B",
   },
   reqActions: {
     flexDirection: "row",
     gap: 8,
+    marginTop: 4,
   },
   confirmBtn: {
     backgroundColor: "#1877F2",
     borderRadius: 6,
-    paddingHorizontal: 20,
-    paddingVertical: 7,
+    paddingHorizontal: 24,
+    paddingVertical: 8,
   },
   confirmText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
     color: "#fff",
   },
   deleteBtn: {
     backgroundColor: "#E4E6EB",
     borderRadius: 6,
-    paddingHorizontal: 20,
-    paddingVertical: 7,
+    paddingHorizontal: 24,
+    paddingVertical: 8,
   },
   deleteText: {
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: "600",
     color: "#65676B",
   },
@@ -253,6 +300,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 12,
     alignItems: "center",
+  },
+  suggAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
   },
   suggName: {
     fontSize: 14,
