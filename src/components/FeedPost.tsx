@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -10,6 +11,8 @@ type FeedPostProps = {
 };
 
 export default function FeedPost({ name, time, content, avatar, photo }: FeedPostProps) {
+  const [liked, setLiked] = useState(false);
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -44,9 +47,9 @@ export default function FeedPost({ name, time, content, avatar, photo }: FeedPos
 
       <View style={styles.footer}>
         <View style={styles.footerLeft}>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
-            <Ionicons name="thumbs-up" size={20} color="#1877F2" />
-            <Text style={styles.footerText}>200K</Text>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setLiked(!liked)}>
+            <Ionicons name={liked ? "heart" : "heart-outline"} size={20} color={liked ? "#F02849" : "#65676B"} />
+            <Text style={[styles.footerText, liked && { color: "#F02849" }]}>200K</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
             <Ionicons name="chatbubble" size={20} color="#65676B" />
@@ -56,17 +59,6 @@ export default function FeedPost({ name, time, content, avatar, photo }: FeedPos
             <Ionicons name="arrow-redo" size={20} color="#65676B" />
             <Text style={styles.footerText}>8.5K</Text>
           </TouchableOpacity>
-        </View>
-        <View style={styles.footerRight}>
-          <View style={styles.reactionWraplg}>
-            <Text style={styles.reactionLg}>👍</Text>
-          </View>
-          <View style={styles.reactionWrapmd}>
-            <Text style={styles.reactionMd}>❤️</Text>
-          </View>
-          <View style={styles.reactionWrapsm}>
-            <Text style={styles.reactionSm}>😂</Text>
-          </View>
         </View>
       </View>
     </View>
@@ -182,28 +174,5 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#65676B",
   },
-  footerRight: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  reactionWraplg: {
-    zIndex: 3,
-  },
-  reactionWrapmd: {
-    zIndex: 2,
-    marginLeft: -6,
-  },
-  reactionWrapsm: {
-    zIndex: 1,
-    marginLeft: -6,
-  },
-  reactionLg: {
-    fontSize: 20,
-  },
-  reactionMd: {
-    fontSize: 16,
-  },
-  reactionSm: {
-    fontSize: 12,
-  },
+
 });
