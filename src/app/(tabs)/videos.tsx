@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, useWindowDimensions, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { REELS_DATA } from "../../data/home";
@@ -18,7 +18,7 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
             </View>
           </View>
 
-          <View style={[styles.bottomArea, { paddingBottom: insets.bottom + 60 }]}>
+          <View style={[styles.bottomArea, { paddingBottom: insets.bottom + 10 }]}>
             <View style={styles.bottomLeft}>
               <View style={styles.userRow}>
                 <View style={styles.userAvatar}>
@@ -63,19 +63,19 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
 }
 
 export default function VideosScreen() {
-  const { height: windowHeight, width } = useWindowDimensions();
-  const insets = useSafeAreaInsets();
-  const reelHeight = windowHeight - 51 - insets.bottom;
+  const [viewHeight, setViewHeight] = useState(0);
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        data={REELS_DATA}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ReelItem item={item} height={reelHeight} />}
-        pagingEnabled
-        showsVerticalScrollIndicator={false}
-      />
+    <View style={styles.container} onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
+      {viewHeight > 0 && (
+        <FlatList
+          data={REELS_DATA}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => <ReelItem item={item} height={viewHeight} />}
+          pagingEnabled
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 }
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
   reelContent: {
     flex: 1,
     justifyContent: "flex-end",
-    paddingBottom: 40,
+    paddingBottom: 0,
   },
   centerPlay: {
     ...StyleSheet.absoluteFill,
