@@ -1,4 +1,4 @@
-import { ScrollView, View, Text, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
+import { ScrollView, View, Text, Image, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { STORIES } from "../data/home";
 
@@ -23,7 +23,7 @@ export default function StoriesBar() {
             ) : (
               <ImageBackground source={{ uri: story.image }} style={styles.storyCard} imageStyle={{ borderRadius: 14 }}>
                 <View style={styles.storyRing}>
-                  <ImageBackground source={{ uri: story.avatar }} style={styles.storyAvatar} imageStyle={{ borderRadius: 21 }} />
+                  <Image source={{ uri: story.avatar }} style={styles.storyAvatar} />
                 </View>
                 <Text style={styles.name} numberOfLines={1}>
                   {story.name}
@@ -110,26 +110,28 @@ const styles = StyleSheet.create({
   },
   storyRing: {
     position: "absolute",
-    top: 12,
-    left: 12,
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    top: 8,
+    left: 8,
+    width: 42,
+    height: 42,
+    borderRadius: 21,
     borderWidth: 3,
     borderColor: "#1877F2",
     alignItems: "center",
     justifyContent: "center",
   },
   storyAvatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     overflow: "hidden",
   },
   name: {
     fontSize: 12,
     fontWeight: "500",
     color: "#fff",
+    paddingHorizontal: 8,
+    paddingBottom: 8,
     textShadowColor: "rgba(0,0,0,0.3)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
