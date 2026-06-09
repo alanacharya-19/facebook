@@ -1,17 +1,15 @@
 import { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, Dimensions, StyleSheet } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, useWindowDimensions, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { REELS_DATA } from "../../data/home";
 
-const { height: SCREEN_HEIGHT, width: SCREEN_WIDTH } = Dimensions.get("window");
-
-function ReelItem({ item }: { item: typeof REELS_DATA[0] }) {
+function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number }) {
   const [liked, setLiked] = useState(false);
   const insets = useSafeAreaInsets();
 
   return (
-    <View style={styles.reelContainer}>
+    <View style={[styles.reelContainer, { height, width: "100%" }]}>
       <ImageBackground source={{ uri: item.image }} style={styles.reelBg} imageStyle={{ resizeMode: "cover" }}>
         <View style={styles.reelContent}>
           <View style={styles.centerPlay}>
@@ -65,17 +63,18 @@ function ReelItem({ item }: { item: typeof REELS_DATA[0] }) {
 }
 
 export default function VideosScreen() {
+  const { height: windowHeight, width } = useWindowDimensions();
+  const insets = useSafeAreaInsets();
+  const reelHeight = windowHeight - 51 - insets.bottom;
+
   return (
     <View style={styles.container}>
       <FlatList
         data={REELS_DATA}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <ReelItem item={item} />}
+        renderItem={({ item }) => <ReelItem item={item} height={reelHeight} />}
         pagingEnabled
         showsVerticalScrollIndicator={false}
-        snapToInterval={SCREEN_HEIGHT}
-        decelerationRate="fast"
-        snapToAlignment="start"
       />
     </View>
   );
@@ -87,8 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#000",
   },
   reelContainer: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    overflow: "hidden",
   },
   reelBg: {
     flex: 1,
@@ -96,6 +94,7 @@ const styles = StyleSheet.create({
   reelContent: {
     flex: 1,
     justifyContent: "flex-end",
+    paddingBottom: 40,
   },
   centerPlay: {
     ...StyleSheet.absoluteFill,
