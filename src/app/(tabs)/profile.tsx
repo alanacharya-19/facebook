@@ -68,13 +68,10 @@ export default function ProfileScreen() {
             </View>
           </View>
           <View style={styles.info}>
-            <Text style={styles.bio}>{PROFILE.bio}</Text>
             <View style={styles.detailsRow}>
-              <Ionicons name="location-outline" size={16} color="#65676B" />
+              <Ionicons name="location" size={16} color="#050505" />
               <Text style={styles.detailText}>{PROFILE.location}</Text>
-            </View>
-            <View style={styles.detailsRow}>
-              <Ionicons name="school-outline" size={16} color="#65676B" />
+              <Ionicons name="school" size={16} color="#050505" />
               <Text style={styles.detailText}>{PROFILE.study}</Text>
             </View>
             <View style={styles.mutualRow}>
@@ -300,9 +297,17 @@ const styles = StyleSheet.create({
   info: {
     paddingHorizontal: 16,
   },
-  bio: {
+  detailsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 4,
+  },
+  detailText: {
     fontSize: 14,
-    color: "#65676B",
+    color: "#050505",
+    fontWeight: "500",
+    marginRight: 8,
   },
   bold: {
     fontWeight: "600",
@@ -363,14 +368,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     color: "#050505",
-  },
-  moreBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
-    backgroundColor: "#E4E6EB",
-    alignItems: "center",
-    justifyContent: "center",
   },
   tabsRow: {
     marginTop: 16,

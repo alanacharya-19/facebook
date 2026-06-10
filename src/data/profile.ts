@@ -6,8 +6,8 @@ export const PROFILE = {
   mutualName: "Alice",
   followers: "1.2K",
   posts: 143,
-  location: "San Francisco, California",
-  study: "Studied at Stanford University",
+  location: "San Francisco",
+  study: "Stanford University",
   cover: "https://picsum.photos/seed/cover/600/360",
   avatar: "https://i.pravatar.cc/150?u=alexj",
 };
