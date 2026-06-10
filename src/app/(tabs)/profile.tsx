@@ -10,25 +10,23 @@ export default function ProfileScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.headerMenuBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
-          <Ionicons name="menu-outline" size={24} color="#050505" />
-        </TouchableOpacity>
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.7}>
-            <Ionicons name="create-outline" size={20} color="#050505" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.7}>
-            <Ionicons name="search" size={20} color="#050505" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.7}>
-            <Ionicons name="ellipsis-horizontal" size={20} color="#050505" />
-          </TouchableOpacity>
-        </View>
-      </View>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.coverWrap}>
         <ImageBackground source={{ uri: PROFILE.cover }} style={styles.cover}>
+          <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
+            <Ionicons name="menu-outline" size={24} color="#fff" />
+          </TouchableOpacity>
+          <View style={styles.coverRight}>
+            <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+              <Ionicons name="pencil" size={18} color="#050505" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+              <Ionicons name="search" size={18} color="#050505" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+              <Ionicons name="ellipsis-horizontal" size={18} color="#050505" />
+            </TouchableOpacity>
+          </View>
         </ImageBackground>
         <View style={styles.avatarWrap}>
           <Image source={{ uri: PROFILE.avatar }} style={styles.avatar} />
@@ -158,33 +156,29 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingTop: 40,
-    paddingBottom: 8,
-    backgroundColor: "#fff",
-  },
-  headerMenuBtn: {
+  menuCoverBtn: {
+    position: "absolute",
+    top: 30,
+    left: 12,
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#E4E6EB",
+    backgroundColor: "rgba(0,0,0,0.3)",
     alignItems: "center",
     justifyContent: "center",
   },
-  headerRight: {
+  coverRight: {
+    position: "absolute",
+    top: 30,
+    right: 12,
     flexDirection: "row",
-    alignItems: "center",
     gap: 8,
   },
-  headerIconBtn: {
+  coverIconBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#E4E6EB",
+    backgroundColor: "rgba(255,255,255,0.9)",
     alignItems: "center",
     justifyContent: "center",
   },
