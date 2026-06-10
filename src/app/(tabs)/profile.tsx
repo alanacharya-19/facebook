@@ -10,15 +10,25 @@ export default function ProfileScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.headerMenuBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
+          <Ionicons name="menu-outline" size={24} color="#050505" />
+        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.7}>
+            <Ionicons name="create-outline" size={20} color="#050505" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.7}>
+            <Ionicons name="search" size={20} color="#050505" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerIconBtn} activeOpacity={0.7}>
+            <Ionicons name="ellipsis-horizontal" size={20} color="#050505" />
+          </TouchableOpacity>
+        </View>
+      </View>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
       <View style={styles.coverWrap}>
         <ImageBackground source={{ uri: PROFILE.cover }} style={styles.cover}>
-          <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
-            <Ionicons name="menu" size={24} color="#fff" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cameraCoverBtn} activeOpacity={0.7}>
-            <Ionicons name="camera-outline" size={20} color="#fff" />
-          </TouchableOpacity>
         </ImageBackground>
         <View style={styles.avatarWrap}>
           <Image source={{ uri: PROFILE.avatar }} style={styles.avatar} />
@@ -148,25 +158,33 @@ const styles = StyleSheet.create({
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
-  menuCoverBtn: {
-    position: "absolute",
-    top: 30,
-    left: 12,
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 12,
+    paddingTop: 40,
+    paddingBottom: 8,
+    backgroundColor: "#fff",
+  },
+  headerMenuBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "#E4E6EB",
     alignItems: "center",
     justifyContent: "center",
   },
-  cameraCoverBtn: {
-    position: "absolute",
-    bottom: 12,
-    right: 12,
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  headerIconBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "#E4E6EB",
     alignItems: "center",
     justifyContent: "center",
   },
