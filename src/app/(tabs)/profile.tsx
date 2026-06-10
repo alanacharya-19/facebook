@@ -1,8 +1,16 @@
-import { useState } from "react";
-import { View, Text, Image, ImageBackground, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { PROFILE, PROFILE_TABS, USER_POSTS } from "../../data/profile";
+import { useState } from "react";
+import {
+  Image,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import ProfileSidebar from "../../components/ProfileSidebar";
+import { PROFILE, PROFILE_TABS, USER_POSTS } from "../../data/profile";
 
 export default function ProfileScreen() {
   const [activeTab, setActiveTab] = useState(0);
@@ -11,134 +19,188 @@ export default function ProfileScreen() {
   return (
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <View style={styles.coverWrap}>
-        <ImageBackground source={{ uri: PROFILE.cover }} style={styles.cover}>
-          <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
-            <Ionicons name="menu-outline" size={24} color="#fff" />
-          </TouchableOpacity>
-          <View style={styles.coverRight}>
-            <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-              <Ionicons name="pencil" size={18} color="#050505" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-              <Ionicons name="search" size={18} color="#050505" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-              <Ionicons name="ellipsis-horizontal" size={18} color="#050505" />
-            </TouchableOpacity>
-          </View>
-        </ImageBackground>
-        <View style={styles.avatarWrap}>
-          <Image source={{ uri: PROFILE.avatar }} style={styles.avatar} />
-          <TouchableOpacity style={styles.cameraAvatarBtn} activeOpacity={0.7}>
-            <Ionicons name="camera" size={14} color="#fff" />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View style={styles.info}>
-        <Text style={styles.name}>{PROFILE.name}</Text>
-        <Text style={styles.bio}>{PROFILE.bio}</Text>
-        <Text style={styles.friends}>
-          <Text style={styles.bold}>{PROFILE.friends}</Text> friends
-        </Text>
-        <View style={styles.mutualRow}>
-          <View style={[styles.mutualAvatar, { backgroundColor: "#1DA1F2" }]}>
-            <Ionicons name="person" size={12} color="#fff" />
-          </View>
-          <Text style={styles.mutualText}>
-            Mutual friend: <Text style={styles.bold}>{PROFILE.mutualName}</Text>
-          </Text>
-        </View>
-      </View>
-
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.8}>
-          <Ionicons name="add" size={18} color="#fff" />
-          <Text style={styles.primaryBtnText}>Add to Story</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.secondaryBtn} activeOpacity={0.8}>
-          <Ionicons name="pencil" size={18} color="#050505" />
-          <Text style={styles.secondaryBtnText}>Edit Profile</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.moreBtn} activeOpacity={0.8}>
-          <Ionicons name="ellipsis-horizontal" size={20} color="#050505" />
-        </TouchableOpacity>
-      </View>
-
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsRow}>
-        {PROFILE_TABS.map((tab, i) => (
-          <TouchableOpacity
-            key={tab}
-            style={[styles.tab, i === activeTab && styles.activeTab]}
-            onPress={() => setActiveTab(i)}
-            activeOpacity={0.7}
+        <View style={styles.coverWrap}>
+          <ImageBackground
+            source={{ uri: PROFILE.cover }}
+            style={styles.cover}
+            resizeMode="cover"
           >
-            <Text style={[styles.tabText, i === activeTab && styles.activeTabText]}>{tab}</Text>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
-
-      <View style={styles.postsSection}>
-        {activeTab === 0 && (
-          <>
-            <View style={styles.postsHeader}>
-              <Text style={styles.postsTitle}>Posts</Text>
-              <TouchableOpacity activeOpacity={0.7}>
-                <Text style={styles.postsSeeAll}>See all</Text>
+            <TouchableOpacity
+              style={styles.menuCoverBtn}
+              activeOpacity={0.7}
+              onPress={() => setMenuVisible(true)}
+            >
+              <Ionicons name="menu-outline" size={24} color="#fff" />
+            </TouchableOpacity>
+            <View style={styles.coverRight}>
+              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+                <Ionicons name="pencil" size={18} color="#050505" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+                <Ionicons name="search" size={18} color="#050505" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+                <Ionicons
+                  name="ellipsis-horizontal"
+                  size={18}
+                  color="#050505"
+                />
               </TouchableOpacity>
             </View>
-            {USER_POSTS.map((post) => (
-              <View key={post.id} style={styles.postCard}>
-                <View style={styles.postTop}>
-                  <Image source={{ uri: PROFILE.avatar }} style={styles.postAvatar} />
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.postName}>{PROFILE.name}</Text>
-                    <Text style={styles.postTime}>{post.time}</Text>
-                  </View>
-                  <TouchableOpacity>
-                    <Ionicons name="ellipsis-horizontal" size={18} color="#65676B" />
+          </ImageBackground>
+        </View>
+
+        <View style={styles.profileBody}>
+          <View style={styles.profileTop}>
+            <View style={styles.avatarWrap}>
+              <Image source={{ uri: PROFILE.avatar }} style={styles.avatar} />
+              <TouchableOpacity style={styles.cameraAvatarBtn} activeOpacity={0.7}>
+                <Ionicons name="camera" size={14} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.name}>{PROFILE.name}</Text>
+              <View style={styles.statsRow}>
+                <Text style={styles.statsText}><Text style={styles.bold}>{PROFILE.friends}</Text> friends</Text>
+                <Text style={styles.statsDot}> · </Text>
+                <Text style={styles.statsText}><Text style={styles.bold}>{PROFILE.posts}</Text> posts</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.info}>
+            <Text style={styles.bio}>{PROFILE.bio}</Text>
+            <View style={styles.detailsRow}>
+              <Ionicons name="location-outline" size={16} color="#65676B" />
+              <Text style={styles.detailText}>{PROFILE.location}</Text>
+            </View>
+            <View style={styles.detailsRow}>
+              <Ionicons name="school-outline" size={16} color="#65676B" />
+              <Text style={styles.detailText}>{PROFILE.study}</Text>
+            </View>
+            <View style={styles.mutualRow}>
+              <View style={[styles.mutualAvatar, { backgroundColor: "#1DA1F2" }]}>
+                <Ionicons name="person" size={12} color="#fff" />
+              </View>
+              <Text style={styles.mutualText}>
+                Mutual friend: <Text style={styles.bold}>{PROFILE.mutualName}</Text>
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.actions}>
+            <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.8}>
+              <Ionicons name="add-circle" size={18} color="#fff" />
+              <Text style={styles.primaryBtnText}>Add to Story</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.secondaryBtn} activeOpacity={0.8}>
+              <Ionicons name="pencil" size={18} color="#050505" />
+              <Text style={styles.secondaryBtnText}>Edit Profile</Text>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.tabsRow}
+          >
+            {PROFILE_TABS.map((tab, i) => (
+              <TouchableOpacity
+                key={tab}
+                style={[styles.tab, i === activeTab && styles.activeTab]}
+                onPress={() => setActiveTab(i)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={[
+                    styles.tabText,
+                    i === activeTab && styles.activeTabText,
+                  ]}
+                >
+                  {tab}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+
+          <View style={styles.postsSection}>
+            {activeTab === 0 && (
+              <>
+                <View style={styles.postsHeader}>
+                  <Text style={styles.postsTitle}>Posts</Text>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.postsSeeAll}>See all</Text>
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.postContent}>{post.content}</Text>
-                <Image source={{ uri: post.image }} style={styles.postProfileImage} />
-                <View style={styles.postStats}>
-                  <View style={styles.postStatLeft}>
-                    <View style={styles.likeBadge}>
-                      <Ionicons name="thumbs-up" size={10} color="#fff" />
+                {USER_POSTS.map((post) => (
+                  <View key={post.id} style={styles.postCard}>
+                    <View style={styles.postTop}>
+                      <Image
+                        source={{ uri: PROFILE.avatar }}
+                        style={styles.postAvatar}
+                      />
+                      <View style={{ flex: 1 }}>
+                        <Text style={styles.postName}>{PROFILE.name}</Text>
+                        <Text style={styles.postTime}>{post.time}</Text>
+                      </View>
+                      <TouchableOpacity>
+                        <Ionicons
+                          name="ellipsis-horizontal"
+                          size={18}
+                          color="#65676B"
+                        />
+                      </TouchableOpacity>
                     </View>
-                    <Text style={styles.postStatText}>{post.likes}</Text>
+                    <Text style={styles.postContent}>{post.content}</Text>
+                    <Image
+                      source={{ uri: post.image }}
+                      style={styles.postProfileImage}
+                    />
+                    <View style={styles.postStats}>
+                      <View style={styles.postStatLeft}>
+                        <View style={styles.likeBadge}>
+                          <Ionicons name="thumbs-up" size={10} color="#fff" />
+                        </View>
+                        <Text style={styles.postStatText}>{post.likes}</Text>
+                      </View>
+                      <Text style={styles.postStatText}>
+                        {post.comments} comments
+                      </Text>
+                    </View>
                   </View>
-                  <Text style={styles.postStatText}>{post.comments} comments</Text>
-                </View>
+                ))}
+              </>
+            )}
+            {activeTab === 1 && (
+              <View style={styles.emptyTab}>
+                <Ionicons name="images-outline" size={48} color="#BCC0C4" />
+                <Text style={styles.emptyText}>No photos yet</Text>
               </View>
-            ))}
-          </>
-        )}
-        {activeTab === 1 && (
-          <View style={styles.emptyTab}>
-            <Ionicons name="images-outline" size={48} color="#BCC0C4" />
-            <Text style={styles.emptyText}>No photos yet</Text>
+            )}
+            {activeTab === 2 && (
+              <View style={styles.emptyTab}>
+                <Ionicons name="play-outline" size={48} color="#BCC0C4" />
+                <Text style={styles.emptyText}>No reels yet</Text>
+              </View>
+            )}
+            {activeTab === 3 && (
+              <View style={styles.emptyTab}>
+                <Ionicons
+                  name="information-circle-outline"
+                  size={48}
+                  color="#BCC0C4"
+                />
+                <Text style={styles.emptyText}>About section</Text>
+              </View>
+            )}
           </View>
-        )}
-        {activeTab === 2 && (
-          <View style={styles.emptyTab}>
-            <Ionicons name="play-outline" size={48} color="#BCC0C4" />
-            <Text style={styles.emptyText}>No reels yet</Text>
-          </View>
-        )}
-        {activeTab === 3 && (
-          <View style={styles.emptyTab}>
-            <Ionicons name="information-circle-outline" size={48} color="#BCC0C4" />
-            <Text style={styles.emptyText}>About section</Text>
-          </View>
-        )}
-      </View>
-
-      <View style={{ height: 40 }} />
-      <View style={{ height: 40 }} />
-    </ScrollView>
-      <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
+        </View>
+        <View style={{ height: 40 }} />
+        <View style={{ height: 40 }} />
+      </ScrollView>
+      <ProfileSidebar
+        visible={menuVisible}
+        onClose={() => setMenuVisible(false)}
+      />
     </View>
   );
 }
@@ -153,8 +215,9 @@ const styles = StyleSheet.create({
   },
   cover: {
     height: 180,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
+    overflow: "hidden",
   },
   menuCoverBtn: {
     position: "absolute",
@@ -183,19 +246,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   avatarWrap: {
-    position: "absolute",
-    bottom: -50,
-    left: 20,
-    zIndex: 10,
+    marginTop: -70,
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
     borderWidth: 4,
     borderColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
   },
   cameraAvatarBtn: {
     position: "absolute",
@@ -210,25 +268,41 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  info: {
-    paddingTop: 56,
-    paddingHorizontal: 20,
+  profileTop: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    alignItems: "flex-end",
+    gap: 12,
+    marginBottom: 12,
+  },
+  profileInfo: {
+    flex: 1,
+    paddingBottom: 4,
   },
   name: {
     fontSize: 22,
     fontWeight: "700",
     color: "#050505",
   },
+  statsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  statsText: {
+    fontSize: 14,
+    color: "#65676B",
+  },
+  statsDot: {
+    fontSize: 14,
+    color: "#65676B",
+  },
+  info: {
+    paddingHorizontal: 16,
+  },
   bio: {
     fontSize: 14,
     color: "#65676B",
-    marginTop: 4,
-  },
-  friends: {
-    fontSize: 14,
-    color: "#65676B",
-    marginTop: 4,
-    fontWeight: "400",
   },
   bold: {
     fontWeight: "600",
@@ -239,6 +313,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
     marginTop: 6,
+  },
+  profileBody: {
+    backgroundColor: "#fff",
   },
   mutualAvatar: {
     width: 22,
