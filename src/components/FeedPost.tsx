@@ -52,11 +52,11 @@ export default function FeedPost({ name, time, content, avatar, photo }: FeedPos
             <Text style={[styles.footerText, liked && { color: "#F02849" }]}>200K</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
-            <Ionicons name="chatbubble" size={20} color="#65676B" />
+            <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
             <Text style={styles.footerText}>12K</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
-            <Ionicons name="arrow-redo" size={20} color="#65676B" />
+            <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
             <Text style={styles.footerText}>8.5K</Text>
           </TouchableOpacity>
         </View>
