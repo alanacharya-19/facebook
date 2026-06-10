@@ -8,11 +8,26 @@ export const PROFILE = {
   posts: 143,
   location: "San Francisco",
   study: "Stanford University",
+  hometown: "San Francisco, California",
+  birthday: "January 15, 1995",
   cover: "https://picsum.photos/seed/cover/600/360",
   avatar: "https://i.pravatar.cc/150?u=alexj",
 };
 
-export const PROFILE_TABS = ["Posts", "Photos", "Reels", "About"];
+export const PROFILE_TABS = ["All", "Photos", "Reels"];
+
+export const PROFILE_HIGHLIGHTS = [
+  { id: "1", emoji: "📸", title: "Photography" },
+  { id: "2", emoji: "☕", title: "Coffee" },
+  { id: "3", emoji: "✈️", title: "Travel" },
+];
+
+export const PROFILE_FRIENDS = [
+  { id: "1", name: "Sarah Chen", avatar: "https://i.pravatar.cc/150?u=sarah", mutual: 12 },
+  { id: "2", name: "Mike Torres", avatar: "https://i.pravatar.cc/150?u=mike", mutual: 8 },
+  { id: "3", name: "Emily Davis", avatar: "https://i.pravatar.cc/150?u=emily", mutual: 15 },
+  { id: "4", name: "James Wilson", avatar: "https://i.pravatar.cc/150?u=james", mutual: 6 },
+];
 
 export const USER_POSTS = [
   { id: "1", content: "Golden hour at the beach yesterday 🌅 Absolutely breathtaking views!", time: "3 hrs", likes: 128, comments: 24, image: "https://picsum.photos/seed/golden/600/400" },

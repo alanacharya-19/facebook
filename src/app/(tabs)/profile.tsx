@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import ProfileSidebar from "../../components/ProfileSidebar";
-import { PROFILE, PROFILE_TABS, USER_POSTS } from "../../data/profile";
+import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../../data/profile";
 
 export default function ProfileScreen() {
   const [activeTab, setActiveTab] = useState(0);
@@ -20,16 +20,8 @@ export default function ProfileScreen() {
     <View style={{ flex: 1 }}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
         <View style={styles.coverWrap}>
-          <ImageBackground
-            source={{ uri: PROFILE.cover }}
-            style={styles.cover}
-            resizeMode="cover"
-          >
-            <TouchableOpacity
-              style={styles.menuCoverBtn}
-              activeOpacity={0.7}
-              onPress={() => setMenuVisible(true)}
-            >
+          <ImageBackground source={{ uri: PROFILE.cover }} style={styles.cover} resizeMode="cover">
+            <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
               <Ionicons name="menu-outline" size={24} color="#fff" />
             </TouchableOpacity>
             <View style={styles.coverRight}>
@@ -40,11 +32,7 @@ export default function ProfileScreen() {
                 <Ionicons name="search" size={18} color="#050505" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-                <Ionicons
-                  name="ellipsis-horizontal"
-                  size={18}
-                  color="#050505"
-                />
+                <Ionicons name="ellipsis-horizontal" size={18} color="#050505" />
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -67,20 +55,13 @@ export default function ProfileScreen() {
               </View>
             </View>
           </View>
+
           <View style={styles.info}>
             <View style={styles.detailsRow}>
               <Ionicons name="location" size={16} color="#050505" />
               <Text style={styles.detailText}>{PROFILE.location}</Text>
               <Ionicons name="school" size={16} color="#050505" />
               <Text style={styles.detailText}>{PROFILE.study}</Text>
-            </View>
-            <View style={styles.mutualRow}>
-              <View style={[styles.mutualAvatar, { backgroundColor: "#1DA1F2" }]}>
-                <Ionicons name="person" size={12} color="#fff" />
-              </View>
-              <Text style={styles.mutualText}>
-                Mutual friend: <Text style={styles.bold}>{PROFILE.mutualName}</Text>
-              </Text>
             </View>
           </View>
 
@@ -95,11 +76,7 @@ export default function ProfileScreen() {
             </TouchableOpacity>
           </View>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.tabsRow}
-          >
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.tabsRow}>
             {PROFILE_TABS.map((tab, i) => (
               <TouchableOpacity
                 key={tab}
@@ -107,14 +84,7 @@ export default function ProfileScreen() {
                 onPress={() => setActiveTab(i)}
                 activeOpacity={0.7}
               >
-                <Text
-                  style={[
-                    styles.tabText,
-                    i === activeTab && styles.activeTabText,
-                  ]}
-                >
-                  {tab}
-                </Text>
+                <Text style={[styles.tabText, i === activeTab && styles.activeTabText]}>{tab}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -122,36 +92,93 @@ export default function ProfileScreen() {
           <View style={styles.postsSection}>
             {activeTab === 0 && (
               <>
-                <View style={styles.postsHeader}>
-                  <Text style={styles.postsTitle}>Posts</Text>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Personal Details</Text>
                   <TouchableOpacity activeOpacity={0.7}>
-                    <Text style={styles.postsSeeAll}>See all</Text>
+                    <Ionicons name="pencil" size={18} color="#65676B" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.detailBlock}>
+                  <View style={styles.detailIconBg}><Ionicons name="location-outline" size={16} color="#1877F2" /></View>
+                  <Text style={styles.detailBlockText}>Lives in <Text style={styles.bold}>{PROFILE.location}</Text></Text>
+                </View>
+                <View style={styles.detailBlock}>
+                  <View style={styles.detailIconBg}><Ionicons name="home-outline" size={16} color="#1877F2" /></View>
+                  <Text style={styles.detailBlockText}>From <Text style={styles.bold}>{PROFILE.hometown}</Text></Text>
+                </View>
+                <View style={styles.detailBlock}>
+                  <View style={styles.detailIconBg}><Ionicons name="cake" size={16} color="#1877F2" /></View>
+                  <Text style={styles.detailBlockText}>Born on <Text style={styles.bold}>{PROFILE.birthday}</Text></Text>
+                </View>
+
+                <View style={[styles.sectionHeader, { marginTop: 20 }]}>
+                  <Text style={styles.sectionTitle}>Education</Text>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Ionicons name="pencil" size={18} color="#65676B" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.detailBlock}>
+                  <View style={styles.detailIconBg}><Ionicons name="school-outline" size={16} color="#1877F2" /></View>
+                  <Text style={styles.detailBlockText}>Studied at <Text style={styles.bold}>{PROFILE.study}</Text></Text>
+                </View>
+
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Friends</Text>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.seeAll}>See All</Text>
+                  </TouchableOpacity>
+                </View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.friendsRow}>
+                  {PROFILE_FRIENDS.map((f) => (
+                    <TouchableOpacity key={f.id} style={styles.friendCard} activeOpacity={0.7}>
+                      <Image source={{ uri: f.avatar }} style={styles.friendAvatarCircle} />
+                      <Text style={styles.friendName} numberOfLines={1}>{f.name}</Text>
+                      <Text style={styles.friendMutual}>{f.mutual} mutual friends</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>Highlights</Text>
+                </View>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.highlightsRow}>
+                  <TouchableOpacity style={styles.highlightAdd} activeOpacity={0.7}>
+                    <View style={styles.highlightAddRect}>
+                      <Ionicons name="add" size={24} color="#1877F2" />
+                    </View>
+                    <Text style={styles.highlightAddText}>Create</Text>
+                  </TouchableOpacity>
+                  {PROFILE_HIGHLIGHTS.map((h) => (
+                    <TouchableOpacity key={h.id} style={styles.highlightItem} activeOpacity={0.7}>
+                      <View style={styles.highlightRect}>
+                        <Text style={styles.highlightEmoji}>{h.emoji}</Text>
+                      </View>
+                      <Text style={styles.highlightLabel}>{h.title}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+
+                <View style={styles.postsHeader}>
+                  <Text style={styles.postsTitle}>All Posts</Text>
+                  <TouchableOpacity style={styles.filterBtn} activeOpacity={0.7}>
+                    <Ionicons name="options-outline" size={16} color="#65676B" />
+                    <Text style={styles.filterText}>Filter</Text>
                   </TouchableOpacity>
                 </View>
                 {USER_POSTS.map((post) => (
                   <View key={post.id} style={styles.postCard}>
                     <View style={styles.postTop}>
-                      <Image
-                        source={{ uri: PROFILE.avatar }}
-                        style={styles.postAvatar}
-                      />
+                      <Image source={{ uri: PROFILE.avatar }} style={styles.postAvatar} />
                       <View style={{ flex: 1 }}>
                         <Text style={styles.postName}>{PROFILE.name}</Text>
                         <Text style={styles.postTime}>{post.time}</Text>
                       </View>
                       <TouchableOpacity>
-                        <Ionicons
-                          name="ellipsis-horizontal"
-                          size={18}
-                          color="#65676B"
-                        />
+                        <Ionicons name="ellipsis-horizontal" size={18} color="#65676B" />
                       </TouchableOpacity>
                     </View>
                     <Text style={styles.postContent}>{post.content}</Text>
-                    <Image
-                      source={{ uri: post.image }}
-                      style={styles.postProfileImage}
-                    />
+                    <Image source={{ uri: post.image }} style={styles.postProfileImage} />
                     <View style={styles.postStats}>
                       <View style={styles.postStatLeft}>
                         <View style={styles.likeBadge}>
@@ -159,9 +186,7 @@ export default function ProfileScreen() {
                         </View>
                         <Text style={styles.postStatText}>{post.likes}</Text>
                       </View>
-                      <Text style={styles.postStatText}>
-                        {post.comments} comments
-                      </Text>
+                      <Text style={styles.postStatText}>{post.comments} comments</Text>
                     </View>
                   </View>
                 ))}
@@ -179,25 +204,12 @@ export default function ProfileScreen() {
                 <Text style={styles.emptyText}>No reels yet</Text>
               </View>
             )}
-            {activeTab === 3 && (
-              <View style={styles.emptyTab}>
-                <Ionicons
-                  name="information-circle-outline"
-                  size={48}
-                  color="#BCC0C4"
-                />
-                <Text style={styles.emptyText}>About section</Text>
-              </View>
-            )}
           </View>
         </View>
         <View style={{ height: 40 }} />
         <View style={{ height: 40 }} />
       </ScrollView>
-      <ProfileSidebar
-        visible={menuVisible}
-        onClose={() => setMenuVisible(false)}
-      />
+      <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </View>
   );
 }
@@ -313,25 +325,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#050505",
   },
-  mutualRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    marginTop: 6,
-  },
   profileBody: {
     backgroundColor: "#fff",
-  },
-  mutualAvatar: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  mutualText: {
-    fontSize: 13,
-    color: "#65676B",
   },
   actions: {
     flexDirection: "row",
@@ -396,21 +391,135 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingHorizontal: 16,
   },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+    marginTop: 4,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#050505",
+  },
+  seeAll: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#1877F2",
+  },
+  detailBlock: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 6,
+  },
+  detailIconBg: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#E7F3FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  detailBlockText: {
+    fontSize: 14,
+    color: "#050505",
+  },
+  friendsRow: {
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  friendCard: {
+    alignItems: "center",
+    width: 80,
+    marginRight: 8,
+  },
+  friendAvatarCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    resizeMode: "cover",
+  },
+  friendName: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#050505",
+    marginTop: 4,
+    textAlign: "center",
+  },
+  friendMutual: {
+    fontSize: 11,
+    color: "#65676B",
+    textAlign: "center",
+    marginTop: 1,
+  },
+  highlightsRow: {
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  highlightAdd: {
+    alignItems: "center",
+    width: 80,
+    marginRight: 8,
+  },
+  highlightAddRect: {
+    width: 64,
+    height: 84,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "#CED0D4",
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  highlightItem: {
+    alignItems: "center",
+    width: 80,
+    marginRight: 8,
+  },
+  highlightRect: {
+    width: 64,
+    height: 84,
+    borderRadius: 12,
+    backgroundColor: "#F0F2F5",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  highlightEmoji: {
+    fontSize: 28,
+  },
+  highlightLabel: {
+    fontSize: 12,
+    color: "#65676B",
+    marginTop: 4,
+  },
+  highlightAddText: {
+    fontSize: 12,
+    color: "#65676B",
+    marginTop: 4,
+  },
   postsHeader: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     marginBottom: 12,
+    marginTop: 8,
   },
   postsTitle: {
     fontSize: 18,
     fontWeight: "700",
     color: "#050505",
   },
-  postsSeeAll: {
+  filterBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  filterText: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#1877F2",
+    color: "#65676B",
   },
   postCard: {
     backgroundColor: "#fff",
