@@ -17,9 +17,9 @@ export const PROFILE = {
 export const PROFILE_TABS = ["All", "Photos", "Reels"];
 
 export const PROFILE_HIGHLIGHTS = [
-  { id: "1", emoji: "📸", title: "Photography" },
-  { id: "2", emoji: "☕", title: "Coffee" },
-  { id: "3", emoji: "✈️", title: "Travel" },
+  { id: "1", cover: "https://picsum.photos/seed/photo/200/280", title: "Photography" },
+  { id: "2", cover: "https://picsum.photos/seed/coffee2/200/280", title: "Coffee" },
+  { id: "3", cover: "https://picsum.photos/seed/travel/200/280", title: "Travel" },
 ];
 
 export const PROFILE_FRIENDS = [

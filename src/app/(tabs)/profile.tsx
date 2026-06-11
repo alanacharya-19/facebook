@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   Image,
@@ -11,6 +11,45 @@ import {
 } from "react-native";
 import ProfileSidebar from "../../components/ProfileSidebar";
 import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../../data/profile";
+
+function ProfilePost({ avatar, name, time, content, image, likes, comments }: any) {
+  const [liked, setLiked] = useState(false);
+  return (
+    <View style={styles.profilePostCard}>
+      <View style={styles.profilePostTop}>
+        <Image source={{ uri: avatar }} style={styles.profilePostAvatar} />
+        <View style={styles.profilePostHeaderText}>
+          <Text style={styles.profilePostName}>{name}</Text>
+          <View style={styles.profilePostTimeRow}>
+            <Text style={styles.profilePostTime}>{time}</Text>
+            <Ionicons name="globe-outline" size={12} color="#65676B" />
+          </View>
+        </View>
+        <TouchableOpacity style={styles.profilePostMenu}>
+          <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.profilePostContent}>{content}</Text>
+      <Image source={{ uri: image }} style={styles.profilePostImage} />
+      <View style={styles.profilePostFooter}>
+        <View style={styles.profilePostFooterLeft}>
+          <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setLiked(!liked)}>
+            <Ionicons name={liked ? "heart" : "heart-outline"} size={20} color={liked ? "#F02849" : "#65676B"} />
+            <Text style={[styles.profilePostFooterText, liked && { color: "#F02849" }]}>{liked ? likes + 1 : likes}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7}>
+            <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
+            <Text style={styles.profilePostFooterText}>{comments}</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7}>
+            <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
+            <Text style={styles.profilePostFooterText}>Share</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    </View>
+  );
+}
 
 export default function ProfileScreen() {
   const [activeTab, setActiveTab] = useState(0);
@@ -107,7 +146,7 @@ export default function ProfileScreen() {
                   <Text style={styles.detailBlockText}>From <Text style={styles.bold}>{PROFILE.hometown}</Text></Text>
                 </View>
                 <View style={styles.detailBlock}>
-                  <View style={styles.detailIconBg}><Ionicons name="cake" size={16} color="#1877F2" /></View>
+                  <View style={styles.detailIconBg}><MaterialIcons name="cake" size={16} color="#1877F2" /></View>
                   <Text style={styles.detailBlockText}>Born on <Text style={styles.bold}>{PROFILE.birthday}</Text></Text>
                 </View>
 
@@ -150,10 +189,8 @@ export default function ProfileScreen() {
                   </TouchableOpacity>
                   {PROFILE_HIGHLIGHTS.map((h) => (
                     <TouchableOpacity key={h.id} style={styles.highlightItem} activeOpacity={0.7}>
-                      <View style={styles.highlightRect}>
-                        <Text style={styles.highlightEmoji}>{h.emoji}</Text>
-                      </View>
-                      <Text style={styles.highlightLabel}>{h.title}</Text>
+                      <Image source={{ uri: h.cover }} style={styles.highlightRect} />
+                      <Text style={styles.highlightTitle}>{h.title}</Text>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
@@ -166,29 +203,16 @@ export default function ProfileScreen() {
                   </TouchableOpacity>
                 </View>
                 {USER_POSTS.map((post) => (
-                  <View key={post.id} style={styles.postCard}>
-                    <View style={styles.postTop}>
-                      <Image source={{ uri: PROFILE.avatar }} style={styles.postAvatar} />
-                      <View style={{ flex: 1 }}>
-                        <Text style={styles.postName}>{PROFILE.name}</Text>
-                        <Text style={styles.postTime}>{post.time}</Text>
-                      </View>
-                      <TouchableOpacity>
-                        <Ionicons name="ellipsis-horizontal" size={18} color="#65676B" />
-                      </TouchableOpacity>
-                    </View>
-                    <Text style={styles.postContent}>{post.content}</Text>
-                    <Image source={{ uri: post.image }} style={styles.postProfileImage} />
-                    <View style={styles.postStats}>
-                      <View style={styles.postStatLeft}>
-                        <View style={styles.likeBadge}>
-                          <Ionicons name="thumbs-up" size={10} color="#fff" />
-                        </View>
-                        <Text style={styles.postStatText}>{post.likes}</Text>
-                      </View>
-                      <Text style={styles.postStatText}>{post.comments} comments</Text>
-                    </View>
-                  </View>
+                  <ProfilePost
+                    key={post.id}
+                    avatar={PROFILE.avatar}
+                    name={PROFILE.name}
+                    time={post.time}
+                    content={post.content}
+                    image={post.image}
+                    likes={post.likes}
+                    comments={post.comments}
+                  />
                 ))}
               </>
             )}
@@ -482,16 +506,13 @@ const styles = StyleSheet.create({
     width: 64,
     height: 84,
     borderRadius: 12,
-    backgroundColor: "#F0F2F5",
-    alignItems: "center",
-    justifyContent: "center",
+    resizeMode: "cover",
   },
-  highlightEmoji: {
-    fontSize: 28,
-  },
-  highlightLabel: {
-    fontSize: 12,
-    color: "#65676B",
+  highlightTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#050505",
+    textAlign: "center",
     marginTop: 4,
   },
   highlightAddText: {
@@ -521,69 +542,89 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     color: "#65676B",
   },
-  postCard: {
+  profilePostCard: {
     backgroundColor: "#fff",
-    borderWidth: 0.5,
-    borderColor: "#CED0D4",
-    borderRadius: 10,
-    marginBottom: 12,
-    overflow: "hidden",
+    marginBottom: 6,
+    marginLeft: -16,
+    marginRight: -16,
+    borderBottomWidth: 6,
+    borderBottomColor: "#F0F2F5",
   },
-  postTop: {
+  profilePostTop: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
-    padding: 12,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
-  postAvatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+  profilePostAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
   },
-  postName: {
-    fontSize: 13,
+  profilePostHeaderText: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  profilePostName: {
+    fontSize: 14,
     fontWeight: "600",
     color: "#050505",
   },
-  postTime: {
-    fontSize: 11,
-    color: "#65676B",
-    marginTop: 1,
+  profilePostTimeRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 2,
   },
-  postContent: {
-    fontSize: 14,
+  profilePostTime: {
+    fontSize: 12,
+    color: "#65676B",
+  },
+  profilePostMenu: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  profilePostContent: {
+    fontSize: 15,
     color: "#050505",
-    lineHeight: 19,
-    paddingHorizontal: 12,
+    lineHeight: 21,
+    paddingHorizontal: 16,
     paddingBottom: 10,
   },
-  postProfileImage: {
+  profilePostImage: {
     width: "100%",
-    height: 180,
+    height: 220,
     resizeMode: "cover",
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    borderColor: "#CED0D4",
   },
-  postStats: {
+  profilePostFooter: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderTopWidth: 0.5,
+    borderTopColor: "#CED0D4",
+    marginTop: 6,
   },
-  postStatLeft: {
+  profilePostFooterLeft: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 18,
+  },
+  profilePostFooterItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
-  likeBadge: {
-    width: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: "#1877F2",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  postStatText: {
-    fontSize: 12,
+  profilePostFooterText: {
+    fontSize: 13,
     color: "#65676B",
   },
   emptyTab: {
