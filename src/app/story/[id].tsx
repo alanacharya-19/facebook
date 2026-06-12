@@ -3,21 +3,22 @@ import {
   View,
   Text,
   Image,
-  ImageBackground,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Animated,
-  FlatList,
   Dimensions,
-  KeyboardAvoidingView,
+  FlatList,
+  Animated,
   Platform,
+  KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, router } from "expo-router";
 import { STORIES } from "../../data/home";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+const CARD_W = SCREEN_WIDTH - 24;
+const CARD_H = SCREEN_HEIGHT * 0.82;
 const EMOJIS = ["👍", "❤️", "😮", "😢", "😡", "🎉"];
 
 function StoryFrame({
@@ -38,6 +39,7 @@ function StoryFrame({
   useEffect(() => {
     if (!isActive) {
       if (timerRef.current) clearTimeout(timerRef.current);
+      progressAnim.setValue(0);
       return;
     }
     progressAnim.setValue(0);
@@ -56,26 +58,22 @@ function StoryFrame({
 
   return (
     <View style={styles.frame}>
-      <ImageBackground source={{ uri: story.image }} style={styles.image} resizeMode="cover" />
+      <Image source={{ uri: story.image }} style={styles.frameImage} />
       <View style={styles.overlay}>
-        <View style={styles.topSection}>
+        <View style={styles.topArea}>
           <View style={styles.progressRow}>
             <View style={styles.progressTrack}>
-              {isActive ? (
-                <Animated.View
-                  style={[
-                    styles.progressFill,
-                    {
-                      width: progressAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: ["0%", "100%"],
-                      }),
-                    },
-                  ]}
-                />
-              ) : (
-                <View style={[styles.progressFill, { width: "100%" }]} />
-              )}
+              <Animated.View
+                style={[
+                  styles.progressFill,
+                  {
+                    width: progressAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: ["0%", "100%"],
+                    }),
+                  },
+                ]}
+              />
             </View>
           </View>
           <View style={styles.topBar}>
@@ -96,25 +94,27 @@ function StoryFrame({
             </View>
           </View>
         </View>
-        <View style={styles.bottomSection}>
-          <TouchableOpacity style={styles.replyBtn} activeOpacity={0.7}>
-            <Ionicons name="heart-outline" size={22} color="#fff" />
-          </TouchableOpacity>
-          <TextInput
-            placeholder={`Send message to ${userName}`}
-            placeholderTextColor="rgba(255,255,255,0.6)"
-            style={styles.input}
-          />
-          <TouchableOpacity style={styles.sendBtn} activeOpacity={0.7}>
-            <Ionicons name="send" size={20} color="#fff" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.emojiRow}>
-          {EMOJIS.map((emoji) => (
-            <TouchableOpacity key={emoji} activeOpacity={0.7}>
-              <Text style={styles.emoji}>{emoji}</Text>
+        <View style={styles.bottomArea}>
+          <View style={styles.bottomRow}>
+            <TouchableOpacity style={styles.replyBtn} activeOpacity={0.7}>
+              <Ionicons name="heart-outline" size={22} color="#fff" />
             </TouchableOpacity>
-          ))}
+            <TextInput
+              placeholder={`Send message to ${userName}`}
+              placeholderTextColor="rgba(255,255,255,0.6)"
+              style={styles.input}
+            />
+            <TouchableOpacity style={styles.sendBtn} activeOpacity={0.7}>
+              <Ionicons name="send" size={20} color="#fff" />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.emojiRow}>
+            {EMOJIS.map((emoji) => (
+              <TouchableOpacity key={emoji} activeOpacity={0.7}>
+                <Text style={styles.emoji}>{emoji}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
         </View>
       </View>
     </View>
@@ -130,15 +130,14 @@ export default function StoryViewScreen() {
 
   const onComplete = useCallback(() => {
     if (currentIndex < stories.length - 1) {
-      const nextIndex = currentIndex + 1;
-      listRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+      listRef.current?.scrollToIndex({ index: currentIndex + 1, animated: true });
     } else {
       router.back();
     }
   }, [currentIndex, stories.length]);
 
   const onMomentumEnd = useCallback((e: any) => {
-    const idx = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    const idx = Math.round(e.nativeEvent.contentOffset.x / CARD_W);
     setCurrentIndex(idx);
   }, []);
 
@@ -157,19 +156,10 @@ export default function StoryViewScreen() {
     [currentIndex, onComplete]
   );
 
-  const getItemLayout = useCallback(
-    (_: any, index: number) => ({
-      length: SCREEN_WIDTH,
-      offset: SCREEN_WIDTH * index,
-      index,
-    }),
-    []
-  );
-
   if (!stories.length) {
     return (
       <View style={styles.container}>
-        <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()}>
+        <TouchableOpacity style={styles.closeOuter} onPress={() => router.back()}>
           <Ionicons name="close" size={28} color="#fff" />
         </TouchableOpacity>
       </View>
@@ -190,10 +180,15 @@ export default function StoryViewScreen() {
         pagingEnabled
         showsHorizontalScrollIndicator={false}
         onMomentumScrollEnd={onMomentumEnd}
-        getItemLayout={getItemLayout}
         initialScrollIndex={initialIndex >= 0 ? initialIndex : 0}
+        getItemLayout={(_, index) => ({
+          length: CARD_W,
+          offset: CARD_W * index,
+          index,
+        })}
         bounces={false}
-        style={styles.list}
+        windowSize={2}
+        removeClippedSubviews={true}
       />
     </KeyboardAvoidingView>
   );
@@ -203,40 +198,45 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
-  },
-  list: {
-    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   frame: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    width: CARD_W,
+    height: CARD_H,
+    borderRadius: 16,
+    overflow: "hidden",
+    marginHorizontal: 12,
+    marginVertical: (SCREEN_HEIGHT - CARD_H) / 2,
   },
-  image: {
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+  frameImage: {
+    ...StyleSheet.absoluteFill,
+    width: CARD_W,
+    height: CARD_H,
+    resizeMode: "cover",
+    borderRadius: 16,
   },
   overlay: {
     ...StyleSheet.absoluteFill,
     justifyContent: "space-between",
+    borderRadius: 16,
+    overflow: "hidden",
   },
-  topSection: {
-    paddingTop: 50,
+  topArea: {
+    paddingTop: 12,
     paddingHorizontal: 12,
   },
   progressRow: {
-    flexDirection: "row",
-    gap: 4,
     marginBottom: 8,
   },
   progressTrack: {
-    flex: 1,
     height: 3,
     backgroundColor: "rgba(255,255,255,0.3)",
     borderRadius: 2,
     overflow: "hidden",
-    flexDirection: "row",
   },
   progressFill: {
+    height: 3,
     backgroundColor: "#fff",
     borderRadius: 2,
   },
@@ -279,11 +279,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  bottomSection: {
+  bottomArea: {
+    paddingBottom: 12,
+    paddingHorizontal: 12,
+  },
+  bottomRow: {
     flexDirection: "row",
     alignItems: "center",
-    paddingHorizontal: 12,
-    paddingBottom: 100,
     gap: 8,
   },
   replyBtn: {
@@ -295,11 +297,11 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    height: 40,
-    borderRadius: 20,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: "rgba(255,255,255,0.2)",
-    paddingHorizontal: 16,
-    fontSize: 14,
+    paddingHorizontal: 14,
+    fontSize: 13,
     color: "#fff",
   },
   sendBtn: {
@@ -312,13 +314,12 @@ const styles = StyleSheet.create({
   emojiRow: {
     flexDirection: "row",
     justifyContent: "space-evenly",
-    paddingHorizontal: 12,
-    paddingBottom: 40,
+    marginTop: 8,
   },
   emoji: {
-    fontSize: 28,
+    fontSize: 22,
   },
-  closeBtn: {
+  closeOuter: {
     position: "absolute",
     top: 50,
     right: 16,
