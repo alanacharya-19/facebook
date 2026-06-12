@@ -1,15 +1,16 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { router } from "expo-router";
-import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW } from "../../data/friends";
+import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW, ALL_FRIENDS } from "../../data/friends";
 import ProfileSidebar from "../../components/ProfileSidebar";
 
 const TABS = ["Suggestions", "Your Friends"];
@@ -71,6 +72,26 @@ function PersonCard({
 export default function FriendsScreen() {
   const [activeTab, setActiveTab] = useState(0);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredRequests = useMemo(() => {
+    if (!searchQuery.trim()) return FRIEND_REQUESTS;
+    const q = searchQuery.toLowerCase();
+    return FRIEND_REQUESTS.filter((p) => p.name.toLowerCase().includes(q));
+  }, [searchQuery]);
+
+  const filteredSuggestions = useMemo(() => {
+    if (!searchQuery.trim()) return PEOPLE_YOU_MAY_KNOW;
+    const q = searchQuery.toLowerCase();
+    return PEOPLE_YOU_MAY_KNOW.filter((p) => p.name.toLowerCase().includes(q));
+  }, [searchQuery]);
+
+  const filteredFriends = useMemo(() => {
+    if (!searchQuery.trim()) return ALL_FRIENDS;
+    const q = searchQuery.toLowerCase();
+    return ALL_FRIENDS.filter((f) => f.name.toLowerCase().includes(q));
+  }, [searchQuery]);
 
   return (
     <View style={styles.container}>
@@ -78,10 +99,29 @@ export default function FriendsScreen() {
         <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7} onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu-outline" size={24} color="#050505" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Friends</Text>
-        <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
-          <Ionicons name="search" size={22} color="#050505" />
-        </TouchableOpacity>
+        {searching ? (
+          <View style={styles.inlineSearch}>
+            <Ionicons name="search" size={18} color="#65676B" />
+            <TextInput
+              placeholder="Search friends..."
+              placeholderTextColor="#8A8D91"
+              style={styles.inlineSearchInput}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+            <TouchableOpacity activeOpacity={0.7} onPress={() => { setSearching(false); setSearchQuery(""); }}>
+              <Ionicons name="close" size={20} color="#65676B" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.headerTitle}>Friends</Text>
+            <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
+              <Ionicons name="search" size={22} color="#050505" />
+            </TouchableOpacity>
+          </>
+        )}
       </View>
 
       <View style={styles.tabRow}>
@@ -102,37 +142,68 @@ export default function FriendsScreen() {
       </View>
 
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
-        {FRIEND_REQUESTS.length > 0 && (
+        {searching ? (
           <View style={styles.section}>
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>
-                Friend Requests{" "}
-                <Text style={styles.reqCount}>({FRIEND_REQUESTS.length})</Text>
-              </Text>
-              <TouchableOpacity activeOpacity={0.7}>
-                <Text style={styles.seeAll}>See all</Text>
-              </TouchableOpacity>
-            </View>
-            {FRIEND_REQUESTS.map((req) => (
-              <PersonCard key={req.id} item={req} type="request" />
-            ))}
+            <Text style={styles.sectionTitle}>People</Text>
+            {filteredRequests.length === 0 && filteredSuggestions.length === 0 && filteredFriends.length === 0 ? (
+              <Text style={styles.emptyText}>No results found</Text>
+            ) : (
+              <>
+                {filteredRequests.map((req) => (
+                  <PersonCard key={req.id} item={req} type="request" />
+                ))}
+                {filteredSuggestions.map((p) => (
+                  <PersonCard key={p.id} item={p} type="suggestion" />
+                ))}
+              </>
+            )}
           </View>
-        )}
+        ) : (
+          <>
+            {FRIEND_REQUESTS.length > 0 && (
+              <View style={styles.section}>
+                <View style={styles.sectionHeader}>
+                  <Text style={styles.sectionTitle}>
+                    Friend Requests{" "}
+                    <Text style={styles.reqCount}>({FRIEND_REQUESTS.length})</Text>
+                  </Text>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.seeAll}>See all</Text>
+                  </TouchableOpacity>
+                </View>
+                {FRIEND_REQUESTS.map((req) => (
+                  <PersonCard key={req.id} item={req} type="request" />
+                ))}
+              </View>
+            )}
 
-        {activeTab === 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Suggestions</Text>
-            {PEOPLE_YOU_MAY_KNOW.map((p) => (
-              <PersonCard key={p.id} item={p} type="suggestion" />
-            ))}
-          </View>
-        )}
+            {activeTab === 0 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Suggestions</Text>
+                {PEOPLE_YOU_MAY_KNOW.map((p) => (
+                  <PersonCard key={p.id} item={p} type="suggestion" />
+                ))}
+              </View>
+            )}
 
-        {activeTab === 1 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Your Friends</Text>
-            <Text style={styles.emptyText}>Your friends will appear here.</Text>
-          </View>
+            {activeTab === 1 && (
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Your Friends</Text>
+                {ALL_FRIENDS.length === 0 ? (
+                  <Text style={styles.emptyText}>Your friends will appear here.</Text>
+                ) : (
+                  ALL_FRIENDS.map((f) => (
+                    <View key={f.id} style={styles.personCard}>
+                      <Image source={{ uri: f.avatar }} style={[styles.personAvatar, styles.personAvatarSm]} />
+                      <View style={styles.personInfo}>
+                        <Text style={styles.personName}>{f.name}</Text>
+                      </View>
+                    </View>
+                  ))
+                )}
+              </View>
+            )}
+          </>
         )}
 
         <View style={{ height: 40 }} />
@@ -176,6 +247,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#E4E6EB",
     alignItems: "center",
     justifyContent: "center",
+  },
+  inlineSearch: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F2F5",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    height: 36,
+    gap: 8,
+  },
+  inlineSearchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: "#050505",
   },
   tabRow: {
     flexDirection: "row",

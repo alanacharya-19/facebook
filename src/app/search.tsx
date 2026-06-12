@@ -56,6 +56,9 @@ export default function SearchScreen() {
       <FlatList
         data={results}
         keyExtractor={(item) => item.name}
+        ListHeaderComponent={
+          !query.trim() ? <Text style={styles.suggestionsLabel}>Suggestions</Text> : null
+        }
         renderItem={({ item }) => {
           const uid = userIdFor(item.name);
           return (
@@ -116,7 +119,17 @@ const styles = StyleSheet.create({
     color: "#050505",
   },
   list: {
-    paddingTop: 8,
+    paddingTop: 4,
+  },
+  suggestionsLabel: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#65676B",
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 4,
+    textTransform: "uppercase",
+    letterSpacing: 0.3,
   },
   row: {
     flexDirection: "row",

@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -122,9 +123,19 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
 export default function NotificationsScreen() {
   const [filter, setFilter] = useState(0);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const filtered =
-    filter === 0 ? NOTIFICATIONS : NOTIFICATIONS.filter((n) => n.unread);
+  const filtered = useMemo(() => {
+    let items = filter === 0 ? NOTIFICATIONS : NOTIFICATIONS.filter((n) => n.unread);
+    if (!searchQuery.trim()) return items;
+    const q = searchQuery.toLowerCase();
+    return items.filter(
+      (n) =>
+        n.user.toLowerCase().includes(q) ||
+        n.message.toLowerCase().includes(q)
+    );
+  }, [filter, searchQuery]);
 
   return (
     <View style={styles.container}>
@@ -132,10 +143,29 @@ export default function NotificationsScreen() {
         <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7} onPress={() => setSidebarVisible(true)}>
           <Ionicons name="menu-outline" size={24} color="#050505" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notifications</Text>
-        <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
-          <Ionicons name="search" size={22} color="#050505" />
-        </TouchableOpacity>
+        {searching ? (
+          <View style={styles.inlineSearch}>
+            <Ionicons name="search" size={18} color="#65676B" />
+            <TextInput
+              placeholder="Search notifications..."
+              placeholderTextColor="#8A8D91"
+              style={styles.inlineSearchInput}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              autoFocus
+            />
+            <TouchableOpacity activeOpacity={0.7} onPress={() => { setSearching(false); setSearchQuery(""); }}>
+              <Ionicons name="close" size={20} color="#65676B" />
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <Text style={styles.headerTitle}>Notifications</Text>
+            <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
+              <Ionicons name="search" size={22} color="#050505" />
+            </TouchableOpacity>
+          </>
+        )}
       </View>
 
       <View style={styles.filterRow}>
@@ -210,6 +240,21 @@ const styles = StyleSheet.create({
     backgroundColor: "#E4E6EB",
     alignItems: "center",
     justifyContent: "center",
+  },
+  inlineSearch: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F2F5",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    height: 36,
+    gap: 8,
+  },
+  inlineSearchInput: {
+    flex: 1,
+    fontSize: 15,
+    color: "#050505",
   },
   filterRow: {
     flexDirection: "row",
