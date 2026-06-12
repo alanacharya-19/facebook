@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet, Image, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SHORTCUTS = [
@@ -52,7 +53,7 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-          <TouchableOpacity style={styles.profileRow} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.profileRow} activeOpacity={0.7} onPress={() => { onClose(); router.push("/profile/alexj" as any); }}>
             <Image source={{ uri: "https://i.pravatar.cc/150?u=alexj" }} style={styles.sidebarAvatar} />
             <View style={{ flex: 1 }}>
               <Text style={styles.sidebarName}>Alex Johnson</Text>

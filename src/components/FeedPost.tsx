@@ -16,7 +16,7 @@ export default function FeedPost({ name, time, content, avatar, photo, userId }:
   const [liked, setLiked] = useState(false);
 
   const goToProfile = () => {
-    if (userId) router.push(`/profile/${userId}`);
+    if (userId) router.push(`/profile/${userId}` as any);
   };
 
   return (

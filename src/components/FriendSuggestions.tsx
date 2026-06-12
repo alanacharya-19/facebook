@@ -16,10 +16,10 @@ export default function FriendSuggestions() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
         {FRIEND_SUGGESTIONS.map((person) => (
           <View key={person.id} style={styles.card}>
-            <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}`)} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
               <Image source={{ uri: person.avatar }} style={styles.avatar} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}`)} activeOpacity={0.7}>
+            <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
               <Text style={styles.name} numberOfLines={1}>{person.name}</Text>
             </TouchableOpacity>
             <Text style={styles.mutual}>{person.mutual} mutual friends</Text>

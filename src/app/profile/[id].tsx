@@ -1,4 +1,4 @@
-import { Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useState } from "react";
 import {
   Image,
@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { getUserData, USERS } from "../../data/users";
-import { USER_POSTS } from "../../data/profile";
+import { USER_POSTS, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS } from "../../data/profile";
 
 export default function UserProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -31,7 +31,7 @@ export default function UserProfileScreen() {
               <Ionicons name="arrow-back" size={24} color="#fff" />
             </TouchableOpacity>
             <View style={styles.coverRight}>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
                 <Ionicons name="search" size={18} color="#050505" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
@@ -74,6 +74,66 @@ export default function UserProfileScreen() {
               <Ionicons name="chatbubble-outline" size={18} color="#050505" />
               <Text style={styles.secondaryBtnText}>Message</Text>
             </TouchableOpacity>
+          </View>
+
+          <View style={styles.personalDetails}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Personal Details</Text>
+            </View>
+            <View style={styles.detailBlock}>
+              <View style={styles.detailIconBg}><Ionicons name="location-outline" size={16} color="#1877F2" /></View>
+              <Text style={styles.detailBlockText}>Lives in <Text style={styles.bold}>{user.location}</Text></Text>
+            </View>
+            <View style={styles.detailBlock}>
+              <View style={styles.detailIconBg}><Ionicons name="home-outline" size={16} color="#1877F2" /></View>
+              <Text style={styles.detailBlockText}>From <Text style={styles.bold}>{user.hometown}</Text></Text>
+            </View>
+            <View style={styles.detailBlock}>
+              <View style={styles.detailIconBg}><MaterialIcons name="cake" size={16} color="#1877F2" /></View>
+              <Text style={styles.detailBlockText}>Born on <Text style={styles.bold}>{user.birthday}</Text></Text>
+            </View>
+
+            <View style={[styles.sectionHeader, { marginTop: 20 }]}>
+              <Text style={styles.sectionTitle}>Education</Text>
+            </View>
+            <View style={styles.detailBlock}>
+              <View style={styles.detailIconBg}><Ionicons name="school-outline" size={16} color="#1877F2" /></View>
+              <Text style={styles.detailBlockText}>Studied at <Text style={styles.bold}>{user.study}</Text></Text>
+            </View>
+
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Friends</Text>
+              <TouchableOpacity activeOpacity={0.7}>
+                <Text style={styles.seeAll}>See All</Text>
+              </TouchableOpacity>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.friendsRow}>
+              {PROFILE_FRIENDS.map((f) => (
+                <TouchableOpacity key={f.id} style={styles.friendCard} activeOpacity={0.7}>
+                  <Image source={{ uri: f.avatar }} style={styles.friendAvatarCircle} />
+                  <Text style={styles.friendName} numberOfLines={1}>{f.name}</Text>
+                  <Text style={styles.friendMutual}>{f.mutual} mutual friends</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Highlights</Text>
+            </View>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.highlightsRow}>
+              <TouchableOpacity style={styles.highlightAdd} activeOpacity={0.7}>
+                <View style={styles.highlightAddRect}>
+                  <Ionicons name="add" size={24} color="#1877F2" />
+                </View>
+                <Text style={styles.highlightAddText}>Create</Text>
+              </TouchableOpacity>
+              {PROFILE_HIGHLIGHTS.map((h) => (
+                <TouchableOpacity key={h.id} style={styles.highlightItem} activeOpacity={0.7}>
+                  <Image source={{ uri: h.cover }} style={styles.highlightRect} />
+                  <Text style={styles.highlightTitle}>{h.title}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
           </View>
 
           <View style={styles.postsSection}>
@@ -216,6 +276,115 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   secondaryBtnText: { fontSize: 14, fontWeight: "600", color: "#050505" },
+  personalDetails: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+  },
+  sectionHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 8,
+    marginTop: 4,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#050505",
+  },
+  seeAll: {
+    fontSize: 14,
+    fontWeight: "500",
+    color: "#1877F2",
+  },
+  detailBlock: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 6,
+  },
+  detailIconBg: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: "#E7F3FF",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  detailBlockText: {
+    fontSize: 14,
+    color: "#050505",
+  },
+  friendsRow: {
+    marginTop: 8,
+    marginBottom: 4,
+  },
+  friendCard: {
+    alignItems: "center",
+    width: 80,
+    marginRight: 8,
+  },
+  friendAvatarCircle: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    resizeMode: "cover",
+  },
+  friendName: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#050505",
+    marginTop: 4,
+    textAlign: "center",
+  },
+  friendMutual: {
+    fontSize: 11,
+    color: "#65676B",
+    textAlign: "center",
+    marginTop: 1,
+  },
+  highlightsRow: {
+    marginTop: 4,
+    marginBottom: 8,
+  },
+  highlightAdd: {
+    alignItems: "center",
+    width: 80,
+    marginRight: 8,
+  },
+  highlightAddRect: {
+    width: 64,
+    height: 84,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: "#CED0D4",
+    borderStyle: "dashed",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  highlightItem: {
+    alignItems: "center",
+    width: 80,
+    marginRight: 8,
+  },
+  highlightRect: {
+    width: 64,
+    height: 84,
+    borderRadius: 12,
+    resizeMode: "cover",
+  },
+  highlightTitle: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#050505",
+    textAlign: "center",
+    marginTop: 4,
+  },
+  highlightAddText: {
+    fontSize: 12,
+    color: "#65676B",
+    marginTop: 4,
+  },
   postsSection: { marginTop: 16, paddingHorizontal: 16 },
   postsHeader: {
     flexDirection: "row",

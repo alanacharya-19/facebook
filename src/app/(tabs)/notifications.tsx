@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { router } from "expo-router";
 import { NOTIFICATIONS, NOTIF_ICONS } from "../../data/notifications";
 import ProfileSidebar from "../../components/ProfileSidebar";
 
@@ -132,7 +133,7 @@ export default function NotificationsScreen() {
           <Ionicons name="menu-outline" size={24} color="#050505" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notifications</Text>
-        <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
           <Ionicons name="search" size={22} color="#050505" />
         </TouchableOpacity>
       </View>

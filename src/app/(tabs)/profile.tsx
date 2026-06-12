@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { router } from "expo-router";
 import ProfileSidebar from "../../components/ProfileSidebar";
 import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../../data/profile";
 
@@ -67,7 +68,7 @@ export default function ProfileScreen() {
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
                 <Ionicons name="pencil" size={18} color="#050505" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
+              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
                 <Ionicons name="search" size={18} color="#050505" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>

@@ -1,19 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-
-const ACTION_BUTTONS = [
-  { icon: "videocam" as const, label: "Live", color: "#F02849" },
-  { icon: "images" as const, label: "Photo", color: "#45BD62" },
-  { icon: "happy-outline" as const, label: "Feeling", color: "#F7B928" },
-];
+import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { router } from "expo-router";
 
 export default function WhatsOnYourMind() {
   return (
     <View style={styles.card}>
       <View style={styles.topRow}>
-        <View style={styles.avatar}>
-          <Ionicons name="person" size={22} color="#fff" />
-        </View>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/profile/alexj" as any)}>
+          <Image source={{ uri: "https://i.pravatar.cc/150?u=alexj" }} style={styles.avatar} />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.inputButton} activeOpacity={0.7}>
           <Text style={styles.inputText}>What's on your mind?</Text>
         </TouchableOpacity>
@@ -45,9 +40,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#1877F2",
-    alignItems: "center",
-    justifyContent: "center",
   },
   inputButton: {
     flex: 1,

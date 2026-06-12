@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { router } from "expo-router";
 
 export default function TopHeader() {
   return (
@@ -9,7 +10,7 @@ export default function TopHeader() {
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
           <Ionicons name="add" size={22} color="#050505" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
           <Ionicons name="search" size={20} color="#050505" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>

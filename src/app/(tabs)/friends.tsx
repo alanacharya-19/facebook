@@ -79,7 +79,7 @@ export default function FriendsScreen() {
           <Ionicons name="menu-outline" size={24} color="#050505" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Friends</Text>
-        <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
           <Ionicons name="search" size={22} color="#050505" />
         </TouchableOpacity>
       </View>
