@@ -1,17 +1,13 @@
 import { useEffect, useRef } from "react";
-import { View, Text, TouchableOpacity, Animated, StyleSheet, Dimensions } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet, Image, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const MENU_ITEMS = [
-  { icon: "settings-outline" as const, label: "Settings & privacy" },
-  { icon: "shield-checkmark-outline" as const, label: "Security" },
-  { icon: "lock-closed-outline" as const, label: "Privacy" },
-  { icon: "person-outline" as const, label: "Account" },
-  { icon: "moon-outline" as const, label: "Dark mode" },
-  { icon: "help-circle-outline" as const, label: "Help & support" },
-  { icon: "information-circle-outline" as const, label: "About" },
-  { icon: "log-out-outline" as const, label: "Log Out", danger: true },
+const SHORTCUTS = [
+  { icon: "videocam-outline" as const, label: "Reels" },
+  { icon: "newspaper-outline" as const, label: "Feed" },
+  { icon: "bookmark-outline" as const, label: "Saved" },
+  { icon: "people-outline" as const, label: "Friends" },
 ];
 
 type Props = {
@@ -20,14 +16,14 @@ type Props = {
 };
 
 export default function ProfileSidebar({ visible, onClose }: Props) {
-  const slideAnim = useRef(new Animated.Value(-280)).current;
+  const slideAnim = useRef(new Animated.Value(-300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(slideAnim, {
-        toValue: visible ? 0 : -280,
+        toValue: visible ? 0 : -300,
         duration: 250,
         useNativeDriver: true,
       }),
@@ -47,38 +43,87 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
         <TouchableOpacity style={StyleSheet.absoluteFill} activeOpacity={1} onPress={onClose} />
       </Animated.View>
 
-      <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }], paddingTop: insets.top + 16 }]}>
-        <View style={styles.sidebarHeader}>
-          <Text style={styles.sidebarTitle}>Menu</Text>
-          <TouchableOpacity onPress={onClose} activeOpacity={0.7} style={styles.closeBtn}>
-            <Ionicons name="close" size={24} color="#050505" />
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.profileRow}>
-          <View style={styles.sidebarAvatar}>
-            <Ionicons name="person" size={24} color="#fff" />
-          </View>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.sidebarName}>Alex Johnson</Text>
-            <Text style={styles.sidebarSub}>See your profile</Text>
+      <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }], paddingTop: insets.top }]}>
+        <View style={styles.searchRow}>
+          <View style={styles.searchInputWrap}>
+            <Ionicons name="search" size={18} color="#65676B" />
+            <TextInput placeholder="Search Facebook" placeholderTextColor="#8A8D91" style={styles.searchInput} />
           </View>
         </View>
 
-        <View style={styles.divider} />
-
-        {MENU_ITEMS.map((item) => (
-          <TouchableOpacity key={item.label} style={styles.menuItem} activeOpacity={0.7}>
-            <Ionicons name={item.icon} size={22} color={item.danger ? "#F02849" : "#050505"} />
-            <Text style={[styles.menuLabel, item.danger && { color: "#F02849" }]}>{item.label}</Text>
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+          <TouchableOpacity style={styles.profileRow} activeOpacity={0.7}>
+            <Image source={{ uri: "https://i.pravatar.cc/150?u=alexj" }} style={styles.sidebarAvatar} />
+            <View style={{ flex: 1 }}>
+              <Text style={styles.sidebarName}>Alex Johnson</Text>
+              <Text style={styles.sidebarSub}>See your profile</Text>
+            </View>
+            <Ionicons name="chevron-down" size={18} color="#65676B" />
           </TouchableOpacity>
-        ))}
+
+          <TouchableOpacity style={styles.createPageRow} activeOpacity={0.7}>
+            <View style={styles.createPageIcon}>
+              <Ionicons name="flag-outline" size={20} color="#050505" />
+            </View>
+            <Text style={styles.createPageText}>Create Facebook Page</Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <Text style={styles.shortcutsHeader}>Your shortcuts</Text>
+          {[SHORTCUTS.slice(0, 2), SHORTCUTS.slice(2)].map((row, ri) => (
+            <View key={ri} style={styles.shortcutRow}>
+              {row.map((s) => (
+                <TouchableOpacity key={s.label} style={styles.shortcutItem} activeOpacity={0.7}>
+                  <View style={styles.shortcutIcon}>
+                    <Ionicons name={s.icon} size={20} color="#050505" />
+                  </View>
+                  <Text style={styles.shortcutLabel}>{s.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ))}
+
+          <TouchableOpacity style={styles.seeMoreRow} activeOpacity={0.7}>
+            <View style={styles.seeMoreIcon}>
+              <Ionicons name="chevron-down" size={18} color="#050505" />
+            </View>
+            <Text style={styles.seeMoreText}>See more</Text>
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
+            <View style={styles.optionIcon}>
+              <Ionicons name="help-circle-outline" size={22} color="#050505" />
+            </View>
+            <Text style={styles.optionLabel}>Help & support</Text>
+            <Ionicons name="chevron-down" size={18} color="#65676B" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
+            <View style={styles.optionIcon}>
+              <Ionicons name="settings-outline" size={22} color="#050505" />
+            </View>
+            <Text style={styles.optionLabel}>Settings & privacy</Text>
+            <Ionicons name="chevron-down" size={18} color="#65676B" />
+          </TouchableOpacity>
+
+          <View style={styles.divider} />
+
+          <TouchableOpacity style={styles.logoutRow} activeOpacity={0.7}>
+            <View style={[styles.optionIcon, { backgroundColor: "#FEEBEE" }]}>
+              <Ionicons name="log-out-outline" size={20} color="#F02849" />
+            </View>
+            <Text style={[styles.optionLabel, { color: "#F02849" }]}>Logout</Text>
+          </TouchableOpacity>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
       </Animated.View>
     </View>
   );
 }
-
-const SIDEBAR_WIDTH = 280;
 
 const styles = StyleSheet.create({
   overlay: {
@@ -89,9 +134,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: SIDEBAR_WIDTH,
+    width: 300,
     height: "100%",
     backgroundColor: "#fff",
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
     paddingHorizontal: 16,
     shadowColor: "#000",
     shadowOpacity: 0.15,
@@ -99,15 +146,26 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 10,
   },
-  sidebarHeader: {
+  searchRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    gap: 10,
+    marginTop: 12,
     marginBottom: 16,
   },
-  sidebarTitle: {
-    fontSize: 22,
-    fontWeight: "700",
+  searchInputWrap: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F0F2F5",
+    borderRadius: 20,
+    paddingHorizontal: 12,
+    height: 36,
+    gap: 8,
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: 14,
     color: "#050505",
   },
   closeBtn: {
@@ -122,15 +180,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    marginBottom: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
   },
   sidebarAvatar: {
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#1877F2",
-    alignItems: "center",
-    justifyContent: "center",
   },
   sidebarName: {
     fontSize: 15,
@@ -142,19 +198,101 @@ const styles = StyleSheet.create({
     color: "#65676B",
     marginTop: 1,
   },
+  createPageRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 10,
+  },
+  createPageIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E4E6EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  createPageText: {
+    fontSize: 14,
+    color: "#050505",
+  },
   divider: {
     height: 0.5,
     backgroundColor: "#CED0D4",
-    marginBottom: 8,
+    marginVertical: 6,
   },
-  menuItem: {
+  shortcutsHeader: {
+    fontSize: 15,
+    fontWeight: "700",
+    color: "#65676B",
+    marginBottom: 8,
+    marginTop: 4,
+  },
+  shortcutRow: {
+    flexDirection: "row",
+    gap: 4,
+  },
+  shortcutItem: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 14,
-    paddingVertical: 12,
+    gap: 10,
+    flex: 1,
+    paddingVertical: 8,
   },
-  menuLabel: {
+  shortcutIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E4E6EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  shortcutLabel: {
     fontSize: 14,
     color: "#050505",
+  },
+  seeMoreRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 10,
+    marginTop: 2,
+  },
+  seeMoreIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E4E6EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  seeMoreText: {
+    fontSize: 14,
+    color: "#050505",
+  },
+  optionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 10,
+  },
+  optionIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E4E6EB",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  optionLabel: {
+    flex: 1,
+    fontSize: 14,
+    color: "#050505",
+  },
+  logoutRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    paddingVertical: 10,
   },
 });
