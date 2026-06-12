@@ -1,5 +1,6 @@
 import { ScrollView, View, Text, Image, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { STORIES } from "../data/home";
 
 const GRADIENT = ["#833AB4", "#FD1D1D", "#F77737", "#FCAF45"];
@@ -9,7 +10,7 @@ export default function StoriesBar() {
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {STORIES.map((story) => (
-          <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story}>
+          <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story} onPress={() => { if (!story.isSelf) router.push(`/profile/${story.name.toLowerCase()}`); }}>
             {story.isSelf ? (
               <View style={styles.selfCard}>
                 <ImageBackground source={{ uri: story.avatar }} style={styles.selfTop} />

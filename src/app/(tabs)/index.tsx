@@ -27,15 +27,15 @@ export default function HomeScreen() {
         <WhatsOnYourMind />
         <StoriesBar />
         {POSTS.slice(0, 2).map((post) => (
-          <FeedPost key={post.id} {...post} />
+          <FeedPost key={post.id} {...post} userId={post.name.toLowerCase()} />
         ))}
         <FriendSuggestions />
         {POSTS.slice(2).map((post) => (
-          <FeedPost key={post.id} {...post} />
+          <FeedPost key={post.id} {...post} userId={post.name.toLowerCase()} />
         ))}
         <ReelsSection />
         {POSTS.slice(0, 2).map((post) => (
-          <FeedPost key={`more-${post.id}`} {...post} time={`${post.time} ago`} />
+          <FeedPost key={`more-${post.id}`} {...post} userId={post.name.toLowerCase()} time={`${post.time} ago`} />
         ))}
         <View style={{ height: 20 }} />
       </ScrollView>

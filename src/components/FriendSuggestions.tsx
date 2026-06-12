@@ -1,5 +1,6 @@
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { FRIEND_SUGGESTIONS } from "../data/home";
 
 export default function FriendSuggestions() {
@@ -15,8 +16,12 @@ export default function FriendSuggestions() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
         {FRIEND_SUGGESTIONS.map((person) => (
           <View key={person.id} style={styles.card}>
-            <Image source={{ uri: person.avatar }} style={styles.avatar} />
-            <Text style={styles.name} numberOfLines={1}>{person.name}</Text>
+            <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}`)} activeOpacity={0.7}>
+              <Image source={{ uri: person.avatar }} style={styles.avatar} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}`)} activeOpacity={0.7}>
+              <Text style={styles.name} numberOfLines={1}>{person.name}</Text>
+            </TouchableOpacity>
             <Text style={styles.mutual}>{person.mutual} mutual friends</Text>
             <TouchableOpacity style={styles.addBtn} activeOpacity={0.7}>
               <Ionicons name="person-add" size={16} color="#fff" />

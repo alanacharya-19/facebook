@@ -1,0 +1,163 @@
+export const USERS: Record<string, {
+  name: string;
+  bio: string;
+  avatar: string;
+  cover: string;
+  friends: number;
+  posts: number;
+  location: string;
+  study: string;
+  hometown: string;
+  birthday: string;
+}> = {
+  "alexj": {
+    name: "Alex Johnson",
+    bio: "Photographer | Coffee addict | Traveler 📸",
+    avatar: "https://i.pravatar.cc/150?u=alexj",
+    cover: "https://picsum.photos/seed/cover/600/360",
+    friends: 842,
+    posts: 143,
+    location: "San Francisco",
+    study: "Stanford University",
+    hometown: "San Francisco, California",
+    birthday: "January 15, 1995",
+  },
+  "alice": {
+    name: "Alice",
+    bio: "Artist & Dreamer 🎨",
+    avatar: "https://i.pravatar.cc/150?u=alice",
+    cover: "https://picsum.photos/seed/alice-cover/600/360",
+    friends: 523,
+    posts: 87,
+    location: "New York",
+    study: "NYU",
+    hometown: "Brooklyn, New York",
+    birthday: "March 22, 1996",
+  },
+  "bob": {
+    name: "Bob",
+    bio: "Book lover & coffee enthusiast ☕",
+    avatar: "https://i.pravatar.cc/150?u=bob",
+    cover: "https://picsum.photos/seed/bob-cover/600/360",
+    friends: 341,
+    posts: 56,
+    location: "Chicago",
+    study: "University of Chicago",
+    hometown: "Chicago, Illinois",
+    birthday: "July 8, 1994",
+  },
+  "charlie": {
+    name: "Charlie",
+    bio: "Foodie | Chef | World traveler ✈️",
+    avatar: "https://i.pravatar.cc/150?u=charlie",
+    cover: "https://picsum.photos/seed/charlie-cover/600/360",
+    friends: 678,
+    posts: 201,
+    location: "Los Angeles",
+    study: "UCLA",
+    hometown: "Santa Monica, California",
+    birthday: "November 3, 1993",
+  },
+  "diana": {
+    name: "Diana",
+    bio: "Fitness lover 💪 | Yoga instructor 🧘",
+    avatar: "https://i.pravatar.cc/150?u=diana",
+    cover: "https://picsum.photos/seed/diana-cover/600/360",
+    friends: 912,
+    posts: 312,
+    location: "Miami",
+    study: "University of Miami",
+    hometown: "Miami, Florida",
+    birthday: "May 19, 1995",
+  },
+  "eve": {
+    name: "Eve",
+    bio: "Musician & Producer 🎵",
+    avatar: "https://i.pravatar.cc/150?u=eve",
+    cover: "https://picsum.photos/seed/eve-cover/600/360",
+    friends: 445,
+    posts: 178,
+    location: "Austin",
+    study: "UT Austin",
+    hometown: "Austin, Texas",
+    birthday: "September 12, 1997",
+  },
+  "frank": {
+    name: "Frank",
+    bio: "Photography | Hiking | Nature 🌲",
+    avatar: "https://i.pravatar.cc/150?u=frank",
+    cover: "https://picsum.photos/seed/frank-cover/600/360",
+    friends: 267,
+    posts: 94,
+    location: "Denver",
+    study: "CU Boulder",
+    hometown: "Denver, Colorado",
+    birthday: "February 28, 1992",
+  },
+  "sarah": {
+    name: "Sarah Chen",
+    bio: "Designer & Illustrator ✏️",
+    avatar: "https://i.pravatar.cc/150?u=sarah",
+    cover: "https://picsum.photos/seed/sarah-cover/600/360",
+    friends: 389,
+    posts: 67,
+    location: "Seattle",
+    study: "University of Washington",
+    hometown: "Seattle, Washington",
+    birthday: "April 5, 1996",
+  },
+  "mike": {
+    name: "Mike Torres",
+    bio: "Software Engineer 💻 | Gamer 🎮",
+    avatar: "https://i.pravatar.cc/150?u=mike",
+    cover: "https://picsum.photos/seed/mike-cover/600/360",
+    friends: 534,
+    posts: 123,
+    location: "San Jose",
+    study: "San Jose State",
+    hometown: "San Jose, California",
+    birthday: "August 14, 1994",
+  },
+  "emily": {
+    name: "Emily Davis",
+    bio: "Teacher & Bookworm 📚",
+    avatar: "https://i.pravatar.cc/150?u=emily",
+    cover: "https://picsum.photos/seed/emily-cover/600/360",
+    friends: 621,
+    posts: 89,
+    location: "Boston",
+    study: "Harvard University",
+    hometown: "Boston, Massachusetts",
+    birthday: "October 30, 1995",
+  },
+  "james": {
+    name: "James Wilson",
+    bio: "Entrepreneur | Startup founder 🚀",
+    avatar: "https://i.pravatar.cc/150?u=james",
+    cover: "https://picsum.photos/seed/james-cover/600/360",
+    friends: 756,
+    posts: 234,
+    location: "San Francisco",
+    study: "Stanford University",
+    hometown: "Palo Alto, California",
+    birthday: "December 1, 1993",
+  },
+  "grace": {
+    name: "Grace",
+    bio: "Fashion blogger & stylist 👗",
+    avatar: "https://i.pravatar.cc/150?u=grace",
+    cover: "https://picsum.photos/seed/grace-cover/600/360",
+    friends: 834,
+    posts: 456,
+    location: "New York",
+    study: "FIT",
+    hometown: "Manhattan, New York",
+    birthday: "June 18, 1996",
+  },
+};
+
+export const DEFAULT_USER_ID = "alexj";
+
+export function getUserData(userId: string) {
+  return USERS[userId] || USERS[DEFAULT_USER_ID];
+}

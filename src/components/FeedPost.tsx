@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 type FeedPostProps = {
   name: string;
@@ -8,18 +9,27 @@ type FeedPostProps = {
   content?: string;
   avatar: string;
   photo?: string;
+  userId?: string;
 };
 
-export default function FeedPost({ name, time, content, avatar, photo }: FeedPostProps) {
+export default function FeedPost({ name, time, content, avatar, photo, userId }: FeedPostProps) {
   const [liked, setLiked] = useState(false);
+
+  const goToProfile = () => {
+    if (userId) router.push(`/profile/${userId}`);
+  };
 
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Image source={{ uri: avatar }} style={styles.avatar} />
+        <TouchableOpacity onPress={goToProfile} activeOpacity={0.7}>
+          <Image source={{ uri: avatar }} style={styles.avatar} />
+        </TouchableOpacity>
         <View style={styles.headerText}>
           <View style={styles.nameRow}>
-            <Text style={styles.name}>{name}</Text>
+            <TouchableOpacity onPress={goToProfile} activeOpacity={0.7}>
+              <Text style={styles.name}>{name}</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
               <Text style={styles.followText}>Follow</Text>
             </TouchableOpacity>
