@@ -7,10 +7,12 @@ import FriendSuggestions from "../../components/FriendSuggestions";
 import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 import FeedSkeleton from "../../components/FeedSkeleton";
+import SearchOverlay from "../../components/SearchOverlay";
 import { POSTS } from "../../data/home";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -19,7 +21,7 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
-      <TopHeader />
+      <TopHeader onSearchPress={() => setSearching(true)} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -39,6 +41,7 @@ export default function HomeScreen() {
         ))}
         <View style={{ height: 20 }} />
       </ScrollView>
+      {searching && <SearchOverlay onClose={() => setSearching(false)} />}
     </View>
   );
 }

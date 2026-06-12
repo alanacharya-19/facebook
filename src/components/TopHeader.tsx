@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { router } from "expo-router";
 
-export default function TopHeader() {
+interface TopHeaderProps {
+  onSearchPress?: () => void;
+}
+
+export default function TopHeader({ onSearchPress }: TopHeaderProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>facebook</Text>
@@ -10,7 +13,7 @@ export default function TopHeader() {
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
           <Ionicons name="add" size={22} color="#050505" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
+        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={onSearchPress}>
           <Ionicons name="search" size={20} color="#050505" />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>

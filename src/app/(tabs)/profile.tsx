@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import ProfileSidebar from "../../components/ProfileSidebar";
+import SearchOverlay from "../../components/SearchOverlay";
 import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../../data/profile";
 
 function ProfilePost({ avatar, name, time, content, image, likes, comments }: any) {
@@ -55,6 +56,7 @@ function ProfilePost({ avatar, name, time, content, image, likes, comments }: an
 export default function ProfileScreen() {
   const [activeTab, setActiveTab] = useState(0);
   const [menuVisible, setMenuVisible] = useState(false);
+  const [searching, setSearching] = useState(false);
 
   return (
     <View style={{ flex: 1 }}>
@@ -68,7 +70,7 @@ export default function ProfileScreen() {
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
                 <Ionicons name="pencil" size={18} color="#050505" />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
+              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
                 <Ionicons name="search" size={18} color="#050505" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
@@ -235,6 +237,7 @@ export default function ProfileScreen() {
         <View style={{ height: 40 }} />
       </ScrollView>
       <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
+      {searching && <SearchOverlay onClose={() => setSearching(false)} />}
     </View>
   );
 }
