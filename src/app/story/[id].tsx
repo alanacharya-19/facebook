@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Animated,
+  FlatList,
   Dimensions,
   KeyboardAvoidingView,
   Platform,
@@ -19,18 +20,26 @@ import { STORIES } from "../../data/home";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const EMOJIS = ["👍", "❤️", "😮", "😢", "😡", "🎉"];
 
-export default function StoryViewScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const stories = STORIES.filter((s) => !s.isSelf);
-  const initialIndex = stories.findIndex((s) => s.id === id);
-  const [currentIndex, setCurrentIndex] = useState(initialIndex >= 0 ? initialIndex : 0);
+function StoryFrame({
+  story,
+  isActive,
+  onComplete,
+  userName,
+}: {
+  story: typeof STORIES[0];
+  isActive: boolean;
+  onComplete: () => void;
+  userName: string;
+}) {
   const progressAnim = useRef(new Animated.Value(0)).current;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const currentStory = stories[currentIndex];
   const DURATION = 5000;
 
-  const startProgress = useCallback(() => {
+  useEffect(() => {
+    if (!isActive) {
+      if (timerRef.current) clearTimeout(timerRef.current);
+      return;
+    }
     progressAnim.setValue(0);
     Animated.timing(progressAnim, {
       toValue: 1,
@@ -38,99 +47,42 @@ export default function StoryViewScreen() {
       useNativeDriver: false,
     }).start();
     timerRef.current = setTimeout(() => {
-      goNext();
+      onComplete();
     }, DURATION);
-  }, [currentIndex]);
-
-  useEffect(() => {
-    startProgress();
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
-      progressAnim.setValue(0);
     };
-  }, [currentIndex]);
-
-  const goNext = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (currentIndex < stories.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      router.back();
-    }
-  };
-
-  const goPrev = () => {
-    if (timerRef.current) clearTimeout(timerRef.current);
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
-
-  const handleTap = (evt: any) => {
-    const x = evt.nativeEvent.locationX;
-    if (x < SCREEN_WIDTH * 0.3) {
-      goPrev();
-    } else if (x > SCREEN_WIDTH * 0.7) {
-      goNext();
-    }
-  };
-
-  const handleEmoji = (emoji: string) => {
-    // Emoji reaction - could animate a floating emoji
-  };
-
-  if (!currentStory) {
-    return (
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()}>
-          <Ionicons name="close" size={28} color="#fff" />
-        </TouchableOpacity>
-      </View>
-    );
-  }
-
-  const progressWidth = progressAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: ["0%", "100%"],
-  });
+  }, [isActive]);
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
-    >
-      <TouchableOpacity activeOpacity={1} onPress={handleTap} style={StyleSheet.absoluteFill}>
-        <ImageBackground
-          source={{ uri: currentStory.image }}
-          style={styles.image}
-          resizeMode="cover"
-        />
-      </TouchableOpacity>
-
+    <View style={styles.frame}>
+      <ImageBackground source={{ uri: story.image }} style={styles.image} resizeMode="cover" />
       <View style={styles.overlay}>
         <View style={styles.topSection}>
           <View style={styles.progressRow}>
-            {stories.map((_, i) => (
-              <View key={i} style={styles.progressTrack}>
-                {i === currentIndex ? (
-                  <Animated.View style={[styles.progressBar, { width: progressWidth }]} />
-                ) : (
-                  <View
-                    style={[
-                      styles.progressBar,
-                      { width: i < currentIndex ? "100%" : "0%" },
-                    ]}
-                  />
-                )}
-              </View>
-            ))}
+            <View style={styles.progressTrack}>
+              {isActive ? (
+                <Animated.View
+                  style={[
+                    styles.progressFill,
+                    {
+                      width: progressAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: ["0%", "100%"],
+                      }),
+                    },
+                  ]}
+                />
+              ) : (
+                <View style={[styles.progressFill, { width: "100%" }]} />
+              )}
+            </View>
           </View>
-
           <View style={styles.topBar}>
             <View style={styles.userInfo}>
-              <Image source={{ uri: currentStory.avatar }} style={styles.avatar} />
+              <Image source={{ uri: story.avatar }} style={styles.avatar} />
               <View>
-                <Text style={styles.userName}>{currentStory.name}</Text>
+                <Text style={styles.userName}>{story.name}</Text>
                 <Text style={styles.time}>Just now</Text>
               </View>
             </View>
@@ -144,13 +96,12 @@ export default function StoryViewScreen() {
             </View>
           </View>
         </View>
-
         <View style={styles.bottomSection}>
           <TouchableOpacity style={styles.replyBtn} activeOpacity={0.7}>
             <Ionicons name="heart-outline" size={22} color="#fff" />
           </TouchableOpacity>
           <TextInput
-            placeholder={`Send message to ${currentStory.name.split(" ")[0]}`}
+            placeholder={`Send message to ${userName}`}
             placeholderTextColor="rgba(255,255,255,0.6)"
             style={styles.input}
           />
@@ -158,15 +109,92 @@ export default function StoryViewScreen() {
             <Ionicons name="send" size={20} color="#fff" />
           </TouchableOpacity>
         </View>
-
         <View style={styles.emojiRow}>
           {EMOJIS.map((emoji) => (
-            <TouchableOpacity key={emoji} activeOpacity={0.7} onPress={() => handleEmoji(emoji)}>
+            <TouchableOpacity key={emoji} activeOpacity={0.7}>
               <Text style={styles.emoji}>{emoji}</Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
+    </View>
+  );
+}
+
+export default function StoryViewScreen() {
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const stories = STORIES.filter((s) => !s.isSelf);
+  const initialIndex = stories.findIndex((s) => s.id === id);
+  const [currentIndex, setCurrentIndex] = useState(initialIndex >= 0 ? initialIndex : 0);
+  const listRef = useRef<FlatList>(null);
+
+  const onComplete = useCallback(() => {
+    if (currentIndex < stories.length - 1) {
+      const nextIndex = currentIndex + 1;
+      listRef.current?.scrollToIndex({ index: nextIndex, animated: true });
+    } else {
+      router.back();
+    }
+  }, [currentIndex, stories.length]);
+
+  const onMomentumEnd = useCallback((e: any) => {
+    const idx = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
+    setCurrentIndex(idx);
+  }, []);
+
+  const renderItem = useCallback(
+    ({ item }: { item: typeof STORIES[0] }) => {
+      const idx = stories.findIndex((s) => s.id === item.id);
+      return (
+        <StoryFrame
+          story={item}
+          isActive={idx === currentIndex}
+          onComplete={onComplete}
+          userName={item.name.split(" ")[0]}
+        />
+      );
+    },
+    [currentIndex, onComplete]
+  );
+
+  const getItemLayout = useCallback(
+    (_: any, index: number) => ({
+      length: SCREEN_WIDTH,
+      offset: SCREEN_WIDTH * index,
+      index,
+    }),
+    []
+  );
+
+  if (!stories.length) {
+    return (
+      <View style={styles.container}>
+        <TouchableOpacity style={styles.closeBtn} onPress={() => router.back()}>
+          <Ionicons name="close" size={28} color="#fff" />
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <FlatList
+        ref={listRef}
+        data={stories}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onMomentumScrollEnd={onMomentumEnd}
+        getItemLayout={getItemLayout}
+        initialScrollIndex={initialIndex >= 0 ? initialIndex : 0}
+        bounces={false}
+        style={styles.list}
+      />
     </KeyboardAvoidingView>
   );
 }
@@ -175,6 +203,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
+  },
+  list: {
+    flex: 1,
+  },
+  frame: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
   },
   image: {
     width: SCREEN_WIDTH,
@@ -199,9 +234,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(255,255,255,0.3)",
     borderRadius: 2,
     overflow: "hidden",
+    flexDirection: "row",
   },
-  progressBar: {
-    height: 3,
+  progressFill: {
     backgroundColor: "#fff",
     borderRadius: 2,
   },
