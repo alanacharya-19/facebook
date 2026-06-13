@@ -6,24 +6,58 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { getUserData, USERS } from "../../data/users";
 import { USER_POSTS, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS } from "../../data/profile";
-import CommentsModal from "../../components/CommentsModal";
+import { POST_COMMENTS, Comment } from "../../data/comments";
 import ShareModal from "../../components/ShareModal";
+
+const currentUser = Object.values(USERS)[0];
 
 export default function UserProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = getUserData(id);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
-  const [commentsPostId, setCommentsPostId] = useState<string | null>(null);
+  const [expandedComments, setExpandedComments] = useState<Record<string, boolean>>({});
+  const [allComments, setAllComments] = useState<Record<string, Comment[]>>(() => {
+    const initial: Record<string, Comment[]> = {};
+    USER_POSTS.forEach((p) => { initial[p.id] = POST_COMMENTS[p.id] || []; });
+    return initial;
+  });
+  const [newComments, setNewComments] = useState<Record<string, string>>({});
   const [shareVisible, setShareVisible] = useState(false);
 
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+  };
+
+  const toggleCommentLike = (postId: string, commentId: string) => {
+    setAllComments((prev) => ({
+      ...prev,
+      [postId]: (prev[postId] || []).map((c) =>
+        c.id === commentId ? { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 } : c
+      ),
+    }));
+  };
+
+  const handleSendComment = (postId: string) => {
+    const text = (newComments[postId] || "").trim();
+    if (!text) return;
+    const comment: Comment = {
+      id: `c-${Date.now()}`,
+      name: currentUser.name,
+      avatar: currentUser.avatar,
+      time: "Just now",
+      text,
+      likes: 0,
+      liked: false,
+    };
+    setAllComments((prev) => ({ ...prev, [postId]: [comment, ...(prev[postId] || [])] }));
+    setNewComments((prev) => ({ ...prev, [postId]: "" }));
   };
 
   return (
@@ -167,15 +201,84 @@ export default function UserProfileScreen() {
                       <Ionicons name={likedPosts[post.id] ? "heart" : "heart-outline"} size={20} color={likedPosts[post.id] ? "#F02849" : "#65676B"} />
                       <Text style={[styles.profilePostFooterText, likedPosts[post.id] && { color: "#F02849" }]}>{likedPosts[post.id] ? post.likes + 1 : post.likes}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setCommentsPostId(post.id)}>
-                      <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
-                      <Text style={styles.profilePostFooterText}>{post.comments}</Text>
+                    <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setExpandedComments((prev) => ({ ...prev, [post.id]: !prev[post.id] }))}>
+                      <Ionicons name="chatbubble-outline" size={20} color={expandedComments[post.id] ? "#1877F2" : "#65676B"} />
+                      <Text style={[styles.profilePostFooterText, expandedComments[post.id] && { color: "#1877F2" }]}>{(allComments[post.id] || []).length}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setShareVisible(true)}>
                       <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
                       <Text style={styles.profilePostFooterText}>Share</Text>
                     </TouchableOpacity>
                   </View>
+                  {expandedComments[post.id] && (
+                    <View style={styles.inlineComments}>
+                      <View style={styles.commentInputRow}>
+                        <Image source={{ uri: currentUser.avatar }} style={styles.commentInputAvatar} />
+                        <View style={styles.commentInputWrap}>
+                          <TextInput
+                            placeholder="Write a comment..."
+                            placeholderTextColor="#8A8D91"
+                            style={styles.commentInput}
+                            value={newComments[post.id] || ""}
+                            onChangeText={(t) => setNewComments((prev) => ({ ...prev, [post.id]: t }))}
+                          />
+                        </View>
+                        <TouchableOpacity
+                          style={[styles.commentSendBtn, !(newComments[post.id] || "").trim() && { opacity: 0.4 }]}
+                          activeOpacity={0.7}
+                          onPress={() => handleSendComment(post.id)}
+                          disabled={!(newComments[post.id] || "").trim()}
+                        >
+                          <Ionicons name="paper-plane" size={18} color="#1877F2" />
+                        </TouchableOpacity>
+                      </View>
+
+                      {(allComments[post.id] || []).length === 0 && (
+                        <Text style={styles.noComments}>No comments yet. Be the first!</Text>
+                      )}
+
+                      {(allComments[post.id] || []).slice(0, 5).map((comment) => (
+                        <View key={comment.id} style={styles.commentRow}>
+                          <Image source={{ uri: comment.avatar }} style={styles.commentAvatar} />
+                          <View style={styles.commentBubble}>
+                            <Text style={styles.commentName}>{comment.name}</Text>
+                            <Text style={styles.commentText}>{comment.text}</Text>
+                            <View style={styles.commentActions}>
+                              <TouchableOpacity onPress={() => toggleCommentLike(post.id, comment.id)} activeOpacity={0.7}>
+                                <Text style={[styles.commentActionText, comment.liked && { color: "#F02849" }]}>
+                                  {comment.liked ? "Unlike" : "Like"}
+                                </Text>
+                              </TouchableOpacity>
+                              <Text style={styles.commentDot}> · </Text>
+                              <TouchableOpacity activeOpacity={0.7}>
+                                <Text style={styles.commentActionText}>Reply</Text>
+                              </TouchableOpacity>
+                              {comment.replies ? (
+                                <>
+                                  <Text style={styles.commentDot}> · </Text>
+                                  <TouchableOpacity activeOpacity={0.7}>
+                                    <Text style={styles.commentActionText}>{comment.replies} replies</Text>
+                                  </TouchableOpacity>
+                                </>
+                              ) : null}
+                            </View>
+                          </View>
+                          {comment.likes > 0 && (
+                            <View style={styles.commentLikeBadge}>
+                              <Ionicons name="heart" size={10} color="#fff" />
+                              <Text style={styles.commentLikeText}>{comment.likes}</Text>
+                            </View>
+                          )}
+                        </View>
+                      ))}
+
+                      {(allComments[post.id] || []).length > 5 && (
+                        <TouchableOpacity style={styles.viewMoreBtn} activeOpacity={0.7}>
+                          <Text style={styles.viewMoreText}>View all {(allComments[post.id] || []).length} comments</Text>
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  )}
                 </View>
               </View>
             ))}
@@ -183,16 +286,6 @@ export default function UserProfileScreen() {
         </View>
         <View style={{ height: 40 }} />
       </ScrollView>
-      <CommentsModal
-        visible={commentsPostId !== null}
-        onClose={() => setCommentsPostId(null)}
-        postId={commentsPostId || "1"}
-        postName={user.name}
-        postAvatar={user.avatar}
-        postTime={USER_POSTS.find((p) => p.id === commentsPostId)?.time || ""}
-        postContent={USER_POSTS.find((p) => p.id === commentsPostId)?.content}
-        postPhoto={USER_POSTS.find((p) => p.id === commentsPostId)?.image}
-      />
       <ShareModal visible={shareVisible} onClose={() => setShareVisible(false)} />
     </View>
   );
@@ -477,6 +570,115 @@ const styles = StyleSheet.create({
   },
   profilePostFooterText: {
     fontSize: 13,
+    color: "#65676B",
+  },
+  inlineComments: {
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
+  commentInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  commentInputAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+  },
+  commentInputWrap: {
+    flex: 1,
+    backgroundColor: "#F0F2F5",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  commentInput: {
+    fontSize: 13,
+    color: "#050505",
+    padding: 0,
+  },
+  commentSendBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noComments: {
+    fontSize: 13,
+    color: "#65676B",
+    textAlign: "center",
+    marginTop: 8,
+  },
+  commentRow: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  commentAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  commentBubble: {
+    flex: 1,
+    backgroundColor: "#F0F2F5",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  commentName: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#050505",
+  },
+  commentText: {
+    fontSize: 13,
+    color: "#050505",
+    marginTop: 1,
+    lineHeight: 18,
+  },
+  commentActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  commentActionText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#65676B",
+  },
+  commentDot: {
+    fontSize: 11,
+    color: "#65676B",
+  },
+  commentLikeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F02849",
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    gap: 2,
+    alignSelf: "flex-start",
+    marginTop: 4,
+  },
+  commentLikeText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  viewMoreBtn: {
+    paddingVertical: 8,
+    alignItems: "center",
+  },
+  viewMoreText: {
+    fontSize: 13,
+    fontWeight: "600",
     color: "#65676B",
   },
 });

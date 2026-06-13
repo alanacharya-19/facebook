@@ -1,10 +1,10 @@
 import { useState } from "react";
-import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import CommentsModal from "./CommentsModal";
 import ShareModal from "./ShareModal";
-import { POST_COMMENTS } from "../data/comments";
+import { POST_COMMENTS, Comment } from "../data/comments";
+import { USERS } from "../data/users";
 
 type FeedPostProps = {
   name: string;
@@ -16,16 +16,43 @@ type FeedPostProps = {
   postId?: string;
 };
 
+const currentUser = Object.values(USERS)[0];
+
 export default function FeedPost({ name, time, content, avatar, photo, userId, postId = "1" }: FeedPostProps) {
   const [liked, setLiked] = useState(false);
-  const [commentsVisible, setCommentsVisible] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
+  const [comments, setComments] = useState<Comment[]>(POST_COMMENTS[postId] || []);
+  const [newComment, setNewComment] = useState("");
 
-  const commentCount = POST_COMMENTS[postId]?.length || 0;
-  const displayComments = commentCount > 0 ? `${commentCount >= 1000 ? `${(commentCount / 1000).toFixed(1)}K` : commentCount}` : "Comment";
+  const totalComments = comments.length;
+  const commentsLabel = totalComments > 0
+    ? `${totalComments >= 1000 ? `${(totalComments / 1000).toFixed(1)}K` : totalComments}`
+    : "Comment";
 
   const goToProfile = () => {
     if (userId) router.push(`/profile/${userId}` as any);
+  };
+
+  const toggleCommentLike = (id: string) => {
+    setComments((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 } : c))
+    );
+  };
+
+  const handleSendComment = () => {
+    if (!newComment.trim()) return;
+    const comment: Comment = {
+      id: `c-${Date.now()}`,
+      name: currentUser.name,
+      avatar: currentUser.avatar,
+      time: "Just now",
+      text: newComment.trim(),
+      likes: 0,
+      liked: false,
+    };
+    setComments((prev) => [comment, ...prev]);
+    setNewComment("");
   };
 
   return (
@@ -70,9 +97,9 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
             <Ionicons name={liked ? "heart" : "heart-outline"} size={20} color={liked ? "#F02849" : "#65676B"} />
             <Text style={[styles.footerText, liked && { color: "#F02849" }]}>200K</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setCommentsVisible(true)}>
-            <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
-            <Text style={styles.footerText}>{displayComments}</Text>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setShowComments(!showComments)}>
+            <Ionicons name="chatbubble-outline" size={20} color={showComments ? "#1877F2" : "#65676B"} />
+            <Text style={[styles.footerText, showComments && { color: "#1877F2" }]}>{commentsLabel}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setShareVisible(true)}>
             <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
@@ -81,16 +108,78 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
         </View>
       </View>
 
-      <CommentsModal
-        visible={commentsVisible}
-        onClose={() => setCommentsVisible(false)}
-        postId={postId}
-        postName={name}
-        postAvatar={avatar}
-        postTime={time}
-        postContent={content}
-        postPhoto={photo}
-      />
+      {showComments && (
+        <View style={styles.commentsSection}>
+          <View style={styles.commentsDivider} />
+
+          <View style={styles.commentInputRow}>
+            <Image source={{ uri: currentUser.avatar }} style={styles.commentInputAvatar} />
+            <View style={styles.commentInputWrap}>
+              <TextInput
+                placeholder="Write a comment..."
+                placeholderTextColor="#8A8D91"
+                style={styles.commentInput}
+                value={newComment}
+                onChangeText={setNewComment}
+              />
+            </View>
+            <TouchableOpacity
+              style={[styles.commentSendBtn, !newComment.trim() && { opacity: 0.4 }]}
+              activeOpacity={0.7}
+              onPress={handleSendComment}
+              disabled={!newComment.trim()}
+            >
+              <Ionicons name="paper-plane" size={18} color="#1877F2" />
+            </TouchableOpacity>
+          </View>
+
+          {comments.length === 0 && (
+            <Text style={styles.noComments}>No comments yet. Be the first!</Text>
+          )}
+
+          {comments.slice(0, 5).map((comment) => (
+            <View key={comment.id} style={styles.commentRow}>
+              <Image source={{ uri: comment.avatar }} style={styles.commentAvatar} />
+              <View style={styles.commentBubble}>
+                <Text style={styles.commentName}>{comment.name}</Text>
+                <Text style={styles.commentText}>{comment.text}</Text>
+                <View style={styles.commentActions}>
+                  <TouchableOpacity onPress={() => toggleCommentLike(comment.id)} activeOpacity={0.7}>
+                    <Text style={[styles.commentActionText, comment.liked && { color: "#F02849" }]}>
+                      {comment.liked ? "Unlike" : "Like"}
+                    </Text>
+                  </TouchableOpacity>
+                  <Text style={styles.commentDot}> · </Text>
+                  <TouchableOpacity activeOpacity={0.7}>
+                    <Text style={styles.commentActionText}>Reply</Text>
+                  </TouchableOpacity>
+                  {comment.replies ? (
+                    <>
+                      <Text style={styles.commentDot}> · </Text>
+                      <TouchableOpacity activeOpacity={0.7}>
+                        <Text style={styles.commentActionText}>{comment.replies} replies</Text>
+                      </TouchableOpacity>
+                    </>
+                  ) : null}
+                </View>
+              </View>
+              {comment.likes > 0 && (
+                <View style={styles.commentLikeBadge}>
+                  <Ionicons name="heart" size={10} color="#fff" />
+                  <Text style={styles.commentLikeText}>{comment.likes}</Text>
+                </View>
+              )}
+            </View>
+          ))}
+
+          {comments.length > 5 && (
+            <TouchableOpacity style={styles.viewMoreBtn} activeOpacity={0.7}>
+              <Text style={styles.viewMoreText}>View all {comments.length} comments</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+      )}
+
       <ShareModal visible={shareVisible} onClose={() => setShareVisible(false)} />
     </View>
   );
@@ -203,6 +292,121 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
+    color: "#65676B",
+  },
+  commentsSection: {
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
+  commentsDivider: {
+    height: 1,
+    backgroundColor: "#E4E6EB",
+    marginHorizontal: 16,
+    marginBottom: 8,
+  },
+  commentInputRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  commentInputAvatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+  },
+  commentInputWrap: {
+    flex: 1,
+    backgroundColor: "#F0F2F5",
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  commentInput: {
+    fontSize: 13,
+    color: "#050505",
+    padding: 0,
+  },
+  commentSendBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  noComments: {
+    fontSize: 13,
+    color: "#65676B",
+    textAlign: "center",
+    marginTop: 8,
+  },
+  commentRow: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    gap: 8,
+  },
+  commentAvatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  commentBubble: {
+    flex: 1,
+    backgroundColor: "#F0F2F5",
+    borderRadius: 14,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+  },
+  commentName: {
+    fontSize: 12,
+    fontWeight: "700",
+    color: "#050505",
+  },
+  commentText: {
+    fontSize: 13,
+    color: "#050505",
+    marginTop: 1,
+    lineHeight: 18,
+  },
+  commentActions: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 4,
+  },
+  commentActionText: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: "#65676B",
+  },
+  commentDot: {
+    fontSize: 11,
+    color: "#65676B",
+  },
+  commentLikeBadge: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#F02849",
+    borderRadius: 8,
+    paddingHorizontal: 4,
+    paddingVertical: 1,
+    gap: 2,
+    alignSelf: "flex-start",
+    marginTop: 4,
+  },
+  commentLikeText: {
+    fontSize: 10,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  viewMoreBtn: {
+    paddingVertical: 8,
+    alignItems: "center",
+  },
+  viewMoreText: {
+    fontSize: 13,
+    fontWeight: "600",
     color: "#65676B",
   },
 });
