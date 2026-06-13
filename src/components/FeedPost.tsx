@@ -2,6 +2,9 @@ import { useState } from "react";
 import { View, Text, Image, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import CommentsModal from "./CommentsModal";
+import ShareModal from "./ShareModal";
+import { POST_COMMENTS } from "../data/comments";
 
 type FeedPostProps = {
   name: string;
@@ -10,10 +13,16 @@ type FeedPostProps = {
   avatar: string;
   photo?: string;
   userId?: string;
+  postId?: string;
 };
 
-export default function FeedPost({ name, time, content, avatar, photo, userId }: FeedPostProps) {
+export default function FeedPost({ name, time, content, avatar, photo, userId, postId = "1" }: FeedPostProps) {
   const [liked, setLiked] = useState(false);
+  const [commentsVisible, setCommentsVisible] = useState(false);
+  const [shareVisible, setShareVisible] = useState(false);
+
+  const commentCount = POST_COMMENTS[postId]?.length || 0;
+  const displayComments = commentCount > 0 ? `${commentCount >= 1000 ? `${(commentCount / 1000).toFixed(1)}K` : commentCount}` : "Comment";
 
   const goToProfile = () => {
     if (userId) router.push(`/profile/${userId}` as any);
@@ -61,16 +70,28 @@ export default function FeedPost({ name, time, content, avatar, photo, userId }:
             <Ionicons name={liked ? "heart" : "heart-outline"} size={20} color={liked ? "#F02849" : "#65676B"} />
             <Text style={[styles.footerText, liked && { color: "#F02849" }]}>200K</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setCommentsVisible(true)}>
             <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
-            <Text style={styles.footerText}>12K</Text>
+            <Text style={styles.footerText}>{displayComments}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setShareVisible(true)}>
             <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
-            <Text style={styles.footerText}>8.5K</Text>
+            <Text style={styles.footerText}>Share</Text>
           </TouchableOpacity>
         </View>
       </View>
+
+      <CommentsModal
+        visible={commentsVisible}
+        onClose={() => setCommentsVisible(false)}
+        postId={postId}
+        postName={name}
+        postAvatar={avatar}
+        postTime={time}
+        postContent={content}
+        postPhoto={photo}
+      />
+      <ShareModal visible={shareVisible} onClose={() => setShareVisible(false)} />
     </View>
   );
 }
@@ -184,5 +205,4 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: "#65676B",
   },
-
 });

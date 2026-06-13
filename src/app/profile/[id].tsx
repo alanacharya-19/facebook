@@ -12,11 +12,15 @@ import {
 import { useLocalSearchParams, router } from "expo-router";
 import { getUserData, USERS } from "../../data/users";
 import { USER_POSTS, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS } from "../../data/profile";
+import CommentsModal from "../../components/CommentsModal";
+import ShareModal from "../../components/ShareModal";
 
 export default function UserProfileScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = getUserData(id);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
+  const [commentsPostId, setCommentsPostId] = useState<string | null>(null);
+  const [shareVisible, setShareVisible] = useState(false);
 
   const toggleLike = (postId: string) => {
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
@@ -163,11 +167,11 @@ export default function UserProfileScreen() {
                       <Ionicons name={likedPosts[post.id] ? "heart" : "heart-outline"} size={20} color={likedPosts[post.id] ? "#F02849" : "#65676B"} />
                       <Text style={[styles.profilePostFooterText, likedPosts[post.id] && { color: "#F02849" }]}>{likedPosts[post.id] ? post.likes + 1 : post.likes}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7}>
+                    <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setCommentsPostId(post.id)}>
                       <Ionicons name="chatbubble-outline" size={20} color="#65676B" />
                       <Text style={styles.profilePostFooterText}>{post.comments}</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7}>
+                    <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setShareVisible(true)}>
                       <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
                       <Text style={styles.profilePostFooterText}>Share</Text>
                     </TouchableOpacity>
@@ -179,6 +183,17 @@ export default function UserProfileScreen() {
         </View>
         <View style={{ height: 40 }} />
       </ScrollView>
+      <CommentsModal
+        visible={commentsPostId !== null}
+        onClose={() => setCommentsPostId(null)}
+        postId={commentsPostId || "1"}
+        postName={user.name}
+        postAvatar={user.avatar}
+        postTime={USER_POSTS.find((p) => p.id === commentsPostId)?.time || ""}
+        postContent={USER_POSTS.find((p) => p.id === commentsPostId)?.content}
+        postPhoto={USER_POSTS.find((p) => p.id === commentsPostId)?.image}
+      />
+      <ShareModal visible={shareVisible} onClose={() => setShareVisible(false)} />
     </View>
   );
 }
