@@ -1,18 +1,13 @@
-import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
 import { MESSAGE_THREADS } from "../../data/messages";
-import ProfileSidebar from "../../components/ProfileSidebar";
 
 export default function MessagesScreen() {
-  const [menuVisible, setMenuVisible] = useState(false);
+  const onlineUsers = MESSAGE_THREADS.filter((t) => t.online);
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
-          <Ionicons name="menu-outline" size={22} color="#050505" />
-        </TouchableOpacity>
         <Text style={styles.headerTitle}>Messages</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
@@ -27,6 +22,30 @@ export default function MessagesScreen() {
       <FlatList
         data={MESSAGE_THREADS}
         keyExtractor={(item) => item.id}
+        ListHeaderComponent={
+          onlineUsers.length > 0 ? (
+            <View>
+              <View style={styles.activeSection}>
+                <Text style={styles.activeLabel}>Active</Text>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.activeRow}>
+                  {onlineUsers.map((user) => (
+                    <TouchableOpacity key={user.id} style={styles.activeItem} activeOpacity={0.7}>
+                      <View style={styles.activeAvatarWrap}>
+                        <Image source={{ uri: user.avatar }} style={styles.activeAvatar} />
+                        <View style={styles.activeDot} />
+                      </View>
+                      <Text style={styles.activeName} numberOfLines={1}>{user.name.split(" ")[0]}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              </View>
+              <View style={styles.divider} />
+              <Text style={styles.chatsLabel}>Chats</Text>
+            </View>
+          ) : null
+        }
+        ListFooterComponent={<View style={{ height: 20 }} />}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.thread} activeOpacity={0.7}>
             <View style={styles.avatarWrap}>
@@ -48,7 +67,6 @@ export default function MessagesScreen() {
           </TouchableOpacity>
         )}
       />
-      <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </View>
   );
 }
@@ -103,4 +121,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   unreadText: { fontSize: 12, fontWeight: "700", color: "#fff" },
+  activeSection: { paddingTop: 12, paddingBottom: 8 },
+  activeLabel: { fontSize: 16, fontWeight: "700", color: "#050505", paddingHorizontal: 16, marginBottom: 10 },
+  activeRow: { paddingHorizontal: 12, gap: 8 },
+  activeItem: { alignItems: "center", width: 68 },
+  activeAvatarWrap: { position: "relative" },
+  activeAvatar: { width: 60, height: 60, borderRadius: 30 },
+  activeDot: {
+    position: "absolute", bottom: 2, right: 2,
+    width: 14, height: 14, borderRadius: 7,
+    backgroundColor: "#31A24C", borderWidth: 2, borderColor: "#fff",
+  },
+  activeName: { fontSize: 12, color: "#65676B", marginTop: 4, textAlign: "center" },
 });

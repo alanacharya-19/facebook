@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { NOTIFICATIONS, NOTIF_ICONS } from "../../data/notifications";
-import ProfileSidebar from "../../components/ProfileSidebar";
 
 const FILTERS = ["All", "Unread"];
 
@@ -122,7 +121,6 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
 
 export default function NotificationsScreen() {
   const [filter, setFilter] = useState(0);
-  const [sidebarVisible, setSidebarVisible] = useState(false);
   const [searching, setSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -140,9 +138,6 @@ export default function NotificationsScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.menuBtn} activeOpacity={0.7} onPress={() => setSidebarVisible(true)}>
-          <Ionicons name="menu-outline" size={24} color="#050505" />
-        </TouchableOpacity>
         {searching ? (
           <View style={styles.inlineSearch}>
             <Ionicons name="search" size={18} color="#65676B" />
@@ -201,7 +196,6 @@ export default function NotificationsScreen() {
         )}
         <View style={{ height: 40 }} />
       </ScrollView>
-      <ProfileSidebar visible={sidebarVisible} onClose={() => setSidebarVisible(false)} />
     </View>
   );
 }
@@ -218,14 +212,6 @@ const styles = StyleSheet.create({
     paddingTop: 30,
     paddingBottom: 12,
     gap: 12,
-  },
-  menuBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: "#E4E6EB",
-    alignItems: "center",
-    justifyContent: "center",
   },
   headerTitle: {
     fontSize: 24,

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
+import { useRef, useState } from "react";
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -67,21 +67,41 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
 export default function VideosScreen() {
   const [viewHeight, setViewHeight] = useState(0);
   const [searching, setSearching] = useState(false);
+  const headerOpacity = useRef(new Animated.Value(1)).current;
   const insets = useSafeAreaInsets();
+  const prevOffset = useRef(0);
+  const headerVisible = useRef(true);
+
+  const handleScroll = (e: any) => {
+    const y = e.nativeEvent.contentOffset.y;
+    const dy = y - prevOffset.current;
+    if (dy < 0 && !headerVisible.current) {
+      headerVisible.current = true;
+      Animated.timing(headerOpacity, { toValue: 1, duration: 200, useNativeDriver: true }).start();
+    } else if (dy > 0 && headerVisible.current) {
+      headerVisible.current = false;
+      Animated.timing(headerOpacity, { toValue: 0, duration: 200, useNativeDriver: true }).start();
+    }
+    prevOffset.current = y;
+  };
 
   return (
-    <View style={styles.container} onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
-      {viewHeight > 0 && (
-        <FlatList
-          data={REELS_DATA}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <ReelItem item={item} height={viewHeight} />}
-          pagingEnabled
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+    <View style={{ flex: 1 }}>
+      <View style={styles.container} onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
+        {viewHeight > 0 && (
+          <FlatList
+            data={REELS_DATA}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <ReelItem item={item} height={viewHeight} />}
+            pagingEnabled
+            showsVerticalScrollIndicator={false}
+            onScroll={handleScroll}
+            scrollEventThrottle={16}
+          />
+        )}
+      </View>
 
-      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+      <Animated.View style={[styles.header, { paddingTop: insets.top + 8, opacity: headerOpacity }]} pointerEvents={headerVisible.current ? "auto" : "none"}>
         <Text style={styles.headerTitle}>Reels</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
@@ -94,7 +114,7 @@ export default function VideosScreen() {
             <Ionicons name="person-circle-outline" size={22} color="#fff" />
           </TouchableOpacity>
         </View>
-      </View>
+      </Animated.View>
 
       {searching && <SearchOverlay onClose={() => setSearching(false)} />}
     </View>
@@ -116,14 +136,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingBottom: 10,
+    zIndex: 10,
+    elevation: 10,
   },
   headerTitle: {
     fontSize: 22,
     fontWeight: "700",
     color: "#fff",
-    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowColor: "rgba(0,0,0,0.8)",
     textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 4,
+    textShadowRadius: 6,
   },
   headerRight: {
     flexDirection: "row",
@@ -133,7 +155,7 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.3)",
+    backgroundColor: "rgba(0,0,0,0.45)",
     alignItems: "center",
     justifyContent: "center",
   },
