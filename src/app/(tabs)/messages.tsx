@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
+import { router } from "expo-router";
 import { MESSAGE_THREADS } from "../../data/messages";
 
 export default function MessagesScreen() {
@@ -19,35 +20,36 @@ export default function MessagesScreen() {
         </View>
       </View>
 
+      {onlineUsers.length > 0 && (
+        <View>
+          <View style={styles.activeSection}>
+            <Text style={styles.activeLabel}>Active</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.activeRow}>
+              {onlineUsers.map((user) => (
+                <TouchableOpacity key={user.id} style={styles.activeItem} activeOpacity={0.7}>
+                  <View style={styles.activeAvatarWrap}>
+                    <Image source={{ uri: user.avatar }} style={styles.activeAvatar} />
+                    <View style={styles.activeDot} />
+                  </View>
+                  <Text style={styles.activeName} numberOfLines={1}>{user.name.split(" ")[0]}</Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          </View>
+          <View style={styles.divider} />
+          <Text style={styles.chatsLabel}>Chats</Text>
+        </View>
+      )}
+
       <FlatList
         data={MESSAGE_THREADS}
         keyExtractor={(item) => item.id}
-        ListHeaderComponent={
-          onlineUsers.length > 0 ? (
-            <View>
-              <View style={styles.activeSection}>
-                <Text style={styles.activeLabel}>Active</Text>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.activeRow}>
-                  {onlineUsers.map((user) => (
-                    <TouchableOpacity key={user.id} style={styles.activeItem} activeOpacity={0.7}>
-                      <View style={styles.activeAvatarWrap}>
-                        <Image source={{ uri: user.avatar }} style={styles.activeAvatar} />
-                        <View style={styles.activeDot} />
-                      </View>
-                      <Text style={styles.activeName} numberOfLines={1}>{user.name.split(" ")[0]}</Text>
-                    </TouchableOpacity>
-                  ))}
-                </ScrollView>
-              </View>
-              <View style={styles.divider} />
-              <Text style={styles.chatsLabel}>Chats</Text>
-            </View>
-          ) : null
-        }
+        style={{ flex: 1 }}
+        showsVerticalScrollIndicator={false}
         ListFooterComponent={<View style={{ height: 20 }} />}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.thread} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.thread} activeOpacity={0.7} onPress={() => router.push(`/messages/${item.id}` as any)}>
             <View style={styles.avatarWrap}>
               <Image source={{ uri: item.avatar }} style={styles.avatar} />
               {item.online && <View style={styles.onlineDot} />}
@@ -133,4 +135,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#31A24C", borderWidth: 2, borderColor: "#fff",
   },
   activeName: { fontSize: 12, color: "#65676B", marginTop: 4, textAlign: "center" },
+  divider: { height: 8, backgroundColor: "#F0F2F5" },
+  separator: { height: 0.5, backgroundColor: "#CED0D4", marginLeft: 84 },
+  chatsLabel: { fontSize: 16, fontWeight: "700", color: "#050505", paddingHorizontal: 16, paddingVertical: 10 },
 });

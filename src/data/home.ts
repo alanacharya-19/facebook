@@ -31,10 +31,10 @@ export const POSTS = [
 export const REELS_COUNT = 6;
 
 export const REELS_DATA = [
-  { id: "1", user: "Alice", caption: "Morning vibes ☀️", likes: "12.4K", comments: "342", image: "https://picsum.photos/seed/reel1/360/640" },
-  { id: "2", user: "Bob", caption: "Check out this view! 🌄", likes: "8.7K", comments: "156", image: "https://picsum.photos/seed/reel2/360/640" },
-  { id: "3", user: "Charlie", caption: "New dance challenge 💃", likes: "45.2K", comments: "1.2K", image: "https://picsum.photos/seed/reel3/360/640" },
-  { id: "4", user: "Diana", caption: "Cooking something special 🍳", likes: "6.3K", comments: "89", image: "https://picsum.photos/seed/reel4/360/640" },
-  { id: "5", user: "Eve", caption: "Late night studio session 🎵", likes: "21.8K", comments: "567", image: "https://picsum.photos/seed/reel5/360/640" },
-  { id: "6", user: "Frank", caption: "Weekend getaway 🏖️", likes: "33.1K", comments: "901", image: "https://picsum.photos/seed/reel6/360/640" },
+  { id: "1", user: "Alice", avatar: "https://i.pravatar.cc/100?u=alice", caption: "Morning vibes ☀️", likes: "12.4K", comments: "342", image: "https://picsum.photos/seed/reel1/360/640" },
+  { id: "2", user: "Bob", avatar: "https://i.pravatar.cc/100?u=bob", caption: "Check out this view! 🌄", likes: "8.7K", comments: "156", image: "https://picsum.photos/seed/reel2/360/640" },
+  { id: "3", user: "Charlie", avatar: "https://i.pravatar.cc/100?u=charlie", caption: "New dance challenge 💃", likes: "45.2K", comments: "1.2K", image: "https://picsum.photos/seed/reel3/360/640" },
+  { id: "4", user: "Diana", avatar: "https://i.pravatar.cc/100?u=diana", caption: "Cooking something special 🍳", likes: "6.3K", comments: "89", image: "https://picsum.photos/seed/reel4/360/640" },
+  { id: "5", user: "Eve", avatar: "https://i.pravatar.cc/100?u=eve", caption: "Late night studio session 🎵", likes: "21.8K", comments: "567", image: "https://picsum.photos/seed/reel5/360/640" },
+  { id: "6", user: "Frank", avatar: "https://i.pravatar.cc/100?u=frank", caption: "Weekend getaway 🏖️", likes: "33.1K", comments: "901", image: "https://picsum.photos/seed/reel6/360/640" },
 ];

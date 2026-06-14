@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet, Animated } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, Image, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,15 +22,13 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
 
           <View style={[styles.bottomArea, { paddingBottom: insets.bottom + 10 }]}>
             <View style={styles.bottomLeft}>
-              <View style={styles.userRow}>
-                <View style={styles.userAvatar}>
-                  <Ionicons name="person" size={18} color="#fff" />
-                </View>
+              <TouchableOpacity style={styles.userRow} activeOpacity={0.7} onPress={() => router.push(`/profile/${item.user.toLowerCase()}` as any)}>
+                <Image source={{ uri: item.avatar }} style={styles.userAvatar} />
                 <Text style={styles.userName}>{item.user}</Text>
                 <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
                   <Text style={styles.followText}>Follow</Text>
                 </TouchableOpacity>
-              </View>
+              </TouchableOpacity>
               <Text style={styles.caption}>{item.caption}</Text>
               <View style={styles.musicRow}>
                 <Ionicons name="musical-note" size={14} color="#fff" />
@@ -200,9 +198,6 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: "rgba(255,255,255,0.3)",
-    alignItems: "center",
-    justifyContent: "center",
   },
   userName: {
     fontSize: 14,
