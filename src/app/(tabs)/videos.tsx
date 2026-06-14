@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { REELS_DATA } from "../../data/home";
+import SearchOverlay from "../../components/SearchOverlay";
 
 function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number }) {
   const [liked, setLiked] = useState(false);
@@ -64,6 +66,8 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
 
 export default function VideosScreen() {
   const [viewHeight, setViewHeight] = useState(0);
+  const [searching, setSearching] = useState(false);
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={styles.container} onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
@@ -76,6 +80,23 @@ export default function VideosScreen() {
           showsVerticalScrollIndicator={false}
         />
       )}
+
+      <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
+        <Text style={styles.headerTitle}>Reels</Text>
+        <View style={styles.headerRight}>
+          <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
+            <Ionicons name="search" size={20} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
+            <Ionicons name="add" size={22} color="#fff" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7} onPress={() => router.push("/profile" as any)}>
+            <Ionicons name="person-circle-outline" size={22} color="#fff" />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      {searching && <SearchOverlay onClose={() => setSearching(false)} />}
     </View>
   );
 }
@@ -84,6 +105,37 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#000",
+  },
+  header: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 10,
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: "700",
+    color: "#fff",
+    textShadowColor: "rgba(0,0,0,0.6)",
+    textShadowOffset: { width: 0, height: 1 },
+    textShadowRadius: 4,
+  },
+  headerRight: {
+    flexDirection: "row",
+    gap: 12,
+  },
+  headerBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(0,0,0,0.3)",
+    alignItems: "center",
+    justifyContent: "center",
   },
   reelContainer: {
     overflow: "hidden",

@@ -3,9 +3,10 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface TopHeaderProps {
   onSearchPress?: () => void;
+  onMenuPress?: () => void;
 }
 
-export default function TopHeader({ onSearchPress }: TopHeaderProps) {
+export default function TopHeader({ onSearchPress, onMenuPress }: TopHeaderProps) {
   return (
     <View style={styles.container}>
       <Text style={styles.logo}>facebook</Text>
@@ -16,8 +17,8 @@ export default function TopHeader({ onSearchPress }: TopHeaderProps) {
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={onSearchPress}>
           <Ionicons name="search" size={20} color="#050505" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-          <Ionicons name="paper-plane-outline" size={20} color="#050505" />
+        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={onMenuPress}>
+          <Ionicons name="menu-outline" size={22} color="#050505" />
         </TouchableOpacity>
       </View>
     </View>

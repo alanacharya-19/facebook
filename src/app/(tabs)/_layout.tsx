@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 
-type TabName = "index" | "videos" | "friends" | "notifications" | "profile";
+type TabName = "index" | "videos" | "friends" | "messages" | "notifications";
 
 const TAB_ICONS: Record<
   TabName,
@@ -21,11 +21,11 @@ const TAB_ICONS: Record<
   index: { focused: "home", unfocused: "home-outline" },
   videos: { focused: "film", unfocused: "film-outline" },
   friends: { focused: "people", unfocused: "people-outline" },
+  messages: { focused: "chatbubbles", unfocused: "chatbubbles-outline" },
   notifications: {
     focused: "notifications",
     unfocused: "notifications-outline",
   },
-  profile: { focused: "person-circle", unfocused: "person-circle-outline" },
 };
 
 function CustomTabBar(props: {
@@ -124,8 +124,8 @@ export default function TabLayout() {
       <Tabs.Screen name="index" />
       <Tabs.Screen name="videos" />
       <Tabs.Screen name="friends" />
+      <Tabs.Screen name="messages" />
       <Tabs.Screen name="notifications" />
-      <Tabs.Screen name="profile" />
     </Tabs>
   );
 }

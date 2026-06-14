@@ -9,9 +9,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ProfileSidebar from "../../components/ProfileSidebar";
-import SearchOverlay from "../../components/SearchOverlay";
-import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../../data/profile";
+import ProfileSidebar from "../components/ProfileSidebar";
+import SearchOverlay from "../components/SearchOverlay";
+import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../data/profile";
 
 function ProfilePost({ avatar, name, time, content, image, likes, comments }: any) {
   const [liked, setLiked] = useState(false);

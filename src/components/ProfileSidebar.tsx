@@ -17,14 +17,14 @@ type Props = {
 };
 
 export default function ProfileSidebar({ visible, onClose }: Props) {
-  const slideAnim = useRef(new Animated.Value(-300)).current;
+  const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
 
   useEffect(() => {
     Animated.parallel([
       Animated.timing(slideAnim, {
-        toValue: visible ? 0 : -300,
+        toValue: visible ? 0 : 300,
         duration: 250,
         useNativeDriver: true,
       }),
@@ -53,7 +53,7 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
         </View>
 
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-          <TouchableOpacity style={styles.profileRow} activeOpacity={0.7} onPress={() => { onClose(); router.push("/profile/alexj" as any); }}>
+          <TouchableOpacity style={styles.profileRow} activeOpacity={0.7} onPress={() => { onClose(); router.push("/profile" as any); }}>
             <Image source={{ uri: "https://i.pravatar.cc/150?u=alexj" }} style={styles.sidebarAvatar} />
             <View style={{ flex: 1 }}>
               <Text style={styles.sidebarName}>Alex Johnson</Text>
@@ -134,16 +134,16 @@ const styles = StyleSheet.create({
   sidebar: {
     position: "absolute",
     top: 0,
-    left: 0,
+    right: 0,
     width: 300,
     height: "100%",
     backgroundColor: "#fff",
-    borderTopRightRadius: 20,
-    borderBottomRightRadius: 20,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
     paddingHorizontal: 16,
     shadowColor: "#000",
     shadowOpacity: 0.15,
-    shadowOffset: { width: 2, height: 0 },
+    shadowOffset: { width: -2, height: 0 },
     shadowRadius: 12,
     elevation: 10,
   },
