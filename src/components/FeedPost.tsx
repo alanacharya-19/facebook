@@ -93,6 +93,32 @@ export default function FeedPost({
 
   return (
     <View style={styles.card}>
+      {menuOpen && (
+        <TouchableOpacity
+          style={styles.menuBackdrop}
+          activeOpacity={1}
+          onPress={() => setMenuOpen(false)}
+        />
+      )}
+      {menuOpen && (
+        <View style={styles.menuDropdown}>
+          {menuItems.map((item) => (
+            <TouchableOpacity
+              key={item}
+              style={styles.menuItem}
+              activeOpacity={0.7}
+              onPress={() => {
+                setMenuOpen(false);
+                if (item === "Hide post" || item === "Hide from timeline")
+                  onClose?.();
+              }}
+            >
+              <Text style={styles.menuItemText}>{item}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
+
       <View style={styles.header}>
         <TouchableOpacity onPress={goToProfile} activeOpacity={0.7}>
           <Avatar uri={avatar} size={40} style={styles.avatar} />
@@ -112,34 +138,19 @@ export default function FeedPost({
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 2 }}>
+          <TouchableOpacity
+            style={styles.menuBtn}
+            onPress={() => setMenuOpen(!menuOpen)}
+          >
+            <Ionicons name="ellipsis-vertical" size={20} color="#65676B" />
+          </TouchableOpacity>
           {onClose && (
             <TouchableOpacity style={styles.menuBtn} onPress={onClose}>
               <Ionicons name="close" size={20} color="#65676B" />
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.menuBtn} onPress={() => setMenuOpen(!menuOpen)}>
-            <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
-          </TouchableOpacity>
         </View>
       </View>
-
-      {menuOpen && (
-        <TouchableOpacity style={StyleSheet.absoluteFill} activeOpacity={1} onPress={() => setMenuOpen(false)} />
-      )}
-      {menuOpen && (
-        <View style={styles.menuDropdown}>
-          {menuItems.map((item) => (
-            <TouchableOpacity
-              key={item}
-              style={styles.menuItem}
-              activeOpacity={0.7}
-              onPress={() => { setMenuOpen(false); if (item === "Hide post" || item === "Hide from timeline") onClose?.(); }}
-            >
-              <Text style={styles.menuItemText}>{item}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
-      )}
 
       {content ? <Text style={styles.content}>{content}</Text> : null}
 
@@ -306,6 +317,7 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     maxWidth: 680,
     width: "100%",
+    overflow: "visible",
     borderBottomWidth: 6,
     borderBottomColor: "#F0F2F5",
   },
@@ -363,11 +375,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  menuBackdrop: {
+    position: "absolute",
+    top: -9999,
+    left: -9999,
+    right: -9999,
+    bottom: -9999,
+    zIndex: 99,
+  },
   menuDropdown: {
+    position: "absolute",
+    top: 52,
+    right: 12,
+    zIndex: 100,
     backgroundColor: "#fff",
     borderRadius: 10,
-    marginHorizontal: 12,
-    marginBottom: 4,
+    minWidth: 200,
     shadowColor: "#000",
     shadowOpacity: 0.12,
     shadowOffset: { width: 0, height: 2 },
