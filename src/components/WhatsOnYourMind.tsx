@@ -8,7 +8,7 @@ export default function WhatsOnYourMind() {
     <View style={styles.card}>
       <View style={styles.topRow}>
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/profile" as any)}>
-          <Image source={{ uri: "https://i.pravatar.cc/150?u=alexj" }} style={styles.avatar} />
+          <Avatar uri="https://i.pravatar.cc/150?u=alexj" size={40} style={styles.avatar} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.inputButton} activeOpacity={0.7}>
           <Text style={styles.inputText}>What's on your mind?</Text>

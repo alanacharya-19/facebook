@@ -49,7 +49,7 @@ export default function ChatScreen() {
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#050505" />
         </TouchableOpacity>
-        <Image source={{ uri: thread.avatar }} style={styles.avatar} />
+        <Avatar uri={thread.avatar} size={36} style={styles.avatar} />
         <View style={styles.headerInfo}>
           <Text style={styles.headerName}>{thread.name}</Text>
           <Text style={styles.headerStatus}>{thread.online ? "Active now" : "Offline"}</Text>
@@ -78,7 +78,7 @@ export default function ChatScreen() {
           keyboardShouldPersistTaps="handled"
           ListEmptyComponent={
             <View style={styles.emptyWrap}>
-              <Image source={{ uri: thread.avatar }} style={styles.emptyAvatar} />
+              <Avatar uri={thread.avatar} size={80} style={styles.emptyAvatar} />
               <Text style={styles.emptyName}>{thread.name}</Text>
               <Text style={styles.emptyHint}>Say hello!</Text>
             </View>

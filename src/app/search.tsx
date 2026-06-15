@@ -70,7 +70,7 @@ export default function SearchScreen() {
                 router.push(`/profile/${uid}` as any);
               }}
             >
-              <Image source={{ uri: item.avatar }} style={styles.avatar} />
+              <Avatar uri={item.avatar} size={48} style={styles.avatar} />
               <View style={styles.info}>
                 <Text style={styles.name}>{item.name}</Text>
                 <Text style={styles.detail}>

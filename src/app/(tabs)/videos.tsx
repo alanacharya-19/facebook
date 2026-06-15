@@ -24,7 +24,7 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
           <View style={[styles.bottomArea, { paddingBottom: insets.bottom + 10 }]}>
             <View style={styles.bottomLeft}>
               <TouchableOpacity style={styles.userRow} activeOpacity={0.7} onPress={() => router.push(`/profile/${item.user.toLowerCase()}` as any)}>
-                <Image source={{ uri: item.avatar }} style={styles.userAvatar} />
+                <Avatar uri={item.avatar} size={32} style={styles.userAvatar} />
                 <Text style={styles.userName}>{item.user}</Text>
                 <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
                   <Text style={styles.followText}>Follow</Text>

@@ -58,7 +58,7 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
   if (isFriendRequest && "avatar" in item) {
     return (
       <View style={[styles.notifRow, item.unread && styles.unread]}>
-        <Image source={{ uri: (item as typeof item & { avatar: string }).avatar }} style={styles.reqAvatar} />
+        <Avatar uri={(item as typeof item & { avatar: string }).avatar} size={52} style={styles.reqAvatar} />
         <View style={styles.notifContent}>
           <Text style={styles.notifText}>
             <Text style={styles.bold}>{item.user}</Text> {item.message}
@@ -93,7 +93,7 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
     >
       <View style={styles.avatarWrap}>
         {avatarUrl ? (
-          <Image source={{ uri: avatarUrl }} style={styles.notifAvatar} />
+          <Avatar uri={avatarUrl} size={52} style={styles.notifAvatar} />
         ) : (
           <NotifIcon type={item.type} color={item.color} />
         )}

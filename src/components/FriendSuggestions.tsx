@@ -18,7 +18,7 @@ export default function FriendSuggestions() {
         {FRIEND_SUGGESTIONS.map((person) => (
           <View key={person.id} style={styles.card}>
             <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
-              <Image source={{ uri: person.avatar }} style={styles.avatar} />
+              <Avatar uri={person.avatar} size={64} style={styles.avatar} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
               <Text style={styles.name} numberOfLines={1}>{person.name}</Text>

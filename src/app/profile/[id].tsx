@@ -83,7 +83,7 @@ export default function UserProfileScreen() {
         <View style={styles.profileBody}>
           <View style={styles.profileTop}>
             <View style={styles.avatarWrap}>
-              <Image source={{ uri: user.avatar }} style={styles.avatar} />
+              <Avatar uri={user.avatar} size={120} style={styles.avatar} />
             </View>
             <View style={styles.profileInfo}>
               <Text style={styles.name}>{user.name}</Text>
@@ -149,7 +149,7 @@ export default function UserProfileScreen() {
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.friendsRow}>
               {PROFILE_FRIENDS.map((f) => (
                 <TouchableOpacity key={f.id} style={styles.friendCard} activeOpacity={0.7}>
-                  <Image source={{ uri: f.avatar }} style={styles.friendAvatarCircle} />
+                  <Avatar uri={f.avatar} size={64} style={styles.friendAvatarCircle} />
                   <Text style={styles.friendName} numberOfLines={1}>{f.name}</Text>
                   <Text style={styles.friendMutual}>{f.mutual} mutual friends</Text>
                 </TouchableOpacity>
@@ -182,7 +182,7 @@ export default function UserProfileScreen() {
             {USER_POSTS.map((post) => (
               <View key={post.id} style={styles.profilePostCard}>
                 <View style={styles.profilePostTop}>
-                  <Image source={{ uri: user.avatar }} style={styles.profilePostAvatar} />
+                  <Avatar uri={user.avatar} size={40} style={styles.profilePostAvatar} />
                   <View style={styles.profilePostHeaderText}>
                     <Text style={styles.profilePostName}>{user.name}</Text>
                     <View style={styles.profilePostTimeRow}>
@@ -214,7 +214,7 @@ export default function UserProfileScreen() {
                   {expandedComments[post.id] && (
                     <View style={styles.inlineComments}>
                       <View style={styles.commentInputRow}>
-                        <Image source={{ uri: currentUser.avatar }} style={styles.commentInputAvatar} />
+                        <Avatar uri={currentUser.avatar} size={28} style={styles.commentInputAvatar} />
                         <View style={styles.commentInputWrap}>
                           <TextInput
                             placeholder="Write a comment..."
@@ -240,7 +240,7 @@ export default function UserProfileScreen() {
 
                       {(allComments[post.id] || []).slice(0, 5).map((comment) => (
                         <View key={comment.id} style={styles.commentRow}>
-                          <Image source={{ uri: comment.avatar }} style={styles.commentAvatar} />
+                          <Avatar uri={comment.avatar} size={32} style={styles.commentAvatar} />
                           <View style={styles.commentBubble}>
                             <Text style={styles.commentName}>{comment.name}</Text>
                             <Text style={styles.commentText}>{comment.text}</Text>

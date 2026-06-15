@@ -29,7 +29,7 @@ export default function MessagesScreen() {
               {onlineUsers.map((user) => (
                 <TouchableOpacity key={user.id} style={styles.activeItem} activeOpacity={0.7}>
                   <View style={styles.activeAvatarWrap}>
-                    <Image source={{ uri: user.avatar }} style={styles.activeAvatar} />
+                    <Avatar uri={user.avatar} size={60} style={styles.activeAvatar} />
                     <View style={styles.activeDot} />
                   </View>
                   <Text style={styles.activeName} numberOfLines={1}>{user.name.split(" ")[0]}</Text>
@@ -52,7 +52,7 @@ export default function MessagesScreen() {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.thread} activeOpacity={0.7} onPress={() => router.push(`/messages/${item.id}` as any)}>
             <View style={styles.avatarWrap}>
-              <Image source={{ uri: item.avatar }} style={styles.avatar} />
+              <Avatar uri={item.avatar} size={56} style={styles.avatar} />
               {item.online && <View style={styles.onlineDot} />}
             </View>
             <View style={styles.threadInfo}>

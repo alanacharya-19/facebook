@@ -15,11 +15,12 @@ type FeedPostProps = {
   photo?: string;
   userId?: string;
   postId?: string;
+  onClose?: () => void;
 };
 
 const currentUser = Object.values(USERS)[0];
 
-export default function FeedPost({ name, time, content, avatar, photo, userId, postId = "1" }: FeedPostProps) {
+export default function FeedPost({ name, time, content, avatar, photo, userId, postId = "1", onClose }: FeedPostProps) {
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
@@ -60,7 +61,7 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
     <View style={styles.card}>
       <View style={styles.header}>
         <TouchableOpacity onPress={goToProfile} activeOpacity={0.7}>
-          <Image source={{ uri: avatar }} style={styles.avatar} />
+          <Avatar uri={avatar} size={40} style={styles.avatar} />
         </TouchableOpacity>
         <View style={styles.headerText}>
           <View style={styles.nameRow}>
@@ -76,12 +77,14 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
             <Ionicons name="globe-outline" size={12} color="#65676B" />
           </View>
         </View>
-        <TouchableOpacity style={styles.menuBtn}>
-          <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.closeBtn}>
-          <Ionicons name="close" size={20} color="#65676B" />
-        </TouchableOpacity>
+        <View style={{ flexDirection: "row", gap: 2 }}>
+          <TouchableOpacity style={styles.headerIcon} onPress={onClose}>
+            <Ionicons name="close" size={16} color="#65676B" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.menuBtn}>
+            <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       {content ? <Text style={styles.content}>{content}</Text> : null}
@@ -114,7 +117,7 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
           <View style={styles.commentsDivider} />
 
           <View style={styles.commentInputRow}>
-            <Image source={{ uri: currentUser.avatar }} style={styles.commentInputAvatar} />
+            <Avatar uri={currentUser.avatar} size={28} style={styles.commentInputAvatar} />
             <View style={styles.commentInputWrap}>
               <TextInput
                 placeholder="Write a comment..."
@@ -140,7 +143,7 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
 
           {comments.slice(0, 5).map((comment) => (
             <View key={comment.id} style={styles.commentRow}>
-              <Image source={{ uri: comment.avatar }} style={styles.commentAvatar} />
+              <Avatar uri={comment.avatar} size={32} style={styles.commentAvatar} />
               <View style={styles.commentBubble}>
                 <Text style={styles.commentName}>{comment.name}</Text>
                 <Text style={styles.commentText}>{comment.text}</Text>
@@ -241,13 +244,6 @@ const styles = StyleSheet.create({
     color: "#65676B",
   },
   menuBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  closeBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,

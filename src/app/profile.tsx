@@ -19,7 +19,7 @@ function ProfilePost({ avatar, name, time, content, image, likes, comments }: an
   return (
     <View style={styles.profilePostCard}>
       <View style={styles.profilePostTop}>
-        <Image source={{ uri: avatar }} style={styles.profilePostAvatar} />
+        <Avatar uri={avatar} size={40} style={styles.profilePostAvatar} />
         <View style={styles.profilePostHeaderText}>
           <Text style={styles.profilePostName}>{name}</Text>
           <View style={styles.profilePostTimeRow}>
@@ -83,7 +83,7 @@ export default function ProfileScreen() {
         <View style={styles.profileBody}>
           <View style={styles.profileTop}>
             <View style={styles.avatarWrap}>
-              <Image source={{ uri: PROFILE.avatar }} style={styles.avatar} />
+              <Avatar uri={PROFILE.avatar} size={120} style={styles.avatar} />
               <TouchableOpacity style={styles.cameraAvatarBtn} activeOpacity={0.7}>
                 <Ionicons name="camera" size={14} color="#fff" />
               </TouchableOpacity>
@@ -173,7 +173,7 @@ export default function ProfileScreen() {
                 <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.friendsRow}>
                   {PROFILE_FRIENDS.map((f) => (
                     <TouchableOpacity key={f.id} style={styles.friendCard} activeOpacity={0.7}>
-                      <Image source={{ uri: f.avatar }} style={styles.friendAvatarCircle} />
+                      <Avatar uri={f.avatar} size={64} style={styles.friendAvatarCircle} />
                       <Text style={styles.friendName} numberOfLines={1}>{f.name}</Text>
                       <Text style={styles.friendMutual}>{f.mutual} mutual friends</Text>
                     </TouchableOpacity>

@@ -55,7 +55,7 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
 
         <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
           <TouchableOpacity style={styles.profileRow} activeOpacity={0.7} onPress={() => { onClose(); router.push("/profile" as any); }}>
-            <Image source={{ uri: "https://i.pravatar.cc/150?u=alexj" }} style={styles.sidebarAvatar} />
+            <Avatar uri="https://i.pravatar.cc/150?u=alexj" size={44} style={styles.sidebarAvatar} />
             <View style={{ flex: 1 }}>
               <Text style={styles.sidebarName}>Alex Johnson</Text>
               <Text style={styles.sidebarSub}>See your profile</Text>

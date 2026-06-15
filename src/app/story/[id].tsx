@@ -79,7 +79,7 @@ function StoryFrame({
           </View>
           <View style={styles.topBar}>
             <View style={styles.userInfo}>
-              <Image source={{ uri: story.avatar }} style={styles.avatar} />
+              <Avatar uri={story.avatar} size={36} style={styles.avatar} />
               <View>
                 <Text style={styles.userName}>{story.name}</Text>
                 <Text style={styles.time}>Just now</Text>

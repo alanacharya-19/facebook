@@ -41,7 +41,7 @@ function PersonCard({
   const isSuggestion = type === "suggestion";
   return (
     <View style={styles.personCard}>
-      <Image source={{ uri: item.avatar }} style={[styles.personAvatar, isSuggestion && styles.personAvatarSm]} />
+      <Avatar uri={item.avatar} size={72} style={[styles.personAvatar, isSuggestion && styles.personAvatarSm]} />
       <View style={styles.personInfo}>
         <Text style={styles.personName}>{item.name}</Text>
         <View style={styles.personMeta}>
@@ -190,7 +190,7 @@ export default function FriendsScreen() {
                 ) : (
                   ALL_FRIENDS.map((f) => (
                     <View key={f.id} style={styles.personCard}>
-                      <Image source={{ uri: f.avatar }} style={[styles.personAvatar, styles.personAvatarSm]} />
+                      <Avatar uri={f.avatar} size={56} style={[styles.personAvatar, styles.personAvatarSm]} />
                       <View style={styles.personInfo}>
                         <Text style={styles.personName}>{f.name}</Text>
                       </View>
