@@ -9,6 +9,7 @@ import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 import FeedSkeleton from "../../components/FeedSkeleton";
 import ProfileSidebar from "../../components/ProfileSidebar";
+import PostComposer from "../../components/PostComposer";
 import { POSTS, STORIES, FRIEND_SUGGESTIONS, REELS_COUNT } from "../../data/home";
 
 function shuffle<T>(arr: T[]): T[] {
@@ -29,6 +30,7 @@ export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
   const [hiddenPosts, setHiddenPosts] = useState<string[]>([]);
+  const [composerVisible, setComposerVisible] = useState(false);
   const [seed, setSeed] = useState(0);
 
   const onRefresh = useCallback(() => {
@@ -54,7 +56,7 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       >
-        <WhatsOnYourMind />
+        <WhatsOnYourMind onPress={() => setComposerVisible(true)} />
         <StoriesBar data={shuffledStories} />
         {visiblePosts.slice(0, 2).map((post) => (
           <FeedPost key={post.id} {...post} postId={post.id} userId={post.name.toLowerCase()} onClose={() => setHiddenPosts((prev) => [...prev, post.id])} />
@@ -70,6 +72,7 @@ export default function HomeScreen() {
         <View style={{ height: 20 }} />
       </ScrollView>
       <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
+      <PostComposer visible={composerVisible} onClose={() => setComposerVisible(false)} />
     </View>
   );
 }

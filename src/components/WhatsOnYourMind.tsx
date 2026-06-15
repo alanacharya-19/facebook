@@ -3,14 +3,18 @@ import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
 import Avatar from "./Avatar";
 
-export default function WhatsOnYourMind() {
+type Props = {
+  onPress?: () => void;
+};
+
+export default function WhatsOnYourMind({ onPress }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.topRow}>
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/profile" as any)}>
           <Avatar uri="https://i.pravatar.cc/150?u=alexj" size={40} style={styles.avatar} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.inputButton} activeOpacity={0.7}>
+        <TouchableOpacity style={styles.inputButton} activeOpacity={0.7} onPress={onPress}>
           <Text style={styles.inputText}>What's on your mind?</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7}>
