@@ -5,10 +5,10 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const SHORTCUTS = [
-  { icon: "videocam-outline" as const, label: "Reels" },
-  { icon: "newspaper-outline" as const, label: "Feed" },
-  { icon: "bookmark-outline" as const, label: "Saved" },
-  { icon: "people-outline" as const, label: "Friends" },
+  { image: require("../../assets/icons/reel.png"), label: "Reels" },
+  { image: require("../../assets/icons/feed.png"), label: "Feed" },
+  { image: require("../../assets/icons/bookmark.png"), label: "Saved" },
+  { image: require("../../assets/icons/friends.png"), label: "Friends" },
 ];
 
 type Props = {
@@ -76,9 +76,7 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
             <View key={ri} style={styles.shortcutRow}>
               {row.map((s) => (
                 <TouchableOpacity key={s.label} style={styles.shortcutItem} activeOpacity={0.7}>
-                  <View style={styles.shortcutIcon}>
-                    <Ionicons name={s.icon} size={20} color="#050505" />
-                  </View>
+                  <Image source={s.image} style={{ width: 28, height: 28 }} />
                   <Text style={styles.shortcutLabel}>{s.label}</Text>
                 </TouchableOpacity>
               ))}

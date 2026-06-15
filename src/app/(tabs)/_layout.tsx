@@ -20,8 +20,8 @@ const TAB_ICONS: Record<
 > = {
   index: { focused: "home", unfocused: "home-outline" },
   videos: { focused: "film", unfocused: "film-outline" },
-  friends: { focused: "people", unfocused: "people-outline" },
   messages: { focused: "chatbubbles", unfocused: "chatbubbles-outline" },
+  friends: { focused: "people", unfocused: "people-outline" },
   notifications: {
     focused: "notifications",
     unfocused: "notifications-outline",
@@ -123,8 +123,8 @@ export default function TabLayout() {
     >
       <Tabs.Screen name="index" />
       <Tabs.Screen name="videos" />
-      <Tabs.Screen name="friends" />
       <Tabs.Screen name="messages" />
+      <Tabs.Screen name="friends" />
       <Tabs.Screen name="notifications" />
     </Tabs>
   );

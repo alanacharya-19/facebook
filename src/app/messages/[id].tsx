@@ -1,15 +1,38 @@
-import { useState } from "react";
-import { View, Text, TextInput, FlatList, TouchableOpacity, Image, KeyboardAvoidingView, Platform, StyleSheet } from "react-native";
+import { useState, useEffect, useRef } from "react";
+import { View, Text, TextInput, FlatList, TouchableOpacity, Image, Animated, Platform, Keyboard, KeyboardEvent, StyleSheet } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MESSAGE_THREADS } from "../../data/messages";
+
+type Msg = { text: string; time: string; sent: boolean };
 
 export default function ChatScreen() {
   const { id } = useLocalSearchParams();
   const insets = useSafeAreaInsets();
   const thread = MESSAGE_THREADS.find((t) => t.id === id);
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const kb = useRef(new Animated.Value(0)).current;
+  const listRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    const show = Keyboard.addListener(Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow", (e: KeyboardEvent) => {
+      Animated.timing(kb, { toValue: e.endCoordinates.height, duration: 250, useNativeDriver: true }).start();
+    });
+    const hide = Keyboard.addListener(Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide", () => {
+      Animated.timing(kb, { toValue: 0, duration: 250, useNativeDriver: true }).start();
+    });
+    return () => { show.remove(); hide.remove(); };
+  }, []);
+
+  const sendMsg = () => {
+    const text = message.trim();
+    if (!text) return;
+    setMessages((prev) => [...prev, { text, time: "Just now", sent: true }]);
+    setMessage("");
+    setTimeout(() => listRef.current?.scrollToEnd({ animated: true }), 100);
+  };
 
   if (!thread) {
     return (
@@ -19,8 +42,8 @@ export default function ChatScreen() {
     );
   }
 
-  const content = (
-    <>
+  return (
+    <View style={styles.container}>
       <View style={[styles.header, { paddingTop: insets.top + 8 }]}>
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="#050505" />
@@ -38,22 +61,31 @@ export default function ChatScreen() {
         </TouchableOpacity>
       </View>
 
-      <FlatList
-        style={styles.messagesList}
-        contentContainerStyle={styles.messagesContent}
-        data={[]}
-        keyExtractor={(_item, i) => i.toString()}
-        renderItem={() => null}
-        ListEmptyComponent={
-          <View style={styles.emptyWrap}>
-            <Image source={{ uri: thread.avatar }} style={styles.emptyAvatar} />
-            <Text style={styles.emptyName}>{thread.name}</Text>
-            <Text style={styles.emptyHint}>Say hello! 👋</Text>
-          </View>
-        }
-      />
+      <TouchableOpacity style={{ flex: 1 }} activeOpacity={1} onPress={Keyboard.dismiss}>
+        <FlatList
+          ref={listRef}
+          style={styles.messagesList}
+          contentContainerStyle={messages.length === 0 ? styles.messagesContent : { paddingHorizontal: 16, paddingVertical: 12 }}
+          data={messages}
+          keyExtractor={(_, i) => i.toString()}
+          renderItem={({ item }) => (
+            <View style={[styles.msgBubble, item.sent && styles.msgSent]}>
+              <Text style={[styles.msgText, item.sent && styles.msgTextSent]}>{item.text}</Text>
+              <Text style={[styles.msgTime, item.sent && styles.msgTimeSent]}>{item.time}</Text>
+            </View>
+          )}
+          keyboardShouldPersistTaps="handled"
+          ListEmptyComponent={
+            <View style={styles.emptyWrap}>
+              <Image source={{ uri: thread.avatar }} style={styles.emptyAvatar} />
+              <Text style={styles.emptyName}>{thread.name}</Text>
+              <Text style={styles.emptyHint}>Say hello!</Text>
+            </View>
+          }
+        />
+      </TouchableOpacity>
 
-      <View style={[styles.inputBar, { paddingBottom: insets.bottom + 8 }]}>
+      <Animated.View style={[styles.inputBar, { paddingBottom: insets.bottom + 8, transform: [{ translateY: kb.interpolate({ inputRange: [0, 500], outputRange: [0, -500], extrapolate: "clamp" }) }] }]}>
         <TouchableOpacity style={styles.plusBtn} activeOpacity={0.7}>
           <Ionicons name="add-circle" size={28} color="#1877F2" />
         </TouchableOpacity>
@@ -64,13 +96,15 @@ export default function ChatScreen() {
             placeholderTextColor="#8A8D91"
             value={message}
             onChangeText={setMessage}
+            returnKeyType="send"
+            onSubmitEditing={sendMsg}
           />
           <TouchableOpacity style={styles.emojiBtn} activeOpacity={0.7}>
             <Ionicons name="happy-outline" size={22} color="#65676B" />
           </TouchableOpacity>
         </View>
         {message.trim() ? (
-          <TouchableOpacity style={styles.sendBtn} activeOpacity={0.7}>
+          <TouchableOpacity style={styles.sendBtn} activeOpacity={0.7} onPress={sendMsg}>
             <Ionicons name="send" size={20} color="#1877F2" />
           </TouchableOpacity>
         ) : (
@@ -78,14 +112,9 @@ export default function ChatScreen() {
             <Ionicons name="thumbs-up-outline" size={24} color="#1877F2" />
           </TouchableOpacity>
         )}
-      </View>
-    </>
+      </Animated.View>
+    </View>
   );
-
-  if (Platform.OS === "ios") {
-    return <KeyboardAvoidingView style={styles.container} behavior="padding">{content}</KeyboardAvoidingView>;
-  }
-  return <View style={styles.container}>{content}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -133,4 +162,24 @@ const styles = StyleSheet.create({
   emojiBtn: { marginLeft: 4 },
   sendBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
   likeBtn: { width: 36, height: 36, alignItems: "center", justifyContent: "center" },
+  msgBubble: {
+    alignSelf: "flex-start",
+    backgroundColor: "#F0F2F5",
+    borderRadius: 18,
+    borderBottomLeftRadius: 4,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    marginBottom: 6,
+    maxWidth: "80%",
+  },
+  msgSent: {
+    alignSelf: "flex-end",
+    backgroundColor: "#1877F2",
+    borderBottomLeftRadius: 18,
+    borderBottomRightRadius: 4,
+  },
+  msgText: { fontSize: 15, color: "#050505" },
+  msgTextSent: { color: "#fff" },
+  msgTime: { fontSize: 11, color: "#65676B", marginTop: 2, alignSelf: "flex-end" },
+  msgTimeSent: { color: "rgba(255,255,255,0.7)" },
 });
