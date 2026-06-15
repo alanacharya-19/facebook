@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 interface TopHeaderProps {
   onSearchPress?: () => void;
@@ -12,7 +12,7 @@ export default function TopHeader({ onSearchPress, onMenuPress }: TopHeaderProps
       <Text style={styles.logo}>facebook</Text>
       <View style={styles.right}>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-          <Ionicons name="add" size={22} color="#050505" />
+          <Image source={require("../../assets/icons/create.png")} style={{ width: 20, height: 20 }} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={onSearchPress}>
           <Ionicons name="search" size={20} color="#050505" />

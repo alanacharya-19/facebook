@@ -26,6 +26,7 @@ type FeedPostProps = {
 };
 
 const currentUser = Object.values(USERS)[0];
+const isOwnPost = (uid?: string) => uid === currentUser.name.toLowerCase();
 
 export default function FeedPost({
   name,
@@ -44,6 +45,12 @@ export default function FeedPost({
     POST_COMMENTS[postId] || [],
   );
   const [newComment, setNewComment] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const own = isOwnPost(userId);
+
+  const menuItems = own
+    ? ["Edit post", "Pin post", "Delete post", "Hide from timeline"]
+    : ["Hide post", "Snooze for 30 days", "Report post"];
 
   const totalComments = comments.length;
   const commentsLabel =
@@ -105,14 +112,34 @@ export default function FeedPost({
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 2 }}>
-          <TouchableOpacity style={styles.menuBtn}>
-            <Ionicons name="ellipsis-vertical" size={20} color="#65676B" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
-            <Ionicons name="close" size={16} color="#65676B" />
+          {onClose && (
+            <TouchableOpacity style={styles.menuBtn} onPress={onClose}>
+              <Ionicons name="close" size={20} color="#65676B" />
+            </TouchableOpacity>
+          )}
+          <TouchableOpacity style={styles.menuBtn} onPress={() => setMenuOpen(!menuOpen)}>
+            <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
           </TouchableOpacity>
         </View>
       </View>
+
+      {menuOpen && (
+        <TouchableOpacity style={StyleSheet.absoluteFill} activeOpacity={1} onPress={() => setMenuOpen(false)} />
+      )}
+      {menuOpen && (
+        <View style={styles.menuDropdown}>
+          {menuItems.map((item) => (
+            <TouchableOpacity
+              key={item}
+              style={styles.menuItem}
+              activeOpacity={0.7}
+              onPress={() => { setMenuOpen(false); if (item === "Hide post" || item === "Hide from timeline") onClose?.(); }}
+            >
+              <Text style={styles.menuItemText}>{item}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      )}
 
       {content ? <Text style={styles.content}>{content}</Text> : null}
 
@@ -274,6 +301,11 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     marginTop: 6,
+    marginHorizontal: 12,
+    borderRadius: 12,
+    alignSelf: "center",
+    maxWidth: 680,
+    width: "100%",
     borderBottomWidth: 6,
     borderBottomColor: "#F0F2F5",
   },
@@ -331,10 +363,30 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  closeBtn: {
-    alignItems: "center",
-    justifyContent: "center",
+  menuDropdown: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginHorizontal: 12,
+    marginBottom: 4,
+    shadowColor: "#000",
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 5,
+    borderWidth: 0.5,
+    borderColor: "#CED0D4",
   },
+  menuItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "#F0F2F5",
+  },
+  menuItemText: {
+    fontSize: 14,
+    color: "#050505",
+  },
+  headerIcon: {},
   content: {
     fontSize: 15,
     color: "#050505",
