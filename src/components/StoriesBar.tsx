@@ -2,6 +2,7 @@ import { ScrollView, View, Text, Image, TouchableOpacity, ImageBackground, Style
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { STORIES } from "../data/home";
+import Avatar from "./Avatar";
 
 const GRADIENT = ["#833AB4", "#FD1D1D", "#F77737", "#FCAF45"];
 

@@ -4,6 +4,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { MESSAGE_THREADS } from "../../data/messages";
+import Avatar from "../../components/Avatar";
 
 type Msg = { text: string; time: string; sent: boolean };
 

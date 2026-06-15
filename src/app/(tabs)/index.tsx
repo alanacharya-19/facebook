@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { ScrollView, View, RefreshControl } from "react-native";
+import { router } from "expo-router";
 import TopHeader from "../../components/TopHeader";
 import WhatsOnYourMind from "../../components/WhatsOnYourMind";
 import StoriesBar from "../../components/StoriesBar";
@@ -7,13 +8,11 @@ import FriendSuggestions from "../../components/FriendSuggestions";
 import FeedPost from "../../components/FeedPost";
 import ReelsSection from "../../components/ReelsSection";
 import FeedSkeleton from "../../components/FeedSkeleton";
-import SearchOverlay from "../../components/SearchOverlay";
 import ProfileSidebar from "../../components/ProfileSidebar";
 import { POSTS } from "../../data/home";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
-  const [searching, setSearching] = useState(false);
   const [menuVisible, setMenuVisible] = useState(false);
 
   const onRefresh = useCallback(() => {
@@ -23,7 +22,7 @@ export default function HomeScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: "#F0F2F5" }}>
-      <TopHeader onSearchPress={() => setSearching(true)} onMenuPress={() => setMenuVisible(true)} />
+      <TopHeader onSearchPress={() => router.push("/search" as any)} onMenuPress={() => setMenuVisible(true)} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -43,7 +42,6 @@ export default function HomeScreen() {
         ))}
         <View style={{ height: 20 }} />
       </ScrollView>
-      {searching && <SearchOverlay onClose={() => setSearching(false)} />}
       <ProfileSidebar visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </View>
   );

@@ -5,6 +5,7 @@ import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { REELS_DATA } from "../../data/home";
 import SearchOverlay from "../../components/SearchOverlay";
+import Avatar from "../../components/Avatar";
 
 function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number }) {
   const [liked, setLiked] = useState(false);

@@ -15,6 +15,7 @@ import { getUserData, USERS } from "../../data/users";
 import { USER_POSTS, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS } from "../../data/profile";
 import { POST_COMMENTS, Comment } from "../../data/comments";
 import ShareModal from "../../components/ShareModal";
+import Avatar from "../../components/Avatar";
 
 const currentUser = Object.values(USERS)[0];
 

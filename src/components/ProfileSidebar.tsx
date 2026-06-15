@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet, Image, S
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import Avatar from "./Avatar";
 
 const SHORTCUTS = [
   { image: require("../../assets/icons/reel.png"), label: "Reels" },

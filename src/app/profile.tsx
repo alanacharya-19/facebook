@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import ProfileSidebar from "../components/ProfileSidebar";
 import SearchOverlay from "../components/SearchOverlay";
+import Avatar from "../components/Avatar";
 import { PROFILE, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS, PROFILE_TABS, USER_POSTS } from "../data/profile";
 
 function ProfilePost({ avatar, name, time, content, image, likes, comments }: any) {

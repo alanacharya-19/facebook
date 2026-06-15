@@ -3,6 +3,7 @@ import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from "reac
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import ShareModal from "./ShareModal";
+import Avatar from "./Avatar";
 import { POST_COMMENTS, Comment } from "../data/comments";
 import { USERS } from "../data/users";
 

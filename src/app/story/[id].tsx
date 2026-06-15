@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Avatar from "../../components/Avatar";
 import { useLocalSearchParams, router } from "expo-router";
 import { STORIES } from "../../data/home";
 

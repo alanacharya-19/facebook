@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { USERS } from "../data/users";
+import Avatar from "../components/Avatar";
 
 export default function SearchScreen() {
   const [query, setQuery] = useState("");

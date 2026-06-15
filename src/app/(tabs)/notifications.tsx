@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { NOTIFICATIONS, NOTIF_ICONS } from "../../data/notifications";
+import Avatar from "../../components/Avatar";
 
 const FILTERS = ["All", "Unread"];
 

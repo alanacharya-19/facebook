@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { router } from "expo-router";
 import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW, ALL_FRIENDS } from "../../data/friends";
+import Avatar from "../../components/Avatar";
 
 const TABS = ["Suggestions", "Your Friends"];
 

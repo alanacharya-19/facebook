@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from "react-native";
 import { router } from "expo-router";
 import { MESSAGE_THREADS } from "../../data/messages";
+import Avatar from "../../components/Avatar";
 
 export default function MessagesScreen() {
   const onlineUsers = MESSAGE_THREADS.filter((t) => t.online);

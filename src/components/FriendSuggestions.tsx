@@ -2,6 +2,7 @@ import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "rea
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { FRIEND_SUGGESTIONS } from "../data/home";
+import Avatar from "./Avatar";
 
 export default function FriendSuggestions() {
   return (

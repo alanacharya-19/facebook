@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import Avatar from "./Avatar";
 
 export default function WhatsOnYourMind() {
   return (
