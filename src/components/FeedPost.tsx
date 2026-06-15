@@ -78,11 +78,11 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 2 }}>
-          <TouchableOpacity style={styles.headerIcon} onPress={onClose}>
-            <Ionicons name="close" size={16} color="#65676B" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.menuBtn}>
             <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.headerIcon} onPress={onClose}>
+            <Ionicons name="close" size={16} color="#65676B" />
           </TouchableOpacity>
         </View>
       </View>

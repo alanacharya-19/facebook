@@ -6,11 +6,16 @@ import Avatar from "./Avatar";
 
 const GRADIENT = ["#833AB4", "#FD1D1D", "#F77737", "#FCAF45"];
 
-export default function StoriesBar() {
+type Props = {
+  data?: typeof STORIES;
+};
+
+export default function StoriesBar({ data }: Props) {
+  const items = data ?? STORIES;
   return (
     <View style={styles.container}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {STORIES.map((story) => (
+        {items.map((story) => (
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story} onPress={() => router.push(`/story/${story.id}` as any)}>
             {story.isSelf ? (
               <View style={styles.selfCard}>

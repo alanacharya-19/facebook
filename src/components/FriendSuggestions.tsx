@@ -4,7 +4,12 @@ import { router } from "expo-router";
 import { FRIEND_SUGGESTIONS } from "../data/home";
 import Avatar from "./Avatar";
 
-export default function FriendSuggestions() {
+type Props = {
+  data?: typeof FRIEND_SUGGESTIONS;
+};
+
+export default function FriendSuggestions({ data }: Props) {
+  const items = data ?? FRIEND_SUGGESTIONS;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -15,7 +20,7 @@ export default function FriendSuggestions() {
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
-        {FRIEND_SUGGESTIONS.map((person) => (
+        {items.map((person) => (
           <View key={person.id} style={styles.card}>
             <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
               <Avatar uri={person.avatar} size={64} style={styles.avatar} />

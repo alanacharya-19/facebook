@@ -2,12 +2,17 @@ import { ScrollView, View, Text, ImageBackground, TouchableOpacity, StyleSheet }
 import { Ionicons } from "@expo/vector-icons";
 import { REELS_COUNT } from "../data/home";
 
-const REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
+const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
   id: String(i + 1),
   image: `https://picsum.photos/seed/reel${i + 1}/232/392`,
 }));
 
-export default function ReelsSection() {
+type Props = {
+  data?: typeof DEFAULT_REELS;
+};
+
+export default function ReelsSection({ data }: Props) {
+  const reels = data ?? DEFAULT_REELS;
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -21,7 +26,7 @@ export default function ReelsSection() {
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
-        {REELS.map((reel) => (
+        {reels.map((reel) => (
           <TouchableOpacity key={reel.id} style={styles.reel} activeOpacity={0.9}>
             <ImageBackground source={{ uri: reel.image }} style={styles.thumb} imageStyle={{ borderRadius: 12 }}>
               <View style={styles.playOverlay}>
