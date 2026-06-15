@@ -39,7 +39,11 @@ export default function HomeScreen() {
   }, []);
 
   const visiblePosts = useMemo(() => shuffle(POSTS).filter((p) => !hiddenPosts.includes(p.id)), [seed, hiddenPosts]);
-  const shuffledStories = useMemo(() => shuffle(STORIES), [seed]);
+  const shuffledStories = useMemo(() => {
+    const self = STORIES.find((s) => s.isSelf);
+    const others = shuffle(STORIES.filter((s) => !s.isSelf));
+    return self ? [self, ...others] : others;
+  }, [seed]);
   const shuffledSuggestions = useMemo(() => shuffle(FRIEND_SUGGESTIONS), [seed]);
   const shuffledReels = useMemo(() => shuffle(DEFAULT_REELS), [seed]);
 

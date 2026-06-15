@@ -34,12 +34,6 @@ export default function ReelsSection({ data }: Props) {
                   <Ionicons name="play" size={22} color="#fff" />
                 </View>
               </View>
-              <View style={styles.reelFooter}>
-                <View style={styles.reelAvatar}>
-                  <Ionicons name="person" size={14} color="#fff" />
-                </View>
-                <Text style={styles.reelName}>User {reel.id}</Text>
-              </View>
             </ImageBackground>
           </TouchableOpacity>
         ))}
@@ -109,27 +103,5 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.25)",
     alignItems: "center",
     justifyContent: "center",
-  },
-  reelFooter: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    padding: 10,
-  },
-  reelAvatar: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: "rgba(255,255,255,0.35)",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  reelName: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#fff",
-    textShadowColor: "rgba(0,0,0,0.3)",
-    textShadowOffset: { width: 0, height: 1 },
-    textShadowRadius: 2,
   },
 });

@@ -19,7 +19,7 @@ export default function StoriesBar({ data }: Props) {
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story} onPress={() => router.push(`/story/${story.id}` as any)}>
             {story.isSelf ? (
               <View style={styles.selfCard}>
-                <Avatar uri={story.avatar} size={126} style={styles.selfTop} />
+                <Image source={{ uri: story.avatar }} style={styles.selfTop} />
                 <View style={styles.selfBottom}>
                   <View style={styles.createBtn}>
                     <Ionicons name="add" size={20} color="#fff" />

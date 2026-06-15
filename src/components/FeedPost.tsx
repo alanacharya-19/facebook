@@ -1,11 +1,18 @@
-import { useState } from "react";
-import { View, Text, Image, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import ShareModal from "./ShareModal";
-import Avatar from "./Avatar";
-import { POST_COMMENTS, Comment } from "../data/comments";
+import { useState } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { Comment, POST_COMMENTS } from "../data/comments";
 import { USERS } from "../data/users";
+import Avatar from "./Avatar";
+import ShareModal from "./ShareModal";
 
 type FeedPostProps = {
   name: string;
@@ -20,17 +27,29 @@ type FeedPostProps = {
 
 const currentUser = Object.values(USERS)[0];
 
-export default function FeedPost({ name, time, content, avatar, photo, userId, postId = "1", onClose }: FeedPostProps) {
+export default function FeedPost({
+  name,
+  time,
+  content,
+  avatar,
+  photo,
+  userId,
+  postId = "1",
+  onClose,
+}: FeedPostProps) {
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
-  const [comments, setComments] = useState<Comment[]>(POST_COMMENTS[postId] || []);
+  const [comments, setComments] = useState<Comment[]>(
+    POST_COMMENTS[postId] || [],
+  );
   const [newComment, setNewComment] = useState("");
 
   const totalComments = comments.length;
-  const commentsLabel = totalComments > 0
-    ? `${totalComments >= 1000 ? `${(totalComments / 1000).toFixed(1)}K` : totalComments}`
-    : "Comment";
+  const commentsLabel =
+    totalComments > 0
+      ? `${totalComments >= 1000 ? `${(totalComments / 1000).toFixed(1)}K` : totalComments}`
+      : "Comment";
 
   const goToProfile = () => {
     if (userId) router.push(`/profile/${userId}` as any);
@@ -38,7 +57,15 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
 
   const toggleCommentLike = (id: string) => {
     setComments((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, liked: !c.liked, likes: c.liked ? c.likes - 1 : c.likes + 1 } : c))
+      prev.map((c) =>
+        c.id === id
+          ? {
+              ...c,
+              liked: !c.liked,
+              likes: c.liked ? c.likes - 1 : c.likes + 1,
+            }
+          : c,
+      ),
     );
   };
 
@@ -79,9 +106,9 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
         </View>
         <View style={{ flexDirection: "row", gap: 2 }}>
           <TouchableOpacity style={styles.menuBtn}>
-            <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
+            <Ionicons name="ellipsis-vertical" size={20} color="#65676B" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerIcon} onPress={onClose}>
+          <TouchableOpacity style={styles.closeBtn} onPress={onClose}>
             <Ionicons name="close" size={16} color="#65676B" />
           </TouchableOpacity>
         </View>
@@ -97,15 +124,41 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
 
       <View style={styles.footer}>
         <View style={styles.footerLeft}>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setLiked(!liked)}>
-            <Ionicons name={liked ? "heart" : "heart-outline"} size={20} color={liked ? "#F02849" : "#65676B"} />
-            <Text style={[styles.footerText, liked && { color: "#F02849" }]}>200K</Text>
+          <TouchableOpacity
+            style={styles.footerItem}
+            activeOpacity={0.7}
+            onPress={() => setLiked(!liked)}
+          >
+            <Ionicons
+              name={liked ? "heart" : "heart-outline"}
+              size={20}
+              color={liked ? "#F02849" : "#65676B"}
+            />
+            <Text style={[styles.footerText, liked && { color: "#F02849" }]}>
+              200K
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setShowComments(!showComments)}>
-            <Ionicons name="chatbubble-outline" size={20} color={showComments ? "#1877F2" : "#65676B"} />
-            <Text style={[styles.footerText, showComments && { color: "#1877F2" }]}>{commentsLabel}</Text>
+          <TouchableOpacity
+            style={styles.footerItem}
+            activeOpacity={0.7}
+            onPress={() => setShowComments(!showComments)}
+          >
+            <Ionicons
+              name="chatbubble-outline"
+              size={20}
+              color={showComments ? "#1877F2" : "#65676B"}
+            />
+            <Text
+              style={[styles.footerText, showComments && { color: "#1877F2" }]}
+            >
+              {commentsLabel}
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.footerItem} activeOpacity={0.7} onPress={() => setShareVisible(true)}>
+          <TouchableOpacity
+            style={styles.footerItem}
+            activeOpacity={0.7}
+            onPress={() => setShareVisible(true)}
+          >
             <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
             <Text style={styles.footerText}>Share</Text>
           </TouchableOpacity>
@@ -117,7 +170,11 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
           <View style={styles.commentsDivider} />
 
           <View style={styles.commentInputRow}>
-            <Avatar uri={currentUser.avatar} size={28} style={styles.commentInputAvatar} />
+            <Avatar
+              uri={currentUser.avatar}
+              size={28}
+              style={styles.commentInputAvatar}
+            />
             <View style={styles.commentInputWrap}>
               <TextInput
                 placeholder="Write a comment..."
@@ -128,7 +185,10 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
               />
             </View>
             <TouchableOpacity
-              style={[styles.commentSendBtn, !newComment.trim() && { opacity: 0.4 }]}
+              style={[
+                styles.commentSendBtn,
+                !newComment.trim() && { opacity: 0.4 },
+              ]}
               activeOpacity={0.7}
               onPress={handleSendComment}
               disabled={!newComment.trim()}
@@ -138,18 +198,32 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
           </View>
 
           {comments.length === 0 && (
-            <Text style={styles.noComments}>No comments yet. Be the first!</Text>
+            <Text style={styles.noComments}>
+              No comments yet. Be the first!
+            </Text>
           )}
 
           {comments.slice(0, 5).map((comment) => (
             <View key={comment.id} style={styles.commentRow}>
-              <Avatar uri={comment.avatar} size={32} style={styles.commentAvatar} />
+              <Avatar
+                uri={comment.avatar}
+                size={32}
+                style={styles.commentAvatar}
+              />
               <View style={styles.commentBubble}>
                 <Text style={styles.commentName}>{comment.name}</Text>
                 <Text style={styles.commentText}>{comment.text}</Text>
                 <View style={styles.commentActions}>
-                  <TouchableOpacity onPress={() => toggleCommentLike(comment.id)} activeOpacity={0.7}>
-                    <Text style={[styles.commentActionText, comment.liked && { color: "#F02849" }]}>
+                  <TouchableOpacity
+                    onPress={() => toggleCommentLike(comment.id)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.commentActionText,
+                        comment.liked && { color: "#F02849" },
+                      ]}
+                    >
                       {comment.liked ? "Unlike" : "Like"}
                     </Text>
                   </TouchableOpacity>
@@ -161,7 +235,9 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
                     <>
                       <Text style={styles.commentDot}> · </Text>
                       <TouchableOpacity activeOpacity={0.7}>
-                        <Text style={styles.commentActionText}>{comment.replies} replies</Text>
+                        <Text style={styles.commentActionText}>
+                          {comment.replies} replies
+                        </Text>
                       </TouchableOpacity>
                     </>
                   ) : null}
@@ -178,13 +254,18 @@ export default function FeedPost({ name, time, content, avatar, photo, userId, p
 
           {comments.length > 5 && (
             <TouchableOpacity style={styles.viewMoreBtn} activeOpacity={0.7}>
-              <Text style={styles.viewMoreText}>View all {comments.length} comments</Text>
+              <Text style={styles.viewMoreText}>
+                View all {comments.length} comments
+              </Text>
             </TouchableOpacity>
           )}
         </View>
       )}
 
-      <ShareModal visible={shareVisible} onClose={() => setShareVisible(false)} />
+      <ShareModal
+        visible={shareVisible}
+        onClose={() => setShareVisible(false)}
+      />
     </View>
   );
 }
@@ -247,6 +328,10 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  closeBtn: {
     alignItems: "center",
     justifyContent: "center",
   },
