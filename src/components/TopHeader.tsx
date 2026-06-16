@@ -8,14 +8,14 @@ interface TopHeaderProps {
 }
 
 export default function TopHeader({ onSearchPress, onMenuPress }: TopHeaderProps) {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
       <Text style={styles.logo}>facebook</Text>
       <View style={styles.right}>
         <TouchableOpacity style={[styles.iconBtn, { backgroundColor: colors.inputBg }]} activeOpacity={0.7}>
-          <Image source={require("../../assets/icons/create.png")} style={{ width: 20, height: 20, tintColor: isDark ? colors.white : colors.dark }} />
+          <Image source={require("../../assets/icons/create.png")} style={{ width: 20, height: 20 }} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.iconBtn, { backgroundColor: colors.inputBg }]} activeOpacity={0.7} onPress={onSearchPress}>
           <Ionicons name="search" size={20} color={colors.textSecondary} />
