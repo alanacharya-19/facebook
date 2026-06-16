@@ -24,9 +24,18 @@ function shuffle<T>(arr: T[]): T[] {
   return a;
 }
 
+const SAMPLE_VIDEOS = [
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4",
+  "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4",
+];
+
 const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
   id: String(i + 1),
-  image: `https://picsum.photos/seed/reel${i + 1}/232/392`,
+  video: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length],
+  poster: `https://picsum.photos/seed/reel${i + 1}/232/392`,
 }));
 
 export default function HomeScreen() {
