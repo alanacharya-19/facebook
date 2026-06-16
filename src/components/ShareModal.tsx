@@ -9,6 +9,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../theme/ThemeContext";
 
 interface ShareModalProps {
   visible: boolean;
@@ -16,6 +17,7 @@ interface ShareModalProps {
 }
 
 export default function ShareModal({ visible, onClose }: ShareModalProps) {
+  const { colors } = useTheme();
   const [shareText, setShareText] = useState("");
 
   const shareOptions = [
@@ -28,31 +30,31 @@ export default function ShareModal({ visible, onClose }: ShareModalProps) {
   return (
     <Modal visible={visible} animationType="slide" transparent onRequestClose={onClose}>
       <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose}>
-        <TouchableOpacity activeOpacity={1} style={styles.sheet}>
-          <View style={styles.handle} />
+        <TouchableOpacity activeOpacity={1} style={[styles.sheet, { backgroundColor: colors.card }]}>
+          <View style={[styles.handle, { backgroundColor: colors.border }]} />
 
           <View style={styles.writeSection}>
-            <Text style={styles.writeTitle}>Write something...</Text>
+            <Text style={[styles.writeTitle, { color: colors.text }]}>Write something...</Text>
             <TextInput
               placeholder='Say something about this post'
               placeholderTextColor="#8A8D91"
-              style={styles.writeInput}
+              style={[styles.writeInput, { color: colors.text, backgroundColor: colors.inputBg }]}
               value={shareText}
               onChangeText={setShareText}
               multiline
             />
           </View>
 
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.background }]} />
 
           <View style={styles.shareNowRow}>
-            <TouchableOpacity style={styles.shareNowBtn} activeOpacity={0.7} onPress={() => { setShareText(""); onClose(); }}>
+            <TouchableOpacity style={[styles.shareNowBtn, { backgroundColor: colors.primary }]} activeOpacity={0.7} onPress={() => { setShareText(""); onClose(); }}>
               <Ionicons name="send" size={20} color="#fff" />
               <Text style={styles.shareNowText}>Share Now</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: colors.background }]} />
 
           <ScrollView style={styles.optionsList}>
             {shareOptions.map((opt) => (
@@ -60,7 +62,7 @@ export default function ShareModal({ visible, onClose }: ShareModalProps) {
                 <View style={[styles.optionIcon, { backgroundColor: `${opt.color}15` }]}>
                   <Ionicons name={opt.icon} size={22} color={opt.color} />
                 </View>
-                <Text style={styles.optionLabel}>{opt.label}</Text>
+                <Text style={[styles.optionLabel, { color: colors.text }]}>{opt.label}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -77,7 +79,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
   },
   sheet: {
-    backgroundColor: "#fff",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingBottom: 40,
@@ -87,7 +88,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 4,
     borderRadius: 2,
-    backgroundColor: "#CED0D4",
     alignSelf: "center",
     marginTop: 10,
     marginBottom: 12,
@@ -99,13 +99,10 @@ const styles = StyleSheet.create({
   writeTitle: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#050505",
     marginBottom: 8,
   },
   writeInput: {
     fontSize: 14,
-    color: "#050505",
-    backgroundColor: "#F0F2F5",
     borderRadius: 12,
     paddingHorizontal: 14,
     paddingVertical: 10,
@@ -114,7 +111,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 6,
-    backgroundColor: "#F0F2F5",
   },
   shareNowRow: {
     paddingHorizontal: 20,
@@ -125,7 +121,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
-    backgroundColor: "#1877F2",
     borderRadius: 10,
     paddingVertical: 12,
   },
@@ -154,6 +149,5 @@ const styles = StyleSheet.create({
   optionLabel: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#050505",
   },
 });

@@ -1,15 +1,17 @@
 import { useRef, useState } from "react";
-import { View, Text, FlatList, TouchableOpacity, ImageBackground, Image, StyleSheet, Animated } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, ImageBackground, StyleSheet, Animated } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { REELS_DATA } from "../../data/home";
 import SearchOverlay from "../../components/SearchOverlay";
 import Avatar from "../../components/Avatar";
+import { useTheme } from "../../theme/ThemeContext";
 
 function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number }) {
   const [liked, setLiked] = useState(false);
   const insets = useSafeAreaInsets();
+  const { colors } = useTheme();
 
   return (
     <View style={[styles.reelContainer, { height, width: "100%" }]}>
@@ -25,35 +27,35 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
             <View style={styles.bottomLeft}>
               <TouchableOpacity style={styles.userRow} activeOpacity={0.7} onPress={() => router.push(`/profile/${item.user.toLowerCase()}` as any)}>
                 <Avatar uri={item.avatar} size={32} style={styles.userAvatar} />
-                <Text style={styles.userName}>{item.user}</Text>
-                <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
-                  <Text style={styles.followText}>Follow</Text>
+                <Text style={[styles.userName, { color: colors.white }]}>{item.user}</Text>
+                <TouchableOpacity style={[styles.followBtn, { borderColor: colors.white }]} activeOpacity={0.7}>
+                  <Text style={[styles.followText, { color: colors.white }]}>Follow</Text>
                 </TouchableOpacity>
               </TouchableOpacity>
-              <Text style={styles.caption}>{item.caption}</Text>
+              <Text style={[styles.caption, { color: colors.white }]}>{item.caption}</Text>
               <View style={styles.musicRow}>
-                <Ionicons name="musical-note" size={14} color="#fff" />
-                <Text style={styles.musicText}>Original Audio</Text>
+                <Ionicons name="musical-note" size={14} color={colors.white} />
+                <Text style={[styles.musicText, { color: colors.white }]}>Original Audio</Text>
               </View>
             </View>
 
             <View style={styles.actions}>
               <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7} onPress={() => setLiked(!liked)}>
-                <Ionicons name={liked ? "heart" : "heart-outline"} size={30} color={liked ? "#F02849" : "#fff"} />
-                <Text style={styles.actionText}>{item.likes}</Text>
+                <Ionicons name={liked ? "heart" : "heart-outline"} size={30} color={liked ? colors.danger : colors.white} />
+                <Text style={[styles.actionText, { color: colors.white }]}>{item.likes}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-                <Ionicons name="chatbubble-outline" size={28} color="#fff" />
-                <Text style={styles.actionText}>{item.comments}</Text>
+                <Ionicons name="chatbubble-outline" size={28} color={colors.white} />
+                <Text style={[styles.actionText, { color: colors.white }]}>{item.comments}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-                <Ionicons name="bookmark-outline" size={26} color="#fff" />
+                <Ionicons name="bookmark-outline" size={26} color={colors.white} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-                <Ionicons name="paper-plane-outline" size={26} color="#fff" />
+                <Ionicons name="paper-plane-outline" size={26} color={colors.white} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.actionBtn} activeOpacity={0.7}>
-                <Ionicons name="ellipsis-horizontal" size={26} color="#fff" />
+                <Ionicons name="ellipsis-horizontal" size={26} color={colors.white} />
               </TouchableOpacity>
             </View>
           </View>
@@ -64,6 +66,7 @@ function ReelItem({ item, height }: { item: typeof REELS_DATA[0]; height: number
 }
 
 export default function VideosScreen() {
+  const { colors } = useTheme();
   const [viewHeight, setViewHeight] = useState(0);
   const [searching, setSearching] = useState(false);
   const headerOpacity = useRef(new Animated.Value(1)).current;
@@ -86,7 +89,7 @@ export default function VideosScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <View style={styles.container} onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
+      <View style={[styles.container, { backgroundColor: colors.background }]} onLayout={(e) => setViewHeight(e.nativeEvent.layout.height)}>
         {viewHeight > 0 && (
           <FlatList
             data={REELS_DATA}
@@ -101,16 +104,16 @@ export default function VideosScreen() {
       </View>
 
       <Animated.View style={[styles.header, { paddingTop: insets.top + 8, opacity: headerOpacity }]} pointerEvents={headerVisible.current ? "auto" : "none"}>
-        <Text style={styles.headerTitle}>Reels</Text>
+        <Text style={[styles.headerTitle, { color: colors.white, textShadowColor: colors.overlay }]}>Reels</Text>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
-            <Ionicons name="search" size={20} color="#fff" />
+          <TouchableOpacity style={[styles.headerBtn, { backgroundColor: colors.overlay }]} activeOpacity={0.7} onPress={() => setSearching(true)}>
+            <Ionicons name="search" size={20} color={colors.white} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7}>
-            <Ionicons name="add" size={22} color="#fff" />
+          <TouchableOpacity style={[styles.headerBtn, { backgroundColor: colors.overlay }]} activeOpacity={0.7}>
+            <Ionicons name="add" size={22} color={colors.white} />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerBtn} activeOpacity={0.7} onPress={() => router.push("/profile" as any)}>
-            <Ionicons name="person-circle-outline" size={22} color="#fff" />
+          <TouchableOpacity style={[styles.headerBtn, { backgroundColor: colors.overlay }]} activeOpacity={0.7} onPress={() => router.push("/profile" as any)}>
+            <Ionicons name="person-circle-outline" size={22} color={colors.white} />
           </TouchableOpacity>
         </View>
       </Animated.View>
@@ -123,7 +126,6 @@ export default function VideosScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
   },
   header: {
     position: "absolute",
@@ -141,8 +143,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 22,
     fontWeight: "700",
-    color: "#fff",
-    textShadowColor: "rgba(0,0,0,0.8)",
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 6,
   },
@@ -154,7 +154,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.45)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -203,11 +202,9 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 14,
     fontWeight: "700",
-    color: "#fff",
   },
   followBtn: {
     borderWidth: 1,
-    borderColor: "#fff",
     borderRadius: 4,
     paddingHorizontal: 10,
     paddingVertical: 3,
@@ -215,11 +212,9 @@ const styles = StyleSheet.create({
   followText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#fff",
   },
   caption: {
     fontSize: 14,
-    color: "#fff",
     marginTop: 8,
     lineHeight: 19,
   },
@@ -231,7 +226,6 @@ const styles = StyleSheet.create({
   },
   musicText: {
     fontSize: 12,
-    color: "#fff",
   },
   actions: {
     gap: 16,
@@ -244,7 +238,6 @@ const styles = StyleSheet.create({
   },
   actionText: {
     fontSize: 11,
-    color: "#fff",
     fontWeight: "600",
   },
 });

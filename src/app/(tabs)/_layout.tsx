@@ -8,6 +8,7 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
+import { useTheme } from "../../theme/ThemeContext";
 
 type TabName = "index" | "videos" | "friends" | "messages" | "notifications";
 
@@ -35,6 +36,7 @@ function CustomTabBar(props: {
   insets: { top: number; bottom: number; left: number; right: number };
 }) {
   const { navigation, state, descriptors, insets } = props;
+  const { colors } = useTheme();
   const { width: screenWidth } = useWindowDimensions();
   const tabWidth = screenWidth / state.routes.length;
   const LINE_WIDTH = 50;
@@ -50,13 +52,14 @@ function CustomTabBar(props: {
   }, [state.index, tabWidth]);
 
   return (
-    <View style={[styles.tabBar, { paddingBottom: 8 + insets.bottom }]}>
+    <View style={[styles.tabBar, { paddingBottom: 8 + insets.bottom, backgroundColor: colors.card, borderTopColor: colors.borderLight }]}>
       <Animated.View
         style={[
           styles.indicator,
           {
             width: LINE_WIDTH,
             transform: [{ translateX: tabPositionX }],
+            backgroundColor: colors.primary,
           },
         ]}
       />
@@ -104,7 +107,7 @@ function CustomTabBar(props: {
                 <Ionicons
                   name={iconName}
                   size={24}
-                  color={isFocused ? "#1877F2" : "#8A8D91"}
+                  color={isFocused ? colors.primary : colors.textTertiary}
                 />
               </TouchableOpacity>
             );
@@ -132,14 +135,11 @@ export default function TabLayout() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    backgroundColor: "#FFFFFF",
     borderTopWidth: 0.5,
-    borderTopColor: "#DEDEDE",
     paddingTop: 0,
   },
   indicator: {
     height: 3,
-    backgroundColor: "#1877F2",
     borderBottomLeftRadius: 3,
     borderBottomRightRadius: 3,
   },

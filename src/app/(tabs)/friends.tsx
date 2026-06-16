@@ -12,10 +12,12 @@ import {
 import { router } from "expo-router";
 import { FRIEND_REQUESTS, PEOPLE_YOU_MAY_KNOW, ALL_FRIENDS } from "../../data/friends";
 import Avatar from "../../components/Avatar";
+import { useTheme } from "../../theme/ThemeContext";
 
 const TABS = ["Suggestions", "Your Friends"];
 
 function MutualPhotos({ photos }: { photos: string[] }) {
+  const { colors } = useTheme();
   const count = photos.length === 1 ? 1 : 2;
   return (
     <View style={styles.mutualRow}>
@@ -23,10 +25,10 @@ function MutualPhotos({ photos }: { photos: string[] }) {
         <Image
           key={i}
           source={{ uri: url }}
-          style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8 }]}
+          style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8, borderColor: colors.white }]}
         />
       ))}
-      <Text style={styles.mutualText}>{photos.length === 1 ? "1 mutual friend" : `${photos.length} mutual friends`}</Text>
+      <Text style={[styles.mutualText, { color: colors.textSecondary }]}>{photos.length === 1 ? "1 mutual friend" : `${photos.length} mutual friends`}</Text>
     </View>
   );
 }
@@ -38,31 +40,32 @@ function PersonCard({
   item: { id: string; name: string; avatar: string; mutual: number; time: string; mutualPhotos: string[] };
   type: "request" | "suggestion";
 }) {
+  const { colors } = useTheme();
   const isSuggestion = type === "suggestion";
   return (
     <View style={styles.personCard}>
       <Avatar uri={item.avatar} size={72} style={[styles.personAvatar, isSuggestion && styles.personAvatarSm]} />
       <View style={styles.personInfo}>
-        <Text style={styles.personName}>{item.name}</Text>
+        <Text style={[styles.personName, { color: colors.text }]}>{item.name}</Text>
         <View style={styles.personMeta}>
           <MutualPhotos photos={item.mutualPhotos} />
-          {!isSuggestion && <Text style={styles.personTime}>{item.time}</Text>}
+          {!isSuggestion && <Text style={[styles.personTime, { color: colors.textSecondary }]}>{item.time}</Text>}
         </View>
         {type === "request" && (
           <View style={styles.personActions}>
-            <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7}>
-              <Text style={styles.confirmText}>Confirm</Text>
+            <TouchableOpacity style={[styles.confirmBtn, { backgroundColor: colors.primary }]} activeOpacity={0.7}>
+              <Text style={[styles.confirmText, { color: colors.white }]}>Confirm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7}>
-              <Text style={styles.deleteText}>Delete</Text>
+            <TouchableOpacity style={[styles.deleteBtn, { backgroundColor: colors.borderLight }]} activeOpacity={0.7}>
+              <Text style={[styles.deleteText, { color: colors.textSecondary }]}>Delete</Text>
             </TouchableOpacity>
           </View>
         )}
       </View>
       {isSuggestion && (
-        <TouchableOpacity style={styles.addFriendBtn} activeOpacity={0.7}>
-          <Ionicons name="person-add" size={14} color="#fff" />
-          <Text style={styles.addFriendText}>Add Friend</Text>
+        <TouchableOpacity style={[styles.addFriendBtn, { backgroundColor: colors.primary }]} activeOpacity={0.7}>
+          <Ionicons name="person-add" size={14} color={colors.white} />
+          <Text style={[styles.addFriendText, { color: colors.white }]}>Add Friend</Text>
         </TouchableOpacity>
       )}
     </View>
@@ -70,6 +73,7 @@ function PersonCard({
 }
 
 export default function FriendsScreen() {
+  const { colors } = useTheme();
   const [activeTab, setActiveTab] = useState(0);
   const [searching, setSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -93,28 +97,28 @@ export default function FriendsScreen() {
   }, [searchQuery]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         {searching ? (
-          <View style={styles.inlineSearch}>
-            <Ionicons name="search" size={18} color="#65676B" />
+          <View style={[styles.inlineSearch, { backgroundColor: colors.inputBg }]}>
+            <Ionicons name="search" size={18} color={colors.textSecondary} />
             <TextInput
               placeholder="Search friends..."
-              placeholderTextColor="#8A8D91"
-              style={styles.inlineSearchInput}
+              placeholderTextColor={colors.textTertiary}
+              style={[styles.inlineSearchInput, { color: colors.text }]}
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoFocus
             />
             <TouchableOpacity activeOpacity={0.7} onPress={() => { setSearching(false); setSearchQuery(""); }}>
-              <Ionicons name="close" size={20} color="#65676B" />
+              <Ionicons name="close" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         ) : (
           <>
-            <Text style={styles.headerTitle}>Friends</Text>
-            <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
-              <Ionicons name="search" size={22} color="#050505" />
+            <Text style={[styles.headerTitle, { color: colors.text }]}>Friends</Text>
+            <TouchableOpacity style={[styles.searchBtn, { backgroundColor: colors.borderLight }]} activeOpacity={0.7} onPress={() => setSearching(true)}>
+              <Ionicons name="search" size={22} color={colors.text} />
             </TouchableOpacity>
           </>
         )}
@@ -124,12 +128,12 @@ export default function FriendsScreen() {
         {TABS.map((tab, i) => (
           <TouchableOpacity
             key={tab}
-            style={[styles.tab, i === activeTab && styles.activeTab]}
+            style={[styles.tab, { backgroundColor: colors.borderLight }, i === activeTab && { backgroundColor: colors.primary }]}
             activeOpacity={0.7}
             onPress={() => setActiveTab(i)}
           >
             <Text
-              style={[styles.tabText, i === activeTab && styles.activeTabText]}
+              style={[styles.tabText, { color: colors.textSecondary }, i === activeTab && { color: colors.white }]}
             >
               {tab}
             </Text>
@@ -140,9 +144,9 @@ export default function FriendsScreen() {
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         {searching ? (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>People</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>People</Text>
             {filteredRequests.length === 0 && filteredSuggestions.length === 0 && filteredFriends.length === 0 ? (
-              <Text style={styles.emptyText}>No results found</Text>
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No results found</Text>
             ) : (
               <>
                 {filteredRequests.map((req) => (
@@ -159,12 +163,12 @@ export default function FriendsScreen() {
             {FRIEND_REQUESTS.length > 0 && (
               <View style={styles.section}>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionTitle}>
+                  <Text style={[styles.sectionTitle, { color: colors.text }]}>
                     Friend Requests{" "}
-                    <Text style={styles.reqCount}>({FRIEND_REQUESTS.length})</Text>
+                    <Text style={[styles.reqCount, { color: colors.danger }]}>({FRIEND_REQUESTS.length})</Text>
                   </Text>
                   <TouchableOpacity activeOpacity={0.7}>
-                    <Text style={styles.seeAll}>See all</Text>
+                    <Text style={[styles.seeAll, { color: colors.primary }]}>See all</Text>
                   </TouchableOpacity>
                 </View>
                 {FRIEND_REQUESTS.map((req) => (
@@ -175,7 +179,7 @@ export default function FriendsScreen() {
 
             {activeTab === 0 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Suggestions</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Suggestions</Text>
                 {PEOPLE_YOU_MAY_KNOW.map((p) => (
                   <PersonCard key={p.id} item={p} type="suggestion" />
                 ))}
@@ -184,15 +188,15 @@ export default function FriendsScreen() {
 
             {activeTab === 1 && (
               <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Your Friends</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Your Friends</Text>
                 {ALL_FRIENDS.length === 0 ? (
-                  <Text style={styles.emptyText}>Your friends will appear here.</Text>
+                  <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Your friends will appear here.</Text>
                 ) : (
                   ALL_FRIENDS.map((f) => (
                     <View key={f.id} style={styles.personCard}>
                       <Avatar uri={f.avatar} size={56} style={[styles.personAvatar, styles.personAvatarSm]} />
                       <View style={styles.personInfo}>
-                        <Text style={styles.personName}>{f.name}</Text>
+                        <Text style={[styles.personName, { color: colors.text }]}>{f.name}</Text>
                       </View>
                     </View>
                   ))
@@ -211,7 +215,6 @@ export default function FriendsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -224,14 +227,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#050505",
     flex: 1,
   },
   searchBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#E4E6EB",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -239,7 +240,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F2F5",
     borderRadius: 20,
     paddingHorizontal: 12,
     height: 36,
@@ -248,7 +248,6 @@ const styles = StyleSheet.create({
   inlineSearchInput: {
     flex: 1,
     fontSize: 15,
-    color: "#050505",
   },
   tabRow: {
     flexDirection: "row",
@@ -260,18 +259,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#E4E6EB",
-  },
-  activeTab: {
-    backgroundColor: "#1877F2",
   },
   tabText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#65676B",
-  },
-  activeTabText: {
-    color: "#fff",
   },
   scroll: {
     flex: 1,
@@ -289,18 +280,15 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#050505",
     marginBottom: 14,
   },
   reqCount: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#F02849",
   },
   seeAll: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#1877F2",
   },
   personCard: {
     flexDirection: "row",
@@ -325,7 +313,6 @@ const styles = StyleSheet.create({
   personName: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#050505",
   },
   personMeta: {
     flexDirection: "row",
@@ -342,16 +329,13 @@ const styles = StyleSheet.create({
     height: 20,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#fff",
   },
   mutualText: {
     fontSize: 13,
-    color: "#65676B",
     marginLeft: 4,
   },
   personTime: {
     fontSize: 12,
-    color: "#65676B",
   },
   personActions: {
     flexDirection: "row",
@@ -359,7 +343,6 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   confirmBtn: {
-    backgroundColor: "#1877F2",
     borderRadius: 6,
     paddingHorizontal: 24,
     paddingVertical: 8,
@@ -367,10 +350,8 @@ const styles = StyleSheet.create({
   confirmText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#fff",
   },
   deleteBtn: {
-    backgroundColor: "#E4E6EB",
     borderRadius: 6,
     paddingHorizontal: 24,
     paddingVertical: 8,
@@ -378,14 +359,12 @@ const styles = StyleSheet.create({
   deleteText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#65676B",
   },
   addFriendBtn: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 4,
-    backgroundColor: "#1877F2",
     borderRadius: 6,
     paddingVertical: 6,
     paddingHorizontal: 16,
@@ -393,11 +372,9 @@ const styles = StyleSheet.create({
   addFriendText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#fff",
   },
   emptyText: {
     fontSize: 14,
-    color: "#65676B",
     textAlign: "center",
     marginTop: 20,
   },

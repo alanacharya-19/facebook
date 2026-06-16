@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "../theme/ThemeContext";
 
 interface TopHeaderProps {
   onSearchPress?: () => void;
@@ -7,18 +8,20 @@ interface TopHeaderProps {
 }
 
 export default function TopHeader({ onSearchPress, onMenuPress }: TopHeaderProps) {
+  const { colors, isDark } = useTheme();
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.border }]}>
       <Text style={styles.logo}>facebook</Text>
       <View style={styles.right}>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-          <Image source={require("../../assets/icons/create.png")} style={{ width: 20, height: 20 }} />
+        <TouchableOpacity style={[styles.iconBtn, { backgroundColor: colors.inputBg }]} activeOpacity={0.7}>
+          <Image source={require("../../assets/icons/create.png")} style={{ width: 20, height: 20, tintColor: isDark ? colors.white : colors.dark }} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={onSearchPress}>
-          <Ionicons name="search" size={20} color="#050505" />
+        <TouchableOpacity style={[styles.iconBtn, { backgroundColor: colors.inputBg }]} activeOpacity={0.7} onPress={onSearchPress}>
+          <Ionicons name="search" size={20} color={colors.textSecondary} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={onMenuPress}>
-          <Ionicons name="menu-outline" size={22} color="#050505" />
+        <TouchableOpacity style={[styles.iconBtn, { backgroundColor: colors.inputBg }]} activeOpacity={0.7} onPress={onMenuPress}>
+          <Ionicons name="menu-outline" size={22} color={colors.textSecondary} />
         </TouchableOpacity>
       </View>
     </View>

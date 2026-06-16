@@ -12,19 +12,22 @@ import {
 import { router } from "expo-router";
 import { NOTIFICATIONS, NOTIF_ICONS } from "../../data/notifications";
 import Avatar from "../../components/Avatar";
+import { useTheme } from "../../theme/ThemeContext";
 
 const FILTERS = ["All", "Unread"];
 
 function NotifIcon({ type, color }: { type: string; color: string }) {
+  const { colors } = useTheme();
   const icon = NOTIF_ICONS[type as keyof typeof NOTIF_ICONS] ?? "notifications";
   return (
     <View style={[styles.iconCircle, { backgroundColor: color }]}>
-      <Ionicons name={icon} size={18} color="#fff" />
+      <Ionicons name={icon} size={18} color={colors.white} />
     </View>
   );
 }
 
 function MutualPhotos({ photos }: { photos: string[] }) {
+  const { colors } = useTheme();
   const count = photos.length === 1 ? 1 : 2;
   return (
     <View style={styles.mutualRow}>
@@ -32,10 +35,10 @@ function MutualPhotos({ photos }: { photos: string[] }) {
         <Image
           key={i}
           source={{ uri: url }}
-          style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8 }]}
+          style={[styles.mutualPhoto, { marginLeft: i === 0 ? 0 : -8, borderColor: colors.white }]}
         />
       ))}
-      <Text style={styles.mutualText}>{photos.length === 1 ? "1 mutual friend" : `${photos.length} mutual friends`}</Text>
+      <Text style={[styles.mutualText, { color: colors.textSecondary }]}>{photos.length === 1 ? "1 mutual friend" : `${photos.length} mutual friends`}</Text>
     </View>
   );
 }
@@ -53,28 +56,29 @@ const AVATAR_URLS: Record<string, string> = {
 };
 
 function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
+  const { colors } = useTheme();
   const isFriendRequest = item.type === "friend_request" && item.message.includes("sent");
 
   if (isFriendRequest && "avatar" in item) {
     return (
-      <View style={[styles.notifRow, item.unread && styles.unread]}>
+      <View style={[styles.notifRow, item.unread && { backgroundColor: colors.primaryLight }]}>
         <Avatar uri={(item as typeof item & { avatar: string }).avatar} size={52} style={styles.reqAvatar} />
         <View style={styles.notifContent}>
-          <Text style={styles.notifText}>
+          <Text style={[styles.notifText, { color: colors.text }]}>
             <Text style={styles.bold}>{item.user}</Text> {item.message}
           </Text>
           <View style={styles.reqMeta}>
-            <Text style={styles.notifTime}>{item.time}</Text>
+            <Text style={[styles.notifTime, { color: colors.textSecondary }]}>{item.time}</Text>
             {"mutualPhotos" in item && (
               <MutualPhotos photos={(item as typeof item & { mutualPhotos: string[] }).mutualPhotos} />
             )}
           </View>
           <View style={styles.reqActions}>
-            <TouchableOpacity style={styles.confirmBtn} activeOpacity={0.7}>
-              <Text style={styles.confirmText}>Confirm</Text>
+            <TouchableOpacity style={[styles.confirmBtn, { backgroundColor: colors.primary }]} activeOpacity={0.7}>
+              <Text style={[styles.confirmText, { color: colors.white }]}>Confirm</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.deleteBtn} activeOpacity={0.7}>
-              <Text style={styles.deleteText}>Delete</Text>
+            <TouchableOpacity style={[styles.deleteBtn, { backgroundColor: colors.borderLight }]} activeOpacity={0.7}>
+              <Text style={[styles.deleteText, { color: colors.textSecondary }]}>Delete</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -88,7 +92,7 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
 
   return (
     <TouchableOpacity
-      style={[styles.notifRow, item.unread && styles.unread]}
+      style={[styles.notifRow, item.unread && { backgroundColor: colors.primaryLight }]}
       activeOpacity={0.7}
     >
       <View style={styles.avatarWrap}>
@@ -97,17 +101,17 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
         ) : (
           <NotifIcon type={item.type} color={item.color} />
         )}
-        <View style={[styles.indicator, { backgroundColor: item.color }]}>
-          <Ionicons name={notifIcon} size={12} color="#fff" />
+        <View style={[styles.indicator, { backgroundColor: item.color, borderColor: colors.white }]}>
+          <Ionicons name={notifIcon} size={12} color={colors.white} />
         </View>
       </View>
       <View style={styles.notifContent}>
-        <Text style={styles.notifText}>
+        <Text style={[styles.notifText, { color: colors.text }]}>
           <Text style={styles.bold}>{item.user}</Text> {item.message}
         </Text>
         <View style={styles.notifBottom}>
-          {item.unread && <View style={styles.dot} />}
-          <Text style={styles.notifTime}>{item.time}</Text>
+          {item.unread && <View style={[styles.dot, { backgroundColor: colors.primary }]} />}
+          <Text style={[styles.notifTime, { color: colors.textSecondary }]}>{item.time}</Text>
         </View>
       </View>
       {hasPreview && (
@@ -121,6 +125,7 @@ function NotifRow({ item }: { item: typeof NOTIFICATIONS[0] }) {
 }
 
 export default function NotificationsScreen() {
+  const { colors } = useTheme();
   const [filter, setFilter] = useState(0);
   const [searching, setSearching] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,28 +142,28 @@ export default function NotificationsScreen() {
   }, [filter, searchQuery]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={styles.header}>
         {searching ? (
-          <View style={styles.inlineSearch}>
-            <Ionicons name="search" size={18} color="#65676B" />
+          <View style={[styles.inlineSearch, { backgroundColor: colors.inputBg }]}>
+            <Ionicons name="search" size={18} color={colors.textSecondary} />
             <TextInput
               placeholder="Search notifications..."
-              placeholderTextColor="#8A8D91"
-              style={styles.inlineSearchInput}
+              placeholderTextColor={colors.textTertiary}
+              style={[styles.inlineSearchInput, { color: colors.text }]}
               value={searchQuery}
               onChangeText={setSearchQuery}
               autoFocus
             />
             <TouchableOpacity activeOpacity={0.7} onPress={() => { setSearching(false); setSearchQuery(""); }}>
-              <Ionicons name="close" size={20} color="#65676B" />
+              <Ionicons name="close" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           </View>
         ) : (
           <>
-            <Text style={styles.headerTitle}>Notifications</Text>
-            <TouchableOpacity style={styles.searchBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
-              <Ionicons name="search" size={22} color="#050505" />
+            <Text style={[styles.headerTitle, { color: colors.text }]}>Notifications</Text>
+            <TouchableOpacity style={[styles.searchBtn, { backgroundColor: colors.borderLight }]} activeOpacity={0.7} onPress={() => setSearching(true)}>
+              <Ionicons name="search" size={22} color={colors.text} />
             </TouchableOpacity>
           </>
         )}
@@ -168,14 +173,15 @@ export default function NotificationsScreen() {
         {FILTERS.map((f, i) => (
           <TouchableOpacity
             key={f}
-            style={[styles.filterTab, i === filter && styles.activeFilter]}
+            style={[styles.filterTab, { backgroundColor: colors.borderLight }, i === filter && { backgroundColor: colors.primary }]}
             activeOpacity={0.7}
             onPress={() => setFilter(i)}
           >
             <Text
               style={[
                 styles.filterText,
-                i === filter && styles.activeFilterText,
+                { color: colors.textSecondary },
+                i === filter && { color: colors.white },
               ]}
             >
               {f}
@@ -186,10 +192,10 @@ export default function NotificationsScreen() {
 
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         {filtered.length === 0 ? (
-          <Text style={styles.emptyText}>No notifications</Text>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No notifications</Text>
         ) : (
           <>
-            <Text style={styles.sectionLabel}>Earlier</Text>
+            <Text style={[styles.sectionLabel, { color: colors.textSecondary }]}>Earlier</Text>
             {filtered.map((n) => (
               <NotifRow key={n.id} item={n} />
             ))}
@@ -204,7 +210,6 @@ export default function NotificationsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -217,14 +222,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#050505",
     flex: 1,
   },
   searchBtn: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#E4E6EB",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -232,7 +235,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F2F5",
     borderRadius: 20,
     paddingHorizontal: 12,
     height: 36,
@@ -241,7 +243,6 @@ const styles = StyleSheet.create({
   inlineSearchInput: {
     flex: 1,
     fontSize: 15,
-    color: "#050505",
   },
   filterRow: {
     flexDirection: "row",
@@ -253,18 +254,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: "#E4E6EB",
-  },
-  activeFilter: {
-    backgroundColor: "#1877F2",
   },
   filterText: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#65676B",
-  },
-  activeFilterText: {
-    color: "#fff",
   },
   scroll: {
     flex: 1,
@@ -272,7 +265,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#65676B",
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 4,
@@ -286,9 +278,6 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     gap: 12,
   },
-  unread: {
-    backgroundColor: "#E7F3FF",
-  },
   iconCircle: {
     width: 44,
     height: 44,
@@ -301,7 +290,6 @@ const styles = StyleSheet.create({
   },
   notifText: {
     fontSize: 14,
-    color: "#050505",
     lineHeight: 19,
   },
   bold: {
@@ -317,11 +305,9 @@ const styles = StyleSheet.create({
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: "#1877F2",
   },
   notifTime: {
     fontSize: 12,
-    color: "#65676B",
   },
   avatarWrap: {
     position: "relative",
@@ -341,7 +327,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderWidth: 2,
-    borderColor: "#fff",
   },
   previewImg: {
     width: 48,
@@ -368,11 +353,9 @@ const styles = StyleSheet.create({
     height: 18,
     borderRadius: 9,
     borderWidth: 1,
-    borderColor: "#fff",
   },
   mutualText: {
     fontSize: 12,
-    color: "#65676B",
     marginLeft: 3,
   },
   reqActions: {
@@ -381,7 +364,6 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   confirmBtn: {
-    backgroundColor: "#1877F2",
     borderRadius: 6,
     paddingHorizontal: 20,
     paddingVertical: 7,
@@ -389,10 +371,8 @@ const styles = StyleSheet.create({
   confirmText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#fff",
   },
   deleteBtn: {
-    backgroundColor: "#E4E6EB",
     borderRadius: 6,
     paddingHorizontal: 20,
     paddingVertical: 7,
@@ -400,11 +380,9 @@ const styles = StyleSheet.create({
   deleteText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#65676B",
   },
   emptyText: {
     fontSize: 14,
-    color: "#65676B",
     textAlign: "center",
     marginTop: 40,
   },

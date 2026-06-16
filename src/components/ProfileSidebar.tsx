@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
-import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet, Image, ScrollView } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Animated, StyleSheet, Image, ScrollView, Switch } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTheme } from "../theme/ThemeContext";
 import Avatar from "./Avatar";
 
 const SHORTCUTS = [
@@ -21,6 +22,7 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
   const slideAnim = useRef(new Animated.Value(300)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const insets = useSafeAreaInsets();
+  const { colors, isDark, toggleTheme } = useTheme();
 
   useEffect(() => {
     Animated.parallel([
@@ -41,8 +43,100 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
 
   return (
     <View style={[StyleSheet.absoluteFill, { zIndex: 100 }]} pointerEvents="box-none">
-      <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+      <Animated.View style={[styles.overlay, { opacity: fadeAnim, backgroundColor: colors.overlay }]}>
         <TouchableOpacity style={StyleSheet.absoluteFill} activeOpacity={1} onPress={onClose} />
+      </Animated.View>
+
+      <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }], paddingTop: insets.top, backgroundColor: colors.card }]}>
+        <View style={styles.searchRow}>
+          <View style={[styles.searchInputWrap, { backgroundColor: colors.inputBg }]}>
+            <Ionicons name="search" size={18} color={colors.textSecondary} />
+            <TextInput placeholder="Search Facebook" placeholderTextColor={colors.textTertiary} style={[styles.searchInput, { color: colors.text }]} />
+          </View>
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+          <TouchableOpacity style={styles.profileRow} activeOpacity={0.7} onPress={() => { onClose(); router.push("/profile" as any); }}>
+            <Avatar uri="https://i.pravatar.cc/150?u=alexj" size={44} style={styles.sidebarAvatar} />
+            <View style={{ flex: 1 }}>
+              <Text style={[styles.sidebarName, { color: colors.text }]}>Alex Johnson</Text>
+              <Text style={[styles.sidebarSub, { color: colors.textSecondary }]}>See your profile</Text>
+            </View>
+            <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.createPageRow} activeOpacity={0.7}>
+            <View style={[styles.createPageIcon, { backgroundColor: colors.inputBg }]}>
+              <Ionicons name="flag-outline" size={20} color={colors.text} />
+            </View>
+            <Text style={[styles.createPageText, { color: colors.text }]}>Create Facebook Page</Text>
+          </TouchableOpacity>
+
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+          <Text style={[styles.shortcutsHeader, { color: colors.textSecondary }]}>Your shortcuts</Text>
+          {[SHORTCUTS.slice(0, 2), SHORTCUTS.slice(2)].map((row, ri) => (
+            <View key={ri} style={styles.shortcutRow}>
+              {row.map((s) => (
+                <TouchableOpacity key={s.label} style={styles.shortcutItem} activeOpacity={0.7}>
+                  <Image source={s.image} style={{ width: 28, height: 28 }} />
+                  <Text style={[styles.shortcutLabel, { color: colors.text }]}>{s.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ))}
+
+          <TouchableOpacity style={styles.seeMoreRow} activeOpacity={0.7}>
+            <View style={[styles.seeMoreIcon, { backgroundColor: colors.inputBg }]}>
+              <Ionicons name="chevron-down" size={18} color={colors.text} />
+            </View>
+            <Text style={[styles.seeMoreText, { color: colors.text }]}>See more</Text>
+          </TouchableOpacity>
+
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+          <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
+            <View style={[styles.optionIcon, { backgroundColor: colors.inputBg }]}>
+              <Ionicons name={isDark ? "moon" : "moon-outline"} size={20} color={colors.text} />
+            </View>
+            <Text style={[styles.optionLabel, { color: colors.text }]}>Dark mode</Text>
+            <Switch
+              value={isDark}
+              onValueChange={toggleTheme}
+              trackColor={{ false: colors.border, true: "#4A7CC9" }}
+              thumbColor="#fff"
+            />
+          </TouchableOpacity>
+
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+          <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
+            <View style={[styles.optionIcon, { backgroundColor: colors.inputBg }]}>
+              <Ionicons name="help-circle-outline" size={22} color={colors.text} />
+            </View>
+            <Text style={[styles.optionLabel, { color: colors.text }]}>Help & support</Text>
+            <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
+            <View style={[styles.optionIcon, { backgroundColor: colors.inputBg }]}>
+              <Ionicons name="settings-outline" size={22} color={colors.text} />
+            </View>
+            <Text style={[styles.optionLabel, { color: colors.text }]}>Settings & privacy</Text>
+            <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
+          </TouchableOpacity>
+
+          <View style={[styles.divider, { backgroundColor: colors.border }]} />
+
+          <TouchableOpacity style={styles.logoutRow} activeOpacity={0.7}>
+            <View style={[styles.optionIcon, { backgroundColor: "#FEEBEE" }]}>
+              <Ionicons name="log-out-outline" size={20} color={colors.danger} />
+            </View>
+            <Text style={[styles.optionLabel, { color: colors.danger }]}>Logout</Text>
+          </TouchableOpacity>
+
+          <View style={{ height: 40 }} />
+        </ScrollView>
       </Animated.View>
 
       <Animated.View style={[styles.sidebar, { transform: [{ translateX: slideAnim }], paddingTop: insets.top }]}>
@@ -91,22 +185,35 @@ export default function ProfileSidebar({ visible, onClose }: Props) {
             <Text style={styles.seeMoreText}>See more</Text>
           </TouchableOpacity>
 
+          <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
+            <View style={[styles.optionIcon, { backgroundColor: isDark ? "#3A3B3C" : "#E4E6EB" }]}>
+              <Ionicons name={isDark ? "moon" : "moon-outline"} size={20} color={colors.text} />
+            </View>
+            <Text style={[styles.optionLabel, { color: colors.text }]}>Dark mode</Text>
+            <Switch
+              value={isDark}
+              onValueChange={toggleTheme}
+              trackColor={{ false: "#CED0D4", true: "#4A7CC9" }}
+              thumbColor={isDark ? "#fff" : "#fff"}
+            />
+          </TouchableOpacity>
+
           <View style={styles.divider} />
 
           <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
-            <View style={styles.optionIcon}>
-              <Ionicons name="help-circle-outline" size={22} color="#050505" />
+            <View style={[styles.optionIcon, { backgroundColor: isDark ? "#3A3B3C" : "#E4E6EB" }]}>
+              <Ionicons name="help-circle-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.optionLabel}>Help & support</Text>
-            <Ionicons name="chevron-down" size={18} color="#65676B" />
+            <Text style={[styles.optionLabel, { color: colors.text }]}>Help & support</Text>
+            <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.optionRow} activeOpacity={0.7}>
-            <View style={styles.optionIcon}>
-              <Ionicons name="settings-outline" size={22} color="#050505" />
+            <View style={[styles.optionIcon, { backgroundColor: isDark ? "#3A3B3C" : "#E4E6EB" }]}>
+              <Ionicons name="settings-outline" size={22} color={colors.text} />
             </View>
-            <Text style={styles.optionLabel}>Settings & privacy</Text>
-            <Ionicons name="chevron-down" size={18} color="#65676B" />
+            <Text style={[styles.optionLabel, { color: colors.text }]}>Settings & privacy</Text>
+            <Ionicons name="chevron-down" size={18} color={colors.textSecondary} />
           </TouchableOpacity>
 
           <View style={styles.divider} />

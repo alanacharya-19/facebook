@@ -1,6 +1,7 @@
 import { ScrollView, View, Text, Image, TouchableOpacity, ImageBackground, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useTheme } from "../theme/ThemeContext";
 import { STORIES } from "../data/home";
 import Avatar from "./Avatar";
 
@@ -11,25 +12,26 @@ type Props = {
 };
 
 export default function StoriesBar({ data }: Props) {
+  const { colors } = useTheme();
   const items = data ?? STORIES;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.background }]}>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {items.map((story) => (
           <TouchableOpacity key={story.id} activeOpacity={0.8} style={styles.story} onPress={() => router.push(`/story/${story.id}` as any)}>
             {story.isSelf ? (
               <View style={styles.selfCard}>
                 <Image source={{ uri: story.avatar }} style={styles.selfTop} />
-                <View style={styles.selfBottom}>
-                  <View style={styles.createBtn}>
+                <View style={[styles.selfBottom, { backgroundColor: colors.cardSecondary }]}>
+                  <View style={[styles.createBtn, { backgroundColor: colors.primary, borderColor: colors.white }]}>
                     <Ionicons name="add" size={20} color="#fff" />
                   </View>
-                  <Text style={styles.createText}>Create Story</Text>
+                  <Text style={[styles.createText, { color: colors.textSecondary }]}>Create Story</Text>
                 </View>
               </View>
             ) : (
               <ImageBackground source={{ uri: story.image }} style={styles.storyCard} imageStyle={{ borderRadius: 14 }}>
-                <View style={styles.storyRing}>
+                <View style={[styles.storyRing, { borderColor: colors.primary }]}>
                   <Avatar uri={story.avatar} size={36} style={styles.storyAvatar} />
                 </View>
                 <Text style={styles.name} numberOfLines={1}>
@@ -49,10 +51,8 @@ const CARD_H = 210;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     paddingVertical: 12,
     borderBottomWidth: 6,
-    borderBottomColor: "#F0F2F5",
   },
   scroll: {
     paddingLeft: 4,
@@ -92,7 +92,6 @@ const styles = StyleSheet.create({
   selfBottom: {
     width: CARD_W,
     height: 84,
-    backgroundColor: "#E8EAED",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -102,16 +101,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#1877F2",
     borderWidth: 3,
-    borderColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
   createText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#65676B",
     textAlign: "center",
     marginTop: 22,
   },
@@ -123,7 +119,6 @@ const styles = StyleSheet.create({
     height: 42,
     borderRadius: 21,
     borderWidth: 3,
-    borderColor: "#1877F2",
     alignItems: "center",
     justifyContent: "center",
   },

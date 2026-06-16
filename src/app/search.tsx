@@ -10,10 +10,12 @@ import {
   View,
 } from "react-native";
 import { router } from "expo-router";
+import { useTheme } from "../theme/ThemeContext";
 import { USERS } from "../data/users";
 import Avatar from "../components/Avatar";
 
 export default function SearchScreen() {
+  const { colors } = useTheme();
   const [query, setQuery] = useState("");
 
   const results = useMemo(() => {
@@ -31,24 +33,24 @@ export default function SearchScreen() {
     Object.entries(USERS).find(([, v]) => v.name === name)?.[0] ?? "";
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.header, { borderBottomColor: colors.border }]}>
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#050505" />
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <View style={styles.searchWrap}>
-          <Ionicons name="search" size={18} color="#65676B" />
+        <View style={[styles.searchWrap, { backgroundColor: colors.inputBg }]}>
+          <Ionicons name="search" size={18} color={colors.textSecondary} />
           <TextInput
             placeholder="Search Facebook"
-            placeholderTextColor="#8A8D91"
-            style={styles.input}
+            placeholderTextColor={colors.textTertiary}
+            style={[styles.input, { color: colors.text }]}
             value={query}
             onChangeText={setQuery}
             autoFocus
           />
           {query.length > 0 && (
             <TouchableOpacity activeOpacity={0.7} onPress={() => setQuery("")}>
-              <Ionicons name="close-circle" size={18} color="#65676B" />
+              <Ionicons name="close-circle" size={18} color={colors.textSecondary} />
             </TouchableOpacity>
           )}
         </View>
@@ -58,7 +60,7 @@ export default function SearchScreen() {
         data={results}
         keyExtractor={(item) => item.name}
         ListHeaderComponent={
-          !query.trim() ? <Text style={styles.suggestionsLabel}>Suggestions</Text> : null
+          !query.trim() ? <Text style={[styles.suggestionsLabel, { color: colors.textSecondary }]}>Suggestions</Text> : null
         }
         renderItem={({ item }) => {
           const uid = userIdFor(item.name);
@@ -72,8 +74,8 @@ export default function SearchScreen() {
             >
               <Avatar uri={item.avatar} size={48} style={styles.avatar} />
               <View style={styles.info}>
-                <Text style={styles.name}>{item.name}</Text>
-                <Text style={styles.detail}>
+                <Text style={[styles.name, { color: colors.text }]}>{item.name}</Text>
+                <Text style={[styles.detail, { color: colors.textSecondary }]}>
                   {item.location} · {item.study}
                 </Text>
               </View>
@@ -81,7 +83,7 @@ export default function SearchScreen() {
           );
         }}
         ListEmptyComponent={
-          <Text style={styles.empty}>No results found</Text>
+          <Text style={[styles.empty, { color: colors.textSecondary }]}>No results found</Text>
         }
         contentContainerStyle={styles.list}
       />
@@ -92,7 +94,6 @@ export default function SearchScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
   },
   header: {
     flexDirection: "row",
@@ -102,13 +103,11 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     gap: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#CED0D4",
   },
   searchWrap: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F0F2F5",
     borderRadius: 20,
     paddingHorizontal: 12,
     height: 36,
@@ -117,7 +116,6 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 15,
-    color: "#050505",
   },
   list: {
     paddingTop: 4,
@@ -125,7 +123,6 @@ const styles = StyleSheet.create({
   suggestionsLabel: {
     fontSize: 15,
     fontWeight: "700",
-    color: "#65676B",
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 4,
@@ -150,16 +147,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#050505",
   },
   detail: {
     fontSize: 13,
-    color: "#65676B",
     marginTop: 2,
   },
   empty: {
     fontSize: 14,
-    color: "#65676B",
     textAlign: "center",
     marginTop: 40,
   },

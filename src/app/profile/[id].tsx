@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import { useLocalSearchParams, router } from "expo-router";
+import { useTheme } from "../../theme/ThemeContext";
 import { getUserData, USERS } from "../../data/users";
 import { USER_POSTS, PROFILE_FRIENDS, PROFILE_HIGHLIGHTS } from "../../data/profile";
 import { POST_COMMENTS, Comment } from "../../data/comments";
@@ -20,6 +21,7 @@ import Avatar from "../../components/Avatar";
 const currentUser = Object.values(USERS)[0];
 
 export default function UserProfileScreen() {
+  const { colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = getUserData(id);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
@@ -63,113 +65,113 @@ export default function UserProfileScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
         <View style={styles.coverWrap}>
           <ImageBackground source={{ uri: user.cover }} style={styles.cover} resizeMode="cover">
             <TouchableOpacity style={styles.backBtn} activeOpacity={0.7} onPress={() => router.back()}>
-              <Ionicons name="arrow-back" size={24} color="#fff" />
+              <Ionicons name="arrow-back" size={24} color={colors.white} />
             </TouchableOpacity>
             <View style={styles.coverRight}>
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
-                <Ionicons name="search" size={18} color="#050505" />
+                <Ionicons name="search" size={18} color={colors.text} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-                <Ionicons name="ellipsis-horizontal" size={18} color="#050505" />
+                <Ionicons name="ellipsis-horizontal" size={18} color={colors.text} />
               </TouchableOpacity>
             </View>
           </ImageBackground>
         </View>
 
-        <View style={styles.profileBody}>
+        <View style={[styles.profileBody, { backgroundColor: colors.card }]}>
           <View style={styles.profileTop}>
             <View style={styles.avatarWrap}>
-              <Avatar uri={user.avatar} size={120} style={styles.avatar} />
+              <Avatar uri={user.avatar} size={120} style={[styles.avatar, { borderColor: colors.card }]} />
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.name}>{user.name}</Text>
+              <Text style={[styles.name, { color: colors.text }]}>{user.name}</Text>
               <View style={styles.statsRow}>
-                <Text style={styles.statsText}><Text style={styles.bold}>{user.friends}</Text> friends</Text>
-                <Text style={styles.statsDot}> · </Text>
-                <Text style={styles.statsText}><Text style={styles.bold}>{user.posts}</Text> posts</Text>
+                <Text style={[styles.statsText, { color: colors.textSecondary }]}><Text style={[styles.bold, { color: colors.text }]}>{user.friends}</Text> friends</Text>
+                <Text style={[styles.statsDot, { color: colors.textSecondary }]}> · </Text>
+                <Text style={[styles.statsText, { color: colors.textSecondary }]}><Text style={[styles.bold, { color: colors.text }]}>{user.posts}</Text> posts</Text>
               </View>
             </View>
           </View>
 
           <View style={styles.info}>
             <View style={styles.detailsRow}>
-              <Ionicons name="location" size={16} color="#050505" />
-              <Text style={styles.detailText}>{user.location}</Text>
-              <Ionicons name="school" size={16} color="#050505" />
-              <Text style={styles.detailText}>{user.study}</Text>
+              <Ionicons name="location" size={16} color={colors.text} />
+              <Text style={[styles.detailText, { color: colors.text }]}>{user.location}</Text>
+              <Ionicons name="school" size={16} color={colors.text} />
+              <Text style={[styles.detailText, { color: colors.text }]}>{user.study}</Text>
             </View>
           </View>
 
           <View style={styles.actions}>
-            <TouchableOpacity style={styles.primaryBtn} activeOpacity={0.8}>
-              <Ionicons name="person-add" size={18} color="#fff" />
-              <Text style={styles.primaryBtnText}>Add Friend</Text>
+            <TouchableOpacity style={[styles.primaryBtn, { backgroundColor: colors.primary }]} activeOpacity={0.8}>
+              <Ionicons name="person-add" size={18} color={colors.white} />
+              <Text style={[styles.primaryBtnText, { color: colors.white }]}>Add Friend</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.secondaryBtn} activeOpacity={0.8}>
-              <Ionicons name="chatbubble-outline" size={18} color="#050505" />
-              <Text style={styles.secondaryBtnText}>Message</Text>
+            <TouchableOpacity style={[styles.secondaryBtn, { backgroundColor: colors.cardSecondary }]} activeOpacity={0.8}>
+              <Ionicons name="chatbubble-outline" size={18} color={colors.text} />
+              <Text style={[styles.secondaryBtnText, { color: colors.text }]}>Message</Text>
             </TouchableOpacity>
           </View>
 
           <View style={styles.personalDetails}>
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Personal Details</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Personal Details</Text>
             </View>
             <View style={styles.detailBlock}>
-              <View style={styles.detailIconBg}><Ionicons name="location-outline" size={16} color="#1877F2" /></View>
-              <Text style={styles.detailBlockText}>Lives in <Text style={styles.bold}>{user.location}</Text></Text>
+              <View style={[styles.detailIconBg, { backgroundColor: colors.primaryLight }]}><Ionicons name="location-outline" size={16} color={colors.primary} /></View>
+              <Text style={[styles.detailBlockText, { color: colors.text }]}>Lives in <Text style={[styles.bold, { color: colors.text }]}>{user.location}</Text></Text>
             </View>
             <View style={styles.detailBlock}>
-              <View style={styles.detailIconBg}><Ionicons name="home-outline" size={16} color="#1877F2" /></View>
-              <Text style={styles.detailBlockText}>From <Text style={styles.bold}>{user.hometown}</Text></Text>
+              <View style={[styles.detailIconBg, { backgroundColor: colors.primaryLight }]}><Ionicons name="home-outline" size={16} color={colors.primary} /></View>
+              <Text style={[styles.detailBlockText, { color: colors.text }]}>From <Text style={[styles.bold, { color: colors.text }]}>{user.hometown}</Text></Text>
             </View>
             <View style={styles.detailBlock}>
-              <View style={styles.detailIconBg}><MaterialIcons name="cake" size={16} color="#1877F2" /></View>
-              <Text style={styles.detailBlockText}>Born on <Text style={styles.bold}>{user.birthday}</Text></Text>
+              <View style={[styles.detailIconBg, { backgroundColor: colors.primaryLight }]}><MaterialIcons name="cake" size={16} color={colors.primary} /></View>
+              <Text style={[styles.detailBlockText, { color: colors.text }]}>Born on <Text style={[styles.bold, { color: colors.text }]}>{user.birthday}</Text></Text>
             </View>
 
             <View style={[styles.sectionHeader, { marginTop: 20 }]}>
-              <Text style={styles.sectionTitle}>Education</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Education</Text>
             </View>
             <View style={styles.detailBlock}>
-              <View style={styles.detailIconBg}><Ionicons name="school-outline" size={16} color="#1877F2" /></View>
-              <Text style={styles.detailBlockText}>Studied at <Text style={styles.bold}>{user.study}</Text></Text>
+              <View style={[styles.detailIconBg, { backgroundColor: colors.primaryLight }]}><Ionicons name="school-outline" size={16} color={colors.primary} /></View>
+              <Text style={[styles.detailBlockText, { color: colors.text }]}>Studied at <Text style={[styles.bold, { color: colors.text }]}>{user.study}</Text></Text>
             </View>
 
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Friends</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Friends</Text>
               <TouchableOpacity activeOpacity={0.7}>
-                <Text style={styles.seeAll}>See All</Text>
+                <Text style={[styles.seeAll, { color: colors.primary }]}>See All</Text>
               </TouchableOpacity>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.friendsRow}>
               {PROFILE_FRIENDS.map((f) => (
                 <TouchableOpacity key={f.id} style={styles.friendCard} activeOpacity={0.7}>
                   <Avatar uri={f.avatar} size={64} style={styles.friendAvatarCircle} />
-                  <Text style={styles.friendName} numberOfLines={1}>{f.name}</Text>
-                  <Text style={styles.friendMutual}>{f.mutual} mutual friends</Text>
+                  <Text style={[styles.friendName, { color: colors.text }]} numberOfLines={1}>{f.name}</Text>
+                  <Text style={[styles.friendMutual, { color: colors.textSecondary }]}>{f.mutual} mutual friends</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
 
             <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>Highlights</Text>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>Highlights</Text>
             </View>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.highlightsRow}>
               <TouchableOpacity style={styles.highlightAdd} activeOpacity={0.7}>
-                <View style={styles.highlightAddRect}>
-                  <Ionicons name="add" size={24} color="#1877F2" />
+                <View style={[styles.highlightAddRect, { borderColor: colors.border }]}>
+                  <Ionicons name="add" size={24} color={colors.primary} />
                 </View>
-                <Text style={styles.highlightAddText}>Create</Text>
+                <Text style={[styles.highlightAddText, { color: colors.textSecondary }]}>Create</Text>
               </TouchableOpacity>
               {PROFILE_HIGHLIGHTS.map((h) => (
                 <TouchableOpacity key={h.id} style={styles.highlightItem} activeOpacity={0.7}>
                   <Image source={{ uri: h.cover }} style={styles.highlightRect} />
-                  <Text style={styles.highlightTitle}>{h.title}</Text>
+                  <Text style={[styles.highlightTitle, { color: colors.text }]}>{h.title}</Text>
                 </TouchableOpacity>
               ))}
             </ScrollView>
@@ -177,49 +179,49 @@ export default function UserProfileScreen() {
 
           <View style={styles.postsSection}>
             <View style={styles.postsHeader}>
-              <Text style={styles.postsTitle}>Posts</Text>
+              <Text style={[styles.postsTitle, { color: colors.text }]}>Posts</Text>
             </View>
             {USER_POSTS.map((post) => (
-              <View key={post.id} style={styles.profilePostCard}>
+              <View key={post.id} style={[styles.profilePostCard, { backgroundColor: colors.card, borderBottomColor: colors.cardSecondary }]}>
                 <View style={styles.profilePostTop}>
                   <Avatar uri={user.avatar} size={40} style={styles.profilePostAvatar} />
                   <View style={styles.profilePostHeaderText}>
-                    <Text style={styles.profilePostName}>{user.name}</Text>
+                    <Text style={[styles.profilePostName, { color: colors.text }]}>{user.name}</Text>
                     <View style={styles.profilePostTimeRow}>
-                      <Text style={styles.profilePostTime}>{post.time}</Text>
-                      <Ionicons name="globe-outline" size={12} color="#65676B" />
+                      <Text style={[styles.profilePostTime, { color: colors.textSecondary }]}>{post.time}</Text>
+                      <Ionicons name="globe-outline" size={12} color={colors.textSecondary} />
                     </View>
                   </View>
                   <TouchableOpacity style={styles.profilePostMenu}>
-                    <Ionicons name="ellipsis-horizontal" size={20} color="#65676B" />
+                    <Ionicons name="ellipsis-horizontal" size={20} color={colors.textSecondary} />
                   </TouchableOpacity>
                 </View>
-                <Text style={styles.profilePostContent}>{post.content}</Text>
-                <Image source={{ uri: post.image }} style={styles.profilePostImage} />
-                <View style={styles.profilePostFooter}>
+                <Text style={[styles.profilePostContent, { color: colors.text }]}>{post.content}</Text>
+                <Image source={{ uri: post.image }} style={[styles.profilePostImage, { borderColor: colors.border }]} />
+                <View style={[styles.profilePostFooter, { borderTopColor: colors.border }]}>
                   <View style={styles.profilePostFooterLeft}>
                     <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => toggleLike(post.id)}>
-                      <Ionicons name={likedPosts[post.id] ? "heart" : "heart-outline"} size={20} color={likedPosts[post.id] ? "#F02849" : "#65676B"} />
-                      <Text style={[styles.profilePostFooterText, likedPosts[post.id] && { color: "#F02849" }]}>{likedPosts[post.id] ? post.likes + 1 : post.likes}</Text>
+                      <Ionicons name={likedPosts[post.id] ? "heart" : "heart-outline"} size={20} color={likedPosts[post.id] ? colors.danger : colors.textSecondary} />
+                      <Text style={[styles.profilePostFooterText, { color: colors.textSecondary }, likedPosts[post.id] && { color: colors.danger }]}>{likedPosts[post.id] ? post.likes + 1 : post.likes}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setExpandedComments((prev) => ({ ...prev, [post.id]: !prev[post.id] }))}>
-                      <Ionicons name="chatbubble-outline" size={20} color={expandedComments[post.id] ? "#1877F2" : "#65676B"} />
-                      <Text style={[styles.profilePostFooterText, expandedComments[post.id] && { color: "#1877F2" }]}>{(allComments[post.id] || []).length}</Text>
+                      <Ionicons name="chatbubble-outline" size={20} color={expandedComments[post.id] ? colors.primary : colors.textSecondary} />
+                      <Text style={[styles.profilePostFooterText, { color: colors.textSecondary }, expandedComments[post.id] && { color: colors.primary }]}>{(allComments[post.id] || []).length}</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.profilePostFooterItem} activeOpacity={0.7} onPress={() => setShareVisible(true)}>
-                      <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
-                      <Text style={styles.profilePostFooterText}>Share</Text>
+                      <Ionicons name="arrow-redo-outline" size={20} color={colors.textSecondary} />
+                      <Text style={[styles.profilePostFooterText, { color: colors.textSecondary }]}>Share</Text>
                     </TouchableOpacity>
                   </View>
                   {expandedComments[post.id] && (
                     <View style={styles.inlineComments}>
                       <View style={styles.commentInputRow}>
                         <Avatar uri={currentUser.avatar} size={28} style={styles.commentInputAvatar} />
-                        <View style={styles.commentInputWrap}>
+                        <View style={[styles.commentInputWrap, { backgroundColor: colors.inputBg }]}>
                           <TextInput
                             placeholder="Write a comment..."
-                            placeholderTextColor="#8A8D91"
-                            style={styles.commentInput}
+                            placeholderTextColor={colors.textTertiary}
+                            style={[styles.commentInput, { color: colors.text }]}
                             value={newComments[post.id] || ""}
                             onChangeText={(t) => setNewComments((prev) => ({ ...prev, [post.id]: t }))}
                           />
@@ -230,44 +232,44 @@ export default function UserProfileScreen() {
                           onPress={() => handleSendComment(post.id)}
                           disabled={!(newComments[post.id] || "").trim()}
                         >
-                          <Ionicons name="paper-plane" size={18} color="#1877F2" />
+                          <Ionicons name="paper-plane" size={18} color={colors.primary} />
                         </TouchableOpacity>
                       </View>
 
                       {(allComments[post.id] || []).length === 0 && (
-                        <Text style={styles.noComments}>No comments yet. Be the first!</Text>
+                        <Text style={[styles.noComments, { color: colors.textSecondary }]}>No comments yet. Be the first!</Text>
                       )}
 
                       {(allComments[post.id] || []).slice(0, 5).map((comment) => (
                         <View key={comment.id} style={styles.commentRow}>
                           <Avatar uri={comment.avatar} size={32} style={styles.commentAvatar} />
-                          <View style={styles.commentBubble}>
-                            <Text style={styles.commentName}>{comment.name}</Text>
-                            <Text style={styles.commentText}>{comment.text}</Text>
+                          <View style={[styles.commentBubble, { backgroundColor: colors.inputBg }]}>
+                            <Text style={[styles.commentName, { color: colors.text }]}>{comment.name}</Text>
+                            <Text style={[styles.commentText, { color: colors.text }]}>{comment.text}</Text>
                             <View style={styles.commentActions}>
                               <TouchableOpacity onPress={() => toggleCommentLike(post.id, comment.id)} activeOpacity={0.7}>
-                                <Text style={[styles.commentActionText, comment.liked && { color: "#F02849" }]}>
+                                <Text style={[styles.commentActionText, { color: colors.textSecondary }, comment.liked && { color: colors.danger }]}>
                                   {comment.liked ? "Unlike" : "Like"}
                                 </Text>
                               </TouchableOpacity>
-                              <Text style={styles.commentDot}> · </Text>
+                              <Text style={[styles.commentDot, { color: colors.textSecondary }]}> · </Text>
                               <TouchableOpacity activeOpacity={0.7}>
-                                <Text style={styles.commentActionText}>Reply</Text>
+                                <Text style={[styles.commentActionText, { color: colors.textSecondary }]}>Reply</Text>
                               </TouchableOpacity>
                               {comment.replies ? (
                                 <>
-                                  <Text style={styles.commentDot}> · </Text>
+                                  <Text style={[styles.commentDot, { color: colors.textSecondary }]}> · </Text>
                                   <TouchableOpacity activeOpacity={0.7}>
-                                    <Text style={styles.commentActionText}>{comment.replies} replies</Text>
+                                    <Text style={[styles.commentActionText, { color: colors.textSecondary }]}>{comment.replies} replies</Text>
                                   </TouchableOpacity>
                                 </>
                               ) : null}
                             </View>
                           </View>
                           {comment.likes > 0 && (
-                            <View style={styles.commentLikeBadge}>
-                              <Ionicons name="heart" size={10} color="#fff" />
-                              <Text style={styles.commentLikeText}>{comment.likes}</Text>
+                            <View style={[styles.commentLikeBadge, { backgroundColor: colors.danger }]}>
+                              <Ionicons name="heart" size={10} color={colors.white} />
+                              <Text style={[styles.commentLikeText, { color: colors.white }]}>{comment.likes}</Text>
                             </View>
                           )}
                         </View>
@@ -275,7 +277,7 @@ export default function UserProfileScreen() {
 
                       {(allComments[post.id] || []).length > 5 && (
                         <TouchableOpacity style={styles.viewMoreBtn} activeOpacity={0.7}>
-                          <Text style={styles.viewMoreText}>View all {(allComments[post.id] || []).length} comments</Text>
+                          <Text style={[styles.viewMoreText, { color: colors.textSecondary }]}>View all {(allComments[post.id] || []).length} comments</Text>
                         </TouchableOpacity>
                       )}
                     </View>
@@ -293,7 +295,7 @@ export default function UserProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff" },
+  container: { flex: 1 },
   coverWrap: { position: "relative" },
   cover: {
     height: 180,
@@ -333,7 +335,6 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 60,
     borderWidth: 4,
-    borderColor: "#fff",
   },
   profileTop: {
     flexDirection: "row",
@@ -343,10 +344,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   profileInfo: { flex: 1, paddingBottom: 4 },
-  name: { fontSize: 22, fontWeight: "700", color: "#050505" },
+  name: { fontSize: 22, fontWeight: "700" },
   statsRow: { flexDirection: "row", alignItems: "center", marginTop: 4 },
-  statsText: { fontSize: 14, color: "#65676B" },
-  statsDot: { fontSize: 14, color: "#65676B" },
+  statsText: { fontSize: 14 },
+  statsDot: { fontSize: 14 },
   info: { paddingHorizontal: 16 },
   detailsRow: {
     flexDirection: "row",
@@ -354,9 +355,9 @@ const styles = StyleSheet.create({
     gap: 4,
     marginTop: 4,
   },
-  detailText: { fontSize: 14, color: "#050505", fontWeight: "500", marginRight: 8 },
-  bold: { fontWeight: "600", color: "#050505" },
-  profileBody: { backgroundColor: "#fff" },
+  detailText: { fontSize: 14, fontWeight: "500", marginRight: 8 },
+  bold: { fontWeight: "600" },
+  profileBody: {},
   actions: {
     flexDirection: "row",
     paddingHorizontal: 16,
@@ -369,22 +370,20 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    backgroundColor: "#1877F2",
     borderRadius: 8,
     paddingVertical: 10,
   },
-  primaryBtnText: { fontSize: 14, fontWeight: "600", color: "#fff" },
+  primaryBtnText: { fontSize: 14, fontWeight: "600" },
   secondaryBtn: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
-    backgroundColor: "#E4E6EB",
     borderRadius: 8,
     paddingVertical: 10,
   },
-  secondaryBtnText: { fontSize: 14, fontWeight: "600", color: "#050505" },
+  secondaryBtnText: { fontSize: 14, fontWeight: "600" },
   personalDetails: {
     marginTop: 16,
     paddingHorizontal: 16,
@@ -399,12 +398,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#050505",
   },
   seeAll: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#1877F2",
   },
   detailBlock: {
     flexDirection: "row",
@@ -416,13 +413,11 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: "#E7F3FF",
     alignItems: "center",
     justifyContent: "center",
   },
   detailBlockText: {
     fontSize: 14,
-    color: "#050505",
   },
   friendsRow: {
     marginTop: 8,
@@ -442,13 +437,11 @@ const styles = StyleSheet.create({
   friendName: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#050505",
     marginTop: 4,
     textAlign: "center",
   },
   friendMutual: {
     fontSize: 11,
-    color: "#65676B",
     textAlign: "center",
     marginTop: 1,
   },
@@ -466,7 +459,6 @@ const styles = StyleSheet.create({
     height: 84,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor: "#CED0D4",
     borderStyle: "dashed",
     alignItems: "center",
     justifyContent: "center",
@@ -485,13 +477,11 @@ const styles = StyleSheet.create({
   highlightTitle: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#050505",
     textAlign: "center",
     marginTop: 4,
   },
   highlightAddText: {
     fontSize: 12,
-    color: "#65676B",
     marginTop: 4,
   },
   postsSection: { marginTop: 16, paddingHorizontal: 16 },
@@ -501,14 +491,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 12,
   },
-  postsTitle: { fontSize: 18, fontWeight: "700", color: "#050505" },
+  postsTitle: { fontSize: 18, fontWeight: "700" },
   profilePostCard: {
-    backgroundColor: "#fff",
     marginBottom: 6,
     marginLeft: -16,
     marginRight: -16,
     borderBottomWidth: 6,
-    borderBottomColor: "#F0F2F5",
   },
   profilePostTop: {
     flexDirection: "row",
@@ -519,14 +507,14 @@ const styles = StyleSheet.create({
   },
   profilePostAvatar: { width: 40, height: 40, borderRadius: 20 },
   profilePostHeaderText: { flex: 1, marginLeft: 10 },
-  profilePostName: { fontSize: 14, fontWeight: "600", color: "#050505" },
+  profilePostName: { fontSize: 14, fontWeight: "600" },
   profilePostTimeRow: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     marginTop: 2,
   },
-  profilePostTime: { fontSize: 12, color: "#65676B" },
+  profilePostTime: { fontSize: 12 },
   profilePostMenu: {
     width: 36,
     height: 36,
@@ -536,7 +524,6 @@ const styles = StyleSheet.create({
   },
   profilePostContent: {
     fontSize: 15,
-    color: "#050505",
     lineHeight: 21,
     paddingHorizontal: 16,
     paddingBottom: 10,
@@ -547,7 +534,6 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
-    borderColor: "#CED0D4",
   },
   profilePostFooter: {
     flexDirection: "row",
@@ -556,7 +542,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderTopWidth: 0.5,
-    borderTopColor: "#CED0D4",
     marginTop: 6,
   },
   profilePostFooterLeft: {
@@ -571,7 +556,6 @@ const styles = StyleSheet.create({
   },
   profilePostFooterText: {
     fontSize: 13,
-    color: "#65676B",
   },
   inlineComments: {
     paddingTop: 4,
@@ -591,14 +575,12 @@ const styles = StyleSheet.create({
   },
   commentInputWrap: {
     flex: 1,
-    backgroundColor: "#F0F2F5",
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   commentInput: {
     fontSize: 13,
-    color: "#050505",
     padding: 0,
   },
   commentSendBtn: {
@@ -610,7 +592,6 @@ const styles = StyleSheet.create({
   },
   noComments: {
     fontSize: 13,
-    color: "#65676B",
     textAlign: "center",
     marginTop: 8,
   },
@@ -627,7 +608,6 @@ const styles = StyleSheet.create({
   },
   commentBubble: {
     flex: 1,
-    backgroundColor: "#F0F2F5",
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -635,11 +615,9 @@ const styles = StyleSheet.create({
   commentName: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#050505",
   },
   commentText: {
     fontSize: 13,
-    color: "#050505",
     marginTop: 1,
     lineHeight: 18,
   },
@@ -651,16 +629,13 @@ const styles = StyleSheet.create({
   commentActionText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#65676B",
   },
   commentDot: {
     fontSize: 11,
-    color: "#65676B",
   },
   commentLikeBadge: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#F02849",
     borderRadius: 8,
     paddingHorizontal: 4,
     paddingVertical: 1,
@@ -671,7 +646,6 @@ const styles = StyleSheet.create({
   commentLikeText: {
     fontSize: 10,
     fontWeight: "700",
-    color: "#fff",
   },
   viewMoreBtn: {
     paddingVertical: 8,
@@ -680,6 +654,5 @@ const styles = StyleSheet.create({
   viewMoreText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#65676B",
   },
 });

@@ -1,24 +1,27 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import { router } from "expo-router";
+import { useTheme } from "../theme/ThemeContext";
 import Avatar from "./Avatar";
 
 type Props = {
   onPress?: () => void;
+  onCameraPress?: () => void;
 };
 
-export default function WhatsOnYourMind({ onPress }: Props) {
+export default function WhatsOnYourMind({ onPress, onCameraPress }: Props) {
+  const { colors } = useTheme();
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.card, borderBottomColor: colors.background }]}>
       <View style={styles.topRow}>
         <TouchableOpacity activeOpacity={0.7} onPress={() => router.push("/profile" as any)}>
           <Avatar uri="https://i.pravatar.cc/150?u=alexj" size={40} style={styles.avatar} />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.inputButton} activeOpacity={0.7} onPress={onPress}>
-          <Text style={styles.inputText}>What's on your mind?</Text>
+        <TouchableOpacity style={[styles.inputButton, { backgroundColor: colors.inputBg }]} activeOpacity={0.7} onPress={onPress}>
+          <Text style={[styles.inputText, { color: colors.textSecondary }]}>What's on your mind?</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7}>
-          <View style={[styles.cameraIconBg, { backgroundColor: "#45BD62" }]}>
+        <TouchableOpacity style={styles.cameraBtn} activeOpacity={0.7} onPress={onCameraPress}>
+          <View style={[styles.cameraIconBg, { backgroundColor: colors.success }]}>
             <Ionicons name="images" size={16} color="#fff" />
           </View>
         </TouchableOpacity>
@@ -29,12 +32,10 @@ export default function WhatsOnYourMind({ onPress }: Props) {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 6,
     borderBottomWidth: 6,
-    borderBottomColor: "#F0F2F5",
   },
   topRow: {
     flexDirection: "row",
@@ -50,13 +51,11 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "#F0F2F5",
     justifyContent: "center",
     paddingHorizontal: 16,
   },
   inputText: {
     fontSize: 15,
-    color: "#65676B",
   },
   cameraBtn: {
     width: 40,

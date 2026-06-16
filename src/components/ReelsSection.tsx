@@ -1,5 +1,6 @@
 import { ScrollView, View, Text, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../theme/ThemeContext";
 import { REELS_COUNT } from "../data/home";
 
 const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
@@ -12,16 +13,17 @@ type Props = {
 };
 
 export default function ReelsSection({ data }: Props) {
+  const { colors } = useTheme();
   const reels = data ?? DEFAULT_REELS;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.background }]}>
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Ionicons name="play" size={20} color="#1877F2" />
-          <Text style={styles.title}>Reels</Text>
+          <Ionicons name="play" size={20} color={colors.primary} />
+          <Text style={[styles.title, { color: colors.text }]}>Reels</Text>
         </View>
         <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.seeAll}>See all</Text>
+          <Text style={[styles.seeAll, { color: colors.primary }]}>See all</Text>
         </TouchableOpacity>
       </View>
 
@@ -44,11 +46,9 @@ export default function ReelsSection({ data }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     marginTop: 0,
     paddingVertical: 14,
     borderBottomWidth: 6,
-    borderBottomColor: "#F0F2F5",
   },
   header: {
     flexDirection: "row",
@@ -65,11 +65,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#050505",
   },
   seeAll: {
     fontSize: 14,
-    color: "#1877F2",
     fontWeight: "500",
   },
   scroll: {

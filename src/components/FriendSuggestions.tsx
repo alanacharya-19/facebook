@@ -1,6 +1,7 @@
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useTheme } from "../theme/ThemeContext";
 import { FRIEND_SUGGESTIONS } from "../data/home";
 import Avatar from "./Avatar";
 
@@ -9,32 +10,33 @@ type Props = {
 };
 
 export default function FriendSuggestions({ data }: Props) {
+  const { colors } = useTheme();
   const items = data ?? FRIEND_SUGGESTIONS;
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.card, borderBottomColor: colors.background }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>People You May Know</Text>
+        <Text style={[styles.title, { color: colors.text }]}>People You May Know</Text>
         <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.seeAll}>See All</Text>
+          <Text style={[styles.seeAll, { color: colors.primary }]}>See All</Text>
         </TouchableOpacity>
       </View>
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.list}>
         {items.map((person) => (
-          <View key={person.id} style={styles.card}>
+          <View key={person.id} style={[styles.card, { borderColor: colors.border }]}>
             <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
               <Avatar uri={person.avatar} size={64} style={styles.avatar} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => router.push(`/profile/${person.name.toLowerCase()}` as any)} activeOpacity={0.7}>
-              <Text style={styles.name} numberOfLines={1}>{person.name}</Text>
+              <Text style={[styles.name, { color: colors.text }]} numberOfLines={1}>{person.name}</Text>
             </TouchableOpacity>
-            <Text style={styles.mutual}>{person.mutual} mutual friends</Text>
-            <TouchableOpacity style={styles.addBtn} activeOpacity={0.7}>
+            <Text style={[styles.mutual, { color: colors.textSecondary }]}>{person.mutual} mutual friends</Text>
+            <TouchableOpacity style={[styles.addBtn, { backgroundColor: colors.primary }]} activeOpacity={0.7}>
               <Ionicons name="person-add" size={16} color="#fff" />
               <Text style={styles.addText}>Add Friend</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.removeBtn} activeOpacity={0.7}>
-              <Text style={styles.removeText}>Remove</Text>
+              <Text style={[styles.removeText, { color: colors.textSecondary }]}>Remove</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -45,10 +47,8 @@ export default function FriendSuggestions({ data }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#fff",
     paddingVertical: 12,
     borderBottomWidth: 6,
-    borderBottomColor: "#F0F2F5",
   },
   header: {
     flexDirection: "row",
@@ -60,11 +60,9 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#050505",
   },
   seeAll: {
     fontSize: 14,
-    color: "#1877F2",
     fontWeight: "500",
   },
   list: {
@@ -74,7 +72,6 @@ const styles = StyleSheet.create({
   card: {
     width: 132,
     borderWidth: 0.5,
-    borderColor: "#CED0D4",
     borderRadius: 10,
     padding: 10,
     alignItems: "center",
@@ -88,13 +85,11 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#050505",
     textAlign: "center",
     width: "100%",
   },
   mutual: {
     fontSize: 12,
-    color: "#65676B",
     marginTop: 2,
     marginBottom: 10,
   },
@@ -103,7 +98,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 4,
-    backgroundColor: "#1877F2",
     borderRadius: 6,
     paddingVertical: 6,
     paddingHorizontal: 12,
@@ -122,6 +116,5 @@ const styles = StyleSheet.create({
   removeText: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#65676B",
   },
 });

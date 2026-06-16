@@ -13,6 +13,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useTheme } from "../../theme/ThemeContext";
 import Avatar from "../../components/Avatar";
 import { useLocalSearchParams, router } from "expo-router";
 import { STORIES } from "../../data/home";
@@ -33,6 +34,7 @@ function StoryFrame({
   onComplete: () => void;
   userName: string;
 }) {
+  const { colors } = useTheme();
   const progressAnim = useRef(new Animated.Value(0)).current;
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const DURATION = 5000;
@@ -79,18 +81,18 @@ function StoryFrame({
           </View>
           <View style={styles.topBar}>
             <View style={styles.userInfo}>
-              <Avatar uri={story.avatar} size={36} style={styles.avatar} />
+              <Avatar uri={story.avatar} size={36} style={[styles.avatar, { borderColor: colors.white }]} />
               <View>
-                <Text style={styles.userName}>{story.name}</Text>
-                <Text style={styles.time}>Just now</Text>
+                <Text style={[styles.userName, { color: colors.white }]}>{story.name}</Text>
+                <Text style={[styles.time, { color: "rgba(255,255,255,0.7)" }]}>Just now</Text>
               </View>
             </View>
             <View style={styles.topRight}>
               <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7}>
-                <Ionicons name="ellipsis-horizontal" size={22} color="#fff" />
+                <Ionicons name="ellipsis-horizontal" size={22} color={colors.white} />
               </TouchableOpacity>
               <TouchableOpacity style={styles.iconBtn} activeOpacity={0.7} onPress={() => router.back()}>
-                <Ionicons name="close" size={28} color="#fff" />
+                <Ionicons name="close" size={28} color={colors.white} />
               </TouchableOpacity>
             </View>
           </View>
@@ -98,15 +100,15 @@ function StoryFrame({
         <View style={styles.bottomArea}>
           <View style={styles.bottomRow}>
             <TouchableOpacity style={styles.replyBtn} activeOpacity={0.7}>
-              <Ionicons name="heart-outline" size={22} color="#fff" />
+              <Ionicons name="heart-outline" size={22} color={colors.white} />
             </TouchableOpacity>
             <TextInput
               placeholder={`Send message to ${userName}`}
               placeholderTextColor="rgba(255,255,255,0.6)"
-              style={styles.input}
+              style={[styles.input, { backgroundColor: "rgba(255,255,255,0.2)", color: colors.white }]}
             />
             <TouchableOpacity style={styles.sendBtn} activeOpacity={0.7}>
-              <Ionicons name="send" size={20} color="#fff" />
+              <Ionicons name="send" size={20} color={colors.white} />
             </TouchableOpacity>
           </View>
           <View style={styles.emojiRow}>
@@ -123,6 +125,7 @@ function StoryFrame({
 }
 
 export default function StoryViewScreen() {
+  const { colors } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
   const stories = STORIES.filter((s) => !s.isSelf);
   const initialIndex = stories.findIndex((s) => s.id === id);
@@ -159,9 +162,9 @@ export default function StoryViewScreen() {
 
   if (!stories.length) {
     return (
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: colors.dark }]}>
         <TouchableOpacity style={styles.closeOuter} onPress={() => router.back()}>
-          <Ionicons name="close" size={28} color="#fff" />
+          <Ionicons name="close" size={28} color={colors.white} />
         </TouchableOpacity>
       </View>
     );
@@ -169,7 +172,7 @@ export default function StoryViewScreen() {
 
   return (
     <KeyboardAvoidingView
-      style={styles.container}
+      style={[styles.container, { backgroundColor: colors.dark }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <FlatList
@@ -198,7 +201,6 @@ export default function StoryViewScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -256,16 +258,13 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     borderWidth: 2,
-    borderColor: "#fff",
   },
   userName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#fff",
   },
   time: {
     fontSize: 11,
-    color: "rgba(255,255,255,0.7)",
     marginTop: 1,
   },
   topRight: {
@@ -300,10 +299,8 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.2)",
     paddingHorizontal: 14,
     fontSize: 13,
-    color: "#fff",
   },
   sendBtn: {
     width: 36,

@@ -3,16 +3,22 @@ import { router } from "expo-router";
 import { useState } from "react";
 import {
   Image,
+  Modal,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  ScrollView,
+  Dimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Comment, POST_COMMENTS } from "../data/comments";
 import { USERS } from "../data/users";
 import Avatar from "./Avatar";
 import ShareModal from "./ShareModal";
+import { useTheme } from "../theme/ThemeContext";
 
 type FeedPostProps = {
   name: string;
@@ -20,6 +26,7 @@ type FeedPostProps = {
   content?: string;
   avatar: string;
   photo?: string;
+  photos?: string[];
   userId?: string;
   postId?: string;
   onClose?: () => void;
@@ -34,10 +41,12 @@ export default function FeedPost({
   content,
   avatar,
   photo,
+  photos: photosProp,
   userId,
   postId = "1",
   onClose,
 }: FeedPostProps) {
+  const { colors } = useTheme();
   const [liked, setLiked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
@@ -46,7 +55,11 @@ export default function FeedPost({
   );
   const [newComment, setNewComment] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
   const own = isOwnPost(userId);
+
+  const displayPhotos = photosProp || (photo ? [photo] : []);
+  const imgCount = displayPhotos.length;
 
   const menuItems = own
     ? ["Edit post", "Pin post", "Delete post", "Hide from timeline"]
@@ -92,7 +105,7 @@ export default function FeedPost({
   };
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.card, borderBottomColor: colors.borderLight }]}>
       {menuOpen && (
         <TouchableOpacity
           style={styles.menuBackdrop}
@@ -101,11 +114,11 @@ export default function FeedPost({
         />
       )}
       {menuOpen && (
-        <View style={styles.menuDropdown}>
+        <View style={[styles.menuDropdown, { backgroundColor: colors.card, borderColor: colors.border }]}>
           {menuItems.map((item) => (
             <TouchableOpacity
               key={item}
-              style={styles.menuItem}
+              style={[styles.menuItem, { borderBottomColor: colors.borderLight }]}
               activeOpacity={0.7}
               onPress={() => {
                 setMenuOpen(false);
@@ -113,7 +126,7 @@ export default function FeedPost({
                   onClose?.();
               }}
             >
-              <Text style={styles.menuItemText}>{item}</Text>
+              <Text style={[styles.menuItemText, { color: colors.text }]}>{item}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -126,15 +139,15 @@ export default function FeedPost({
         <View style={styles.headerText}>
           <View style={styles.nameRow}>
             <TouchableOpacity onPress={goToProfile} activeOpacity={0.7}>
-              <Text style={styles.name}>{name}</Text>
+              <Text style={[styles.name, { color: colors.text }]}>{name}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.followBtn} activeOpacity={0.7}>
-              <Text style={styles.followText}>Follow</Text>
+            <TouchableOpacity style={[styles.followBtn, { backgroundColor: colors.primaryLight }]} activeOpacity={0.7}>
+              <Text style={[styles.followText, { color: colors.primary }]}>Follow</Text>
             </TouchableOpacity>
           </View>
           <View style={styles.timeRow}>
-            <Text style={styles.time}>{time}</Text>
-            <Ionicons name="globe-outline" size={12} color="#65676B" />
+            <Text style={[styles.time, { color: colors.textSecondary }]}>{time}</Text>
+            <Ionicons name="globe-outline" size={12} color={colors.textSecondary} />
           </View>
         </View>
         <View style={{ flexDirection: "row", gap: 2 }}>
@@ -142,25 +155,64 @@ export default function FeedPost({
             style={styles.menuBtn}
             onPress={() => setMenuOpen(!menuOpen)}
           >
-            <Ionicons name="ellipsis-vertical" size={20} color="#65676B" />
+            <Ionicons name="ellipsis-vertical" size={20} color={colors.textSecondary} />
           </TouchableOpacity>
           {onClose && (
             <TouchableOpacity style={styles.menuBtn} onPress={onClose}>
-              <Ionicons name="close" size={20} color="#65676B" />
+              <Ionicons name="close" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           )}
         </View>
       </View>
 
-      {content ? <Text style={styles.content}>{content}</Text> : null}
+      {content ? <Text style={[styles.content, { color: colors.text }]}>{content}</Text> : null}
 
-      {photo && (
-        <View style={styles.imageWrap}>
-          <Image source={{ uri: photo }} style={styles.postImage} />
-        </View>
+      {imgCount > 0 && (
+        <TouchableOpacity activeOpacity={0.95} onPress={() => setViewerIndex(0)}>
+          {imgCount === 1 ? (
+            <View style={[styles.imageWrap, { borderColor: colors.border }]}>
+              <Image source={{ uri: displayPhotos[0] }} style={styles.postImage} />
+            </View>
+          ) : (
+            <View style={[styles.collage, { borderColor: colors.border }]}>
+              {imgCount === 2 ? (
+                <View style={styles.collageRow}>
+                  <Image source={{ uri: displayPhotos[0] }} style={styles.collageHalf} />
+                  <Image source={{ uri: displayPhotos[1] }} style={styles.collageHalf} />
+                </View>
+              ) : imgCount === 3 ? (
+                <View style={styles.collage3}>
+                  <Image source={{ uri: displayPhotos[0] }} style={styles.collageLeft} />
+                  <View style={styles.collageRight}>
+                    <Image source={{ uri: displayPhotos[1] }} style={styles.collageQuad} />
+                    <Image source={{ uri: displayPhotos[2] }} style={styles.collageQuad} />
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.collage4}>
+                  <Image source={{ uri: displayPhotos[0] }} style={styles.collageLeft} />
+                  <View style={styles.collageRight}>
+                    <Image source={{ uri: displayPhotos[1] }} style={styles.collageQuad} />
+                    <View style={styles.collageRow}>
+                      <Image source={{ uri: displayPhotos[2] }} style={styles.collageQuad} />
+                      <View style={styles.collageLastWrap}>
+                        <Image source={{ uri: displayPhotos[3] }} style={styles.collageQuad} />
+                        {imgCount > 4 && (
+                          <View style={styles.collageOverlay}>
+                            <Text style={styles.collageOverlayText}>+{imgCount - 4}</Text>
+                          </View>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                </View>
+              )}
+            </View>
+          )}
+        </TouchableOpacity>
       )}
 
-      <View style={styles.footer}>
+      <View style={[styles.footer, { borderTopColor: colors.border }]}>
         <View style={styles.footerLeft}>
           <TouchableOpacity
             style={styles.footerItem}
@@ -170,9 +222,9 @@ export default function FeedPost({
             <Ionicons
               name={liked ? "heart" : "heart-outline"}
               size={20}
-              color={liked ? "#F02849" : "#65676B"}
+              color={liked ? "#F02849" : colors.textSecondary}
             />
-            <Text style={[styles.footerText, liked && { color: "#F02849" }]}>
+            <Text style={[styles.footerText, { color: liked ? "#F02849" : colors.textSecondary }]}>
               200K
             </Text>
           </TouchableOpacity>
@@ -184,10 +236,10 @@ export default function FeedPost({
             <Ionicons
               name="chatbubble-outline"
               size={20}
-              color={showComments ? "#1877F2" : "#65676B"}
+              color={showComments ? "#1877F2" : colors.textSecondary}
             />
             <Text
-              style={[styles.footerText, showComments && { color: "#1877F2" }]}
+              style={[styles.footerText, { color: showComments ? "#1877F2" : colors.textSecondary }]}
             >
               {commentsLabel}
             </Text>
@@ -197,15 +249,15 @@ export default function FeedPost({
             activeOpacity={0.7}
             onPress={() => setShareVisible(true)}
           >
-            <Ionicons name="arrow-redo-outline" size={20} color="#65676B" />
-            <Text style={styles.footerText}>Share</Text>
+            <Ionicons name="arrow-redo-outline" size={20} color={colors.textSecondary} />
+            <Text style={[styles.footerText, { color: colors.textSecondary }]}>Share</Text>
           </TouchableOpacity>
         </View>
       </View>
 
       {showComments && (
         <View style={styles.commentsSection}>
-          <View style={styles.commentsDivider} />
+          <View style={[styles.commentsDivider, { backgroundColor: colors.borderLight }]} />
 
           <View style={styles.commentInputRow}>
             <Avatar
@@ -213,11 +265,11 @@ export default function FeedPost({
               size={28}
               style={styles.commentInputAvatar}
             />
-            <View style={styles.commentInputWrap}>
+            <View style={[styles.commentInputWrap, { backgroundColor: colors.inputBg }]}>
               <TextInput
                 placeholder="Write a comment..."
-                placeholderTextColor="#8A8D91"
-                style={styles.commentInput}
+                placeholderTextColor={colors.textTertiary}
+                style={[styles.commentInput, { color: colors.text }]}
                 value={newComment}
                 onChangeText={setNewComment}
               />
@@ -236,7 +288,7 @@ export default function FeedPost({
           </View>
 
           {comments.length === 0 && (
-            <Text style={styles.noComments}>
+            <Text style={[styles.noComments, { color: colors.textSecondary }]}>
               No comments yet. Be the first!
             </Text>
           )}
@@ -248,9 +300,9 @@ export default function FeedPost({
                 size={32}
                 style={styles.commentAvatar}
               />
-              <View style={styles.commentBubble}>
-                <Text style={styles.commentName}>{comment.name}</Text>
-                <Text style={styles.commentText}>{comment.text}</Text>
+              <View style={[styles.commentBubble, { backgroundColor: colors.inputBg }]}>
+                <Text style={[styles.commentName, { color: colors.text }]}>{comment.name}</Text>
+                <Text style={[styles.commentText, { color: colors.text }]}>{comment.text}</Text>
                 <View style={styles.commentActions}>
                   <TouchableOpacity
                     onPress={() => toggleCommentLike(comment.id)}
@@ -259,21 +311,21 @@ export default function FeedPost({
                     <Text
                       style={[
                         styles.commentActionText,
-                        comment.liked && { color: "#F02849" },
+                        { color: comment.liked ? "#F02849" : colors.textSecondary },
                       ]}
                     >
                       {comment.liked ? "Unlike" : "Like"}
                     </Text>
                   </TouchableOpacity>
-                  <Text style={styles.commentDot}> · </Text>
+                  <Text style={[styles.commentDot, { color: colors.textSecondary }]}> · </Text>
                   <TouchableOpacity activeOpacity={0.7}>
-                    <Text style={styles.commentActionText}>Reply</Text>
+                    <Text style={[styles.commentActionText, { color: colors.textSecondary }]}>Reply</Text>
                   </TouchableOpacity>
                   {comment.replies ? (
                     <>
-                      <Text style={styles.commentDot}> · </Text>
+                      <Text style={[styles.commentDot, { color: colors.textSecondary }]}> · </Text>
                       <TouchableOpacity activeOpacity={0.7}>
-                        <Text style={styles.commentActionText}>
+                        <Text style={[styles.commentActionText, { color: colors.textSecondary }]}>
                           {comment.replies} replies
                         </Text>
                       </TouchableOpacity>
@@ -292,7 +344,7 @@ export default function FeedPost({
 
           {comments.length > 5 && (
             <TouchableOpacity style={styles.viewMoreBtn} activeOpacity={0.7}>
-              <Text style={styles.viewMoreText}>
+              <Text style={[styles.viewMoreText, { color: colors.textSecondary }]}>
                 View all {comments.length} comments
               </Text>
             </TouchableOpacity>
@@ -304,13 +356,52 @@ export default function FeedPost({
         visible={shareVisible}
         onClose={() => setShareVisible(false)}
       />
+
+      {viewerIndex !== null && (
+        <PhotoViewer
+          photos={displayPhotos}
+          initialIndex={viewerIndex}
+          onClose={() => setViewerIndex(null)}
+        />
+      )}
     </View>
+  );
+}
+
+function PhotoViewer({ photos, initialIndex, onClose }: { photos: string[]; initialIndex: number; onClose: () => void }) {
+  const insets = useSafeAreaInsets();
+  const [index, setIndex] = useState(initialIndex);
+  const { width, height } = Dimensions.get("window");
+
+  return (
+    <Modal visible animationType="fade" transparent onRequestClose={onClose}>
+      <View style={styles.viewerContainer}>
+        <View style={[styles.viewerHeader, { paddingTop: insets.top + 8 }]}>
+          <TouchableOpacity onPress={onClose} activeOpacity={0.7}>
+            <Ionicons name="close" size={28} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.viewerCounter}>{index + 1} / {photos.length}</Text>
+          <View style={{ width: 28 }} />
+        </View>
+        <ScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          style={{ flex: 1 }}
+          contentOffset={{ x: index * width, y: 0 }}
+          onMomentumScrollEnd={(e) => setIndex(Math.round(e.nativeEvent.contentOffset.x / width))}
+        >
+          {photos.map((uri, i) => (
+            <Image key={i} source={{ uri }} style={{ width, height, resizeMode: "contain" }} />
+          ))}
+        </ScrollView>
+      </View>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: "#fff",
     marginTop: 6,
     marginHorizontal: 12,
     borderRadius: 12,
@@ -319,7 +410,6 @@ const styles = StyleSheet.create({
     width: "100%",
     overflow: "visible",
     borderBottomWidth: 6,
-    borderBottomColor: "#F0F2F5",
   },
   header: {
     flexDirection: "row",
@@ -345,10 +435,8 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#050505",
   },
   followBtn: {
-    backgroundColor: "#E7F3FF",
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 2,
@@ -356,7 +444,6 @@ const styles = StyleSheet.create({
   followText: {
     fontSize: 12,
     fontWeight: "600",
-    color: "#1877F2",
   },
   timeRow: {
     flexDirection: "row",
@@ -366,7 +453,6 @@ const styles = StyleSheet.create({
   },
   time: {
     fontSize: 12,
-    color: "#65676B",
   },
   menuBtn: {
     width: 36,
@@ -388,7 +474,6 @@ const styles = StyleSheet.create({
     top: 52,
     right: 12,
     zIndex: 100,
-    backgroundColor: "#fff",
     borderRadius: 10,
     minWidth: 200,
     shadowColor: "#000",
@@ -397,22 +482,18 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     borderWidth: 0.5,
-    borderColor: "#CED0D4",
   },
   menuItem: {
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: 0.5,
-    borderBottomColor: "#F0F2F5",
   },
   menuItemText: {
     fontSize: 14,
-    color: "#050505",
   },
   headerIcon: {},
   content: {
     fontSize: 15,
-    color: "#050505",
     lineHeight: 21,
     paddingHorizontal: 16,
     paddingBottom: 10,
@@ -420,7 +501,6 @@ const styles = StyleSheet.create({
   imageWrap: {
     borderTopWidth: 0.5,
     borderBottomWidth: 0.5,
-    borderColor: "#CED0D4",
   },
   postImage: {
     width: "100%",
@@ -434,7 +514,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderTopWidth: 0.5,
-    borderTopColor: "#CED0D4",
     marginTop: 6,
   },
   footerLeft: {
@@ -449,7 +528,6 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
-    color: "#65676B",
   },
   commentsSection: {
     paddingTop: 4,
@@ -457,7 +535,6 @@ const styles = StyleSheet.create({
   },
   commentsDivider: {
     height: 1,
-    backgroundColor: "#E4E6EB",
     marginHorizontal: 16,
     marginBottom: 8,
   },
@@ -475,14 +552,12 @@ const styles = StyleSheet.create({
   },
   commentInputWrap: {
     flex: 1,
-    backgroundColor: "#F0F2F5",
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
   commentInput: {
     fontSize: 13,
-    color: "#050505",
     padding: 0,
   },
   commentSendBtn: {
@@ -494,7 +569,6 @@ const styles = StyleSheet.create({
   },
   noComments: {
     fontSize: 13,
-    color: "#65676B",
     textAlign: "center",
     marginTop: 8,
   },
@@ -511,7 +585,6 @@ const styles = StyleSheet.create({
   },
   commentBubble: {
     flex: 1,
-    backgroundColor: "#F0F2F5",
     borderRadius: 14,
     paddingHorizontal: 10,
     paddingVertical: 6,
@@ -519,11 +592,9 @@ const styles = StyleSheet.create({
   commentName: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#050505",
   },
   commentText: {
     fontSize: 13,
-    color: "#050505",
     marginTop: 1,
     lineHeight: 18,
   },
@@ -535,11 +606,9 @@ const styles = StyleSheet.create({
   commentActionText: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#65676B",
   },
   commentDot: {
     fontSize: 11,
-    color: "#65676B",
   },
   commentLikeBadge: {
     flexDirection: "row",
@@ -564,6 +633,77 @@ const styles = StyleSheet.create({
   viewMoreText: {
     fontSize: 13,
     fontWeight: "600",
-    color: "#65676B",
+  },
+  collage: {
+    borderTopWidth: 0.5,
+    borderBottomWidth: 0.5,
+    overflow: "hidden",
+  },
+  collageRow: {
+    flexDirection: "row",
+    gap: 2,
+    flex: 1,
+  },
+  collageHalf: {
+    flex: 1,
+    height: 220,
+    resizeMode: "cover",
+  },
+  collage3: {
+    flexDirection: "row",
+    gap: 2,
+    height: 220,
+  },
+  collage4: {
+    flexDirection: "row",
+    gap: 2,
+    height: 220,
+  },
+  collageLeft: {
+    flex: 1,
+    borderRadius: 0,
+  },
+  collageRight: {
+    flex: 1,
+    gap: 2,
+  },
+  collageQuad: {
+    flex: 1,
+    borderRadius: 0,
+  },
+  collageLastWrap: {
+    flex: 1,
+  },
+  collageOverlay: {
+    ...StyleSheet.absoluteFill,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  collageOverlayText: {
+    fontSize: 28,
+    fontWeight: "700",
+    color: "#fff",
+  },
+  viewerContainer: {
+    flex: 1,
+    backgroundColor: "#000",
+  },
+  viewerHeader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 16,
+    paddingBottom: 12,
+  },
+  viewerCounter: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#fff",
   },
 });
