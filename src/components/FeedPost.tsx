@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
+  Animated,
   Image,
   Modal,
   Pressable,
@@ -48,6 +49,7 @@ export default function FeedPost({
 }: FeedPostProps) {
   const { colors } = useTheme();
   const [liked, setLiked] = useState(false);
+  const heartScale = useRef(new Animated.Value(1)).current;
   const [showComments, setShowComments] = useState(false);
   const [shareVisible, setShareVisible] = useState(false);
   const [comments, setComments] = useState<Comment[]>(
@@ -70,6 +72,18 @@ export default function FeedPost({
     totalComments > 0
       ? `${totalComments >= 1000 ? `${(totalComments / 1000).toFixed(1)}K` : totalComments}`
       : "Comment";
+
+  const pulse = () => {
+    Animated.sequence([
+      Animated.spring(heartScale, { toValue: 1.4, useNativeDriver: true, friction: 3 }),
+      Animated.spring(heartScale, { toValue: 1, useNativeDriver: true, friction: 3 }),
+    ]).start();
+  };
+
+  const handleLike = () => {
+    if (!liked) pulse();
+    setLiked(!liked);
+  };
 
   const goToProfile = () => {
     if (userId) router.push(`/profile/${userId}` as any);
@@ -217,13 +231,15 @@ export default function FeedPost({
           <TouchableOpacity
             style={styles.footerItem}
             activeOpacity={0.7}
-            onPress={() => setLiked(!liked)}
+            onPress={handleLike}
           >
-            <Ionicons
-              name={liked ? "heart" : "heart-outline"}
-              size={20}
-              color={liked ? "#F02849" : colors.textSecondary}
-            />
+            <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+              <Ionicons
+                name={liked ? "heart" : "heart-outline"}
+                size={20}
+                color={liked ? "#F02849" : colors.textSecondary}
+              />
+            </Animated.View>
             <Text style={[styles.footerText, { color: liked ? "#F02849" : colors.textSecondary }]}>
               200K
             </Text>

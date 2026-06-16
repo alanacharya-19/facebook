@@ -1,4 +1,5 @@
-import { ScrollView, View, Text, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
+import { useRef, useState } from "react";
+import { Animated, ScrollView, View, Text, ImageBackground, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../theme/ThemeContext";
 import { REELS_COUNT } from "../data/home";
@@ -11,6 +12,43 @@ const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
 type Props = {
   data?: typeof DEFAULT_REELS;
 };
+
+function ReelCard({ reel, colors }: { reel: typeof DEFAULT_REELS[0]; colors: ReturnType<typeof useTheme>["colors"] }) {
+  const [liked, setLiked] = useState(false);
+  const heartScale = useRef(new Animated.Value(1)).current;
+
+  const pulse = () => {
+    Animated.sequence([
+      Animated.spring(heartScale, { toValue: 1.4, useNativeDriver: true, friction: 3 }),
+      Animated.spring(heartScale, { toValue: 1, useNativeDriver: true, friction: 3 }),
+    ]).start();
+  };
+
+  return (
+    <TouchableOpacity style={styles.reel} activeOpacity={0.9}>
+      <ImageBackground source={{ uri: reel.image }} style={styles.thumb} imageStyle={{ borderRadius: 12 }}>
+        <View style={styles.playOverlay}>
+          <View style={styles.playBtn}>
+            <Ionicons name="play" size={22} color="#fff" />
+          </View>
+        </View>
+        <TouchableOpacity
+          style={styles.reelLike}
+          activeOpacity={0.7}
+          onPress={() => { if (!liked) pulse(); setLiked(!liked); }}
+        >
+          <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+            <Ionicons
+              name={liked ? "heart" : "heart-outline"}
+              size={20}
+              color={liked ? "#F02849" : "#fff"}
+            />
+          </Animated.View>
+        </TouchableOpacity>
+      </ImageBackground>
+    </TouchableOpacity>
+  );
+}
 
 export default function ReelsSection({ data }: Props) {
   const { colors } = useTheme();
@@ -29,15 +67,7 @@ export default function ReelsSection({ data }: Props) {
 
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scroll}>
         {reels.map((reel) => (
-          <TouchableOpacity key={reel.id} style={styles.reel} activeOpacity={0.9}>
-            <ImageBackground source={{ uri: reel.image }} style={styles.thumb} imageStyle={{ borderRadius: 12 }}>
-              <View style={styles.playOverlay}>
-                <View style={styles.playBtn}>
-                  <Ionicons name="play" size={22} color="#fff" />
-                </View>
-              </View>
-            </ImageBackground>
-          </TouchableOpacity>
+          <ReelCard key={reel.id} reel={reel} colors={colors} />
         ))}
       </ScrollView>
     </View>
@@ -99,6 +129,17 @@ const styles = StyleSheet.create({
     height: 36,
     borderRadius: 18,
     backgroundColor: "rgba(0,0,0,0.25)",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reelLike: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(0,0,0,0.3)",
     alignItems: "center",
     justifyContent: "center",
   },
