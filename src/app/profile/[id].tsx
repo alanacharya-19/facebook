@@ -21,7 +21,7 @@ import Avatar from "../../components/Avatar";
 const currentUser = Object.values(USERS)[0];
 
 export default function UserProfileScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { id } = useLocalSearchParams<{ id: string }>();
   const user = getUserData(id);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
@@ -68,15 +68,15 @@ export default function UserProfileScreen() {
       <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
         <View style={styles.coverWrap}>
           <ImageBackground source={{ uri: user.cover }} style={styles.cover} resizeMode="cover">
-            <TouchableOpacity style={styles.backBtn} activeOpacity={0.7} onPress={() => router.back()}>
+            <TouchableOpacity style={[styles.backBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.3)" }]} activeOpacity={0.7} onPress={() => router.back()}>
               <Ionicons name="arrow-back" size={24} color={colors.white} />
             </TouchableOpacity>
             <View style={styles.coverRight}>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => router.push("/search")}>
-                <Ionicons name="search" size={18} color={colors.text} />
+              <TouchableOpacity style={[styles.coverIconBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.9)" }]} activeOpacity={0.7} onPress={() => router.push("/search")}>
+                <Ionicons name="search" size={18} color={isDark ? colors.white : colors.text} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-                <Ionicons name="ellipsis-horizontal" size={18} color={colors.text} />
+              <TouchableOpacity style={[styles.coverIconBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.9)" }]} activeOpacity={0.7}>
+                <Ionicons name="ellipsis-horizontal" size={18} color={isDark ? colors.white : colors.text} />
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -310,7 +310,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.3)",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -325,7 +324,6 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(255,255,255,0.9)",
     alignItems: "center",
     justifyContent: "center",
   },

@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { router } from "expo-router";
 import { useTheme } from "../theme/ThemeContext";
 import ProfileSidebar from "../components/ProfileSidebar";
 import SearchOverlay from "../components/SearchOverlay";
@@ -56,7 +57,7 @@ function ProfilePost({ avatar, name, time, content, image, likes, comments }: an
 }
 
 export default function ProfileScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const [activeTab, setActiveTab] = useState(0);
   const [menuVisible, setMenuVisible] = useState(false);
   const [searching, setSearching] = useState(false);
@@ -66,18 +67,18 @@ export default function ProfileScreen() {
       <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
         <View style={styles.coverWrap}>
           <ImageBackground source={{ uri: PROFILE.cover }} style={styles.cover} resizeMode="cover">
-            <TouchableOpacity style={styles.menuCoverBtn} activeOpacity={0.7} onPress={() => setMenuVisible(true)}>
-              <Ionicons name="menu-outline" size={24} color={colors.white} />
+            <TouchableOpacity style={[styles.coverBackBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.3)" }]} activeOpacity={0.7} onPress={() => router.back()}>
+              <Ionicons name="arrow-back" size={24} color={colors.white} />
             </TouchableOpacity>
             <View style={styles.coverRight}>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-                <Ionicons name="pencil" size={18} color={colors.text} />
+              <TouchableOpacity style={[styles.coverIconBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.9)" }]} activeOpacity={0.7}>
+                <Ionicons name="pencil" size={18} color={isDark ? colors.white : colors.text} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7} onPress={() => setSearching(true)}>
-                <Ionicons name="search" size={18} color={colors.text} />
+              <TouchableOpacity style={[styles.coverIconBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.9)" }]} activeOpacity={0.7} onPress={() => setSearching(true)}>
+                <Ionicons name="search" size={18} color={isDark ? colors.white : colors.text} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.coverIconBtn} activeOpacity={0.7}>
-                <Ionicons name="ellipsis-horizontal" size={18} color={colors.text} />
+              <TouchableOpacity style={[styles.coverIconBtn, { backgroundColor: isDark ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.9)" }]} activeOpacity={0.7}>
+                <Ionicons name="ellipsis-horizontal" size={18} color={isDark ? colors.white : colors.text} />
               </TouchableOpacity>
             </View>
           </ImageBackground>
@@ -258,14 +259,13 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 40,
     overflow: "hidden",
   },
-  menuCoverBtn: {
+  coverBackBtn: {
     position: "absolute",
     top: 30,
     left: 12,
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "rgba(0,0,0,0.3)",
     alignItems: "center",
     justifyContent: "center",
   },
