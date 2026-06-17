@@ -46,8 +46,8 @@ export default function StoriesBar({ data }: Props) {
   );
 }
 
-const CARD_W = 110;
-const CARD_H = 210;
+const CARD_W = 96;
+const CARD_H = 160;
 
 const styles = StyleSheet.create({
   container: {
@@ -87,49 +87,49 @@ const styles = StyleSheet.create({
   },
   selfTop: {
     width: CARD_W,
-    height: 126,
+    height: 96,
   },
   selfBottom: {
     width: CARD_W,
-    height: 84,
+    height: 64,
     alignItems: "center",
     justifyContent: "center",
   },
   createBtn: {
     position: "absolute",
-    top: -20,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    top: -16,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     borderWidth: 3,
     alignItems: "center",
     justifyContent: "center",
   },
   createText: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "600",
     textAlign: "center",
-    marginTop: 22,
+    marginTop: 18,
   },
   storyRing: {
     position: "absolute",
-    top: 8,
-    left: 8,
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    borderWidth: 3,
+    top: 6,
+    left: 6,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    borderWidth: 2,
     alignItems: "center",
     justifyContent: "center",
   },
   storyAvatar: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     overflow: "hidden",
   },
   name: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: "500",
     color: "#fff",
     paddingHorizontal: 8,

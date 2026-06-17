@@ -16,8 +16,7 @@ const SAMPLE_VIDEOS = [
 
 const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
   id: String(i + 1),
-  video: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length],
-  poster: `https://picsum.photos/seed/reel${i + 1}/232/392`,
+  video: { uri: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length] },
 }));
 
 type Props = {
@@ -33,11 +32,12 @@ function ReelCard({ reel, colors, onComment, onShare, onMenuOpen }: {
 }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
-  const [playing, setPlaying] = useState(false);
+  const [playing, setPlaying] = useState(true);
   const heartScale = useRef(new Animated.Value(1)).current;
-  const player = useVideoPlayer({ uri: reel.video }, (player) => {
+  const player = useVideoPlayer(reel.video, (player) => {
     player.loop = true;
     player.muted = true;
+    player.play();
   });
 
   const pulse = () => {
@@ -188,6 +188,7 @@ const styles = StyleSheet.create({
   },
   reel: {
     width: 116,
+    height: 200,
   },
   thumbBg: {
     position: "absolute",

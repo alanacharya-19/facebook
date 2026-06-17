@@ -35,7 +35,6 @@ const SAMPLE_VIDEOS = [
 const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
   id: String(i + 1),
   video: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length],
-  poster: `https://picsum.photos/seed/reel${i + 1}/232/392`,
 }));
 
 export default function HomeScreen() {
