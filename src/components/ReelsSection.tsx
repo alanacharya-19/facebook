@@ -16,7 +16,7 @@ const SAMPLE_VIDEOS = [
 
 const DEFAULT_REELS = Array.from({ length: REELS_COUNT }, (_, i) => ({
   id: String(i + 1),
-  video: { uri: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length] },
+  video: SAMPLE_VIDEOS[i % SAMPLE_VIDEOS.length],
 }));
 
 type Props = {

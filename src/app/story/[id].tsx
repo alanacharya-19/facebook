@@ -19,8 +19,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { STORIES } from "../../data/home";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
-const CARD_W = SCREEN_WIDTH - 24;
-const CARD_H = SCREEN_HEIGHT * 0.82;
+const CARD_W = SCREEN_WIDTH - 32;
 const EMOJIS = ["👍", "❤️", "😮", "😢", "😡", "🎉"];
 
 function StoryFrame({
@@ -141,7 +140,7 @@ export default function StoryViewScreen() {
   }, [currentIndex, stories.length]);
 
   const onMomentumEnd = useCallback((e: any) => {
-    const idx = Math.round(e.nativeEvent.contentOffset.x / CARD_W);
+    const idx = Math.round(e.nativeEvent.contentOffset.x / SCREEN_WIDTH);
     setCurrentIndex(idx);
   }, []);
 
@@ -149,12 +148,14 @@ export default function StoryViewScreen() {
     ({ item }: { item: typeof STORIES[0] }) => {
       const idx = stories.findIndex((s) => s.id === item.id);
       return (
-        <StoryFrame
-          story={item}
-          isActive={idx === currentIndex}
-          onComplete={onComplete}
-          userName={item.name.split(" ")[0]}
-        />
+        <View style={{ width: SCREEN_WIDTH, alignItems: "center", justifyContent: "center" }}>
+          <StoryFrame
+            story={item}
+            isActive={idx === currentIndex}
+            onComplete={onComplete}
+            userName={item.name.split(" ")[0]}
+          />
+        </View>
       );
     },
     [currentIndex, onComplete]
@@ -186,8 +187,8 @@ export default function StoryViewScreen() {
         onMomentumScrollEnd={onMomentumEnd}
         initialScrollIndex={initialIndex >= 0 ? initialIndex : 0}
         getItemLayout={(_, index) => ({
-          length: CARD_W,
-          offset: CARD_W * index,
+          length: SCREEN_WIDTH,
+          offset: SCREEN_WIDTH * index,
           index,
         })}
         bounces={false}
@@ -201,21 +202,16 @@ export default function StoryViewScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   frame: {
     width: CARD_W,
-    height: CARD_H,
+    height: SCREEN_HEIGHT * 0.82,
     borderRadius: 16,
     overflow: "hidden",
-    marginHorizontal: 12,
-    marginVertical: (SCREEN_HEIGHT - CARD_H) / 2,
   },
   frameImage: {
-    ...StyleSheet.absoluteFill,
     width: CARD_W,
-    height: CARD_H,
+    height: SCREEN_HEIGHT * 0.82,
     resizeMode: "cover",
     borderRadius: 16,
   },
